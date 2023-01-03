@@ -14,7 +14,7 @@
             android:layout_marginTop="100dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           android:layout_marginLeft="20dp"
+           android:layout_marginLeft="30dp"
             android:orientation="horizontal">
 
             <TextView
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="30dp"
             android:fontFamily="@font/notosans_kr_regular"
             android:textColor="@color/black"
             android:textSize="34dp"
@@ -49,21 +49,73 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="350dp"
+            android:layout_height="224dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
             android:padding="10dp"
             app:cardElevation="5dp"
-            app:cardCornerRadius="10dp"
-            android:id="@+id/choose_friend">
+            app:cardCornerRadius="40dp"
+            app:cardBackgroundColor="@color/purple_500"
+            android:clickable="true"
+            android:id="@+id/device_scan_btn">
 
-            <ImageView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-            </ImageView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/notosans_kr_bold"
+                        android:textSize="22dp"
+                        android:text="000"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/notosans_kr_bold"
+                        android:textSize="22dp"
+                        android:text=" 님"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/notosans_kr_bold"
+                        android:textSize="22dp"
+                        android:text="기기 연결"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/scan_img_btn"
+                        android:scaleType="centerCrop"
+                        android:layout_marginBottom="30dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
