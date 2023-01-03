@@ -19,4 +19,5 @@
     <color name="background_secondary">#FFE6E6E6</color>
     <color name="background_warning">#55C60000</color>
     <color name="background_disabled">#FFE6E6E6</color>
+    <color name="background_edittext">@color/background_secondary</color>
 </resources>

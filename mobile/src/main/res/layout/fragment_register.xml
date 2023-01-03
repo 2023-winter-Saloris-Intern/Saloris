@@ -1,6 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_fragment_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:padding="@dimen/padding_default"
+    tools:context=".RegisterFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/padding_small"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/terms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintWidth_max="@dimen/width_max">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/register_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_default"
+                    android:autofillHints="emailAddress"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/email_notice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/fill_out_email_form"
+                    android:textColor="@color/line_warning"
+                    android:textSize="@dimen/text_xx_small"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="@+id/register_email"
+                    app:layout_constraintTop_toBottomOf="@+id/register_email" />
+
+                <EditText
+                    android:id="@+id/register_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_default"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:hint="@string/name"
+                    android:singleLine="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/register_email" />
+
+                <EditText
+                    android:id="@+id/register_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_default"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:autofillHints="password"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/register_username" />
+
+                <TextView
+                    android:id="@+id/password_notice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/fill_out_password_form"
+                    android:textColor="@color/line_warning"
+                    android:textSize="@dimen/text_xx_small"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="@+id/register_password"
+                    app:layout_constraintTop_toBottomOf="@+id/register_password" />
+
+                <EditText
+                    android:id="@+id/register_re_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_default"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:autofillHints="password"
+                    android:hint="@string/password_check"
+                    android:inputType="textPassword"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/register_password" />
+
+                <TextView
+                    android:id="@+id/re_password_notice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/not_same_password"
+                    android:textColor="@color/line_warning"
+                    android:textSize="@dimen/text_xx_small"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="@+id/register_re_password"
+                    app:layout_constraintTop_toBottomOf="@+id/register_re_password" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- 약관 동의 -->
+    <LinearLayout
+        android:id="@+id/terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_default"
+        android:background="@drawable/tos_shape"
+        android:orientation="vertical"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/btn_register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_max="@dimen/width_max">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/check_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/bg_checkbox"
+                android:drawablePadding="@dimen/padding_smallest"
+                android:minHeight="0dp"
+                android:paddingVertical="@dimen/padding_smallest"
+                android:text="@string/all_check"
+                android:textSize="@dimen/text_small" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/line_quaternary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/check_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/bg_checkbox_small"
+                android:drawablePadding="@dimen/padding_smallest"
+                android:minHeight="0dp"
+                android:padding="@dimen/padding_smallest"
+                android:text="@string/upper_14age"
+                android:textSize="@dimen/text_x_small" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/check_use"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/bg_checkbox_small"
+                android:drawablePadding="@dimen/padding_smallest"
+                android:minHeight="0dp"
+                android:padding="@dimen/padding_smallest"
+                android:text="@string/terms_title"
+                android:textSize="@dimen/text_x_small" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tac_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingVertical="@dimen/padding_smallest">
+
+                <TextView
+                    android:id="@+id/tac_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/show_content"
+                    android:textColor="@color/line_primary"
+                    android:textSize="@dimen/text_xx_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tac_next"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/tac_next"
+                    android:layout_width="@dimen/img_text_xx_small"
+                    android:layout_height="@dimen/img_text_xx_small"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="@string/next"
+                    android:src="@drawable/ic_next_light"
+                    app:layout_constraintBottom_toBottomOf="@+id/tac_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/tac_text"
+                    app:layout_constraintTop_toTopOf="@+id/tac_text"
+                    app:tint="@color/line_primary" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintWidth_max="@dimen/width_max">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/check_private"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/bg_checkbox_small"
+                android:drawablePadding="@dimen/padding_smallest"
+                android:minHeight="0dp"
+                android:padding="@dimen/padding_smallest"
+                android:text="@string/privacy_title"
+                android:textSize="@dimen/text_x_small" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/privacy_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingVertical="@dimen/padding_smallest">
+
+                <TextView
+                    android:id="@+id/privacy_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/show_content"
+                    android:textColor="@color/line_primary"
+                    android:textSize="@dimen/text_xx_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/privacy_next"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/privacy_next"
+                    android:layout_width="@dimen/img_text_xx_small"
+                    android:layout_height="@dimen/img_text_xx_small"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="@string/next"
+                    android:src="@drawable/ic_next_light"
+                    app:layout_constraintBottom_toBottomOf="@+id/privacy_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/privacy_text"
+                    app:layout_constraintTop_toTopOf="@+id/privacy_text"
+                    app:tint="@color/line_primary" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="@dimen/height_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_max="@dimen/width_max" />
+
+    <include
+        android:id="@+id/layout_loading"
+        layout="@layout/loading"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

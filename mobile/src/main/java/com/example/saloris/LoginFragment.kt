@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentLoginBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -25,7 +27,7 @@ import world.saloris.donoff.util.user.Validator
 
 class LoginFragment : Fragment() {
     /* View */
-//    private lateinit var navController: NavController
+    private lateinit var navController: NavController
     private lateinit var binding: FragmentLoginBinding
 
     /* User Authentication */
@@ -61,7 +63,7 @@ class LoginFragment : Fragment() {
             ContextCompat.getSystemService(binding.root.context, ConnectivityManager::class.java)
         auth = Firebase.auth
 
-        //navController = Navigation.findNavController(view)
+        navController = Navigation.findNavController(view)
 
         binding.loginEmail.setText(arguments?.getString("id"))
 
@@ -93,57 +95,57 @@ class LoginFragment : Fragment() {
                 }
 
             }
-//            if (currentNetwork == null) {
-//                context?.let { context -> toast.makeToast(context, "네트워크를 확인해 주세요.") }
-//                //binding.layoutLoading.root.visibility = View.GONE
-//            } else {
-//                if (username.isEmpty() || password.isEmpty()) {
-//                    context?.let { context -> toast.makeToast(context, "입력란을 모두 작성해주세요") }
-//                    //binding.layoutLoading.root.visibility = View.GONE
-//                } else {
-//                    if (!validator.checkEmail(binding.loginEmail)) {
-//                        context?.let { context -> toast.makeToast(context, "이메일 형식을 지켜주세요") }
-//                        //binding.layoutLoading.root.visibility = View.GONE
-//                    } else {
-//                        auth.signInWithEmailAndPassword(username, password)
-//                            .addOnCompleteListener { loginTask ->
-//                                if (loginTask.isSuccessful) {
-//                                    if (!isAdded) {
-//                                        return@addOnCompleteListener
-//                                    }
-//                                    if (auth.currentUser?.isEmailVerified!!) {
-//                                        saveAutoLoginInfo(username, password)
-//                                        //navController.navigate(R.id.action_loginFragment_to_mainFragment)
-//                                    } else {
-//                                        Firebase.auth.currentUser!!.sendEmailVerification()
-//                                            .addOnCompleteListener { verifyTask ->
-//                                                context?.let { context ->
-//                                                    toast.makeToast(
-//                                                        context,
-//                                                        if (verifyTask.isSuccessful)
-//                                                            "인증 이메일을 다시 전송했습니다. 메일함에서 인증해주세요"
-//                                                        else
-//                                                            "메일함을 확인해주세요"
-//                                                    )
-//                                                }
-//                                            }
-//                                    }
-//                                } else {
-//                                    context?.let { context ->
-//                                        toast.makeToast(context, "이메일과 비밀번호를 확인해주세요")
-//                                    }
-//                                }
-//                                //binding.layoutLoading.root.visibility = View.GONE
-//                            }
-//                    }
-//                }
-//            }
+            if (currentNetwork == null) {
+                context?.let { context -> toast.makeToast(context, "네트워크를 확인해 주세요.") }
+                //binding.layoutLoading.root.visibility = View.GONE
+            } else {
+                if (username.isEmpty() || password.isEmpty()) {
+                    context?.let { context -> toast.makeToast(context, "입력란을 모두 작성해주세요") }
+                    //binding.layoutLoading.root.visibility = View.GONE
+                } else {
+                    if (!validator.checkEmail(binding.loginEmail)) {
+                        context?.let { context -> toast.makeToast(context, "이메일 형식을 지켜주세요") }
+                        //binding.layoutLoading.root.visibility = View.GONE
+                    } else {
+                        auth.signInWithEmailAndPassword(username, password)
+                            .addOnCompleteListener { loginTask ->
+                                if (loginTask.isSuccessful) {
+                                    if (!isAdded) {
+                                        return@addOnCompleteListener
+                                    }
+                                    if (auth.currentUser?.isEmailVerified!!) {
+                                        saveAutoLoginInfo(username, password)
+                                        //navController.navigate(R.id.action_loginFragment_to_mainFragment)
+                                    } else {
+                                        Firebase.auth.currentUser!!.sendEmailVerification()
+                                            .addOnCompleteListener { verifyTask ->
+                                                context?.let { context ->
+                                                    toast.makeToast(
+                                                        context,
+                                                        if (verifyTask.isSuccessful)
+                                                            "인증 이메일을 다시 전송했습니다. 메일함에서 인증해주세요"
+                                                        else
+                                                            "메일함을 확인해주세요"
+                                                    )
+                                                }
+                                            }
+                                    }
+                                } else {
+                                    context?.let { context ->
+                                        toast.makeToast(context, "이메일과 비밀번호를 확인해주세요")
+                                    }
+                                }
+                                //binding.layoutLoading.root.visibility = View.GONE
+                            }
+                    }
+                }
+            }
         }
 
         binding.btnRegister.setOnClickListener {
             val username = binding.loginEmail.text.toString().trim()
             toast.makeToast(requireContext(), "회원가입 버튼")
-        //            navController.navigate(
+//                    navController.navigate(
 //                R.id.action_loginFragment_to_registerFragment,
 //                bundleOf("id" to username)
 //            )
