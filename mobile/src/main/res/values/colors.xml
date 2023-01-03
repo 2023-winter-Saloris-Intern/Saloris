@@ -8,4 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#FF3180FF</color>
+
+    <color name="line_primary">#FF707070</color>
+    <color name="line_secondary">#FFE6E6E6</color>
+    <color name="line_tertiary">#FF8D8D8D</color>
+    <color name="line_quaternary">#FFBCBCBC</color>
+    <color name="line_warning">#FFC60000</color>
+
+    <color name="background_primary">#FFF7F7F7</color>
+    <color name="background_secondary">#FFE6E6E6</color>
+    <color name="background_warning">#55C60000</color>
+    <color name="background_disabled">#FFE6E6E6</color>
 </resources>

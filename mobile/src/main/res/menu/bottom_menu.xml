@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/scanFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_camera"
+        android:title="졸음측정"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/graphFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_graph"
+        android:title="그래프"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_setting"
+        android:title="설정"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+</menu>

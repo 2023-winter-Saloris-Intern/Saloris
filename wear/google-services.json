@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "100748982317",
+    "project_id": "saloris-46f54",
+    "storage_bucket": "saloris-46f54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100748982317:android:4371545e42741cbe1a60a4",
+        "android_client_info": {
+          "package_name": "com.example.saloris"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100748982317-4dmor4hctia8du3ba0sp0blf4ncu1j2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYoQ1XlmujvgnnRALR-uA30aboPNDO5_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100748982317-4dmor4hctia8du3ba0sp0blf4ncu1j2r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
