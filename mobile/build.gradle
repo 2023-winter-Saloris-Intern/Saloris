@@ -9,6 +9,10 @@ android {
     namespace 'com.example.saloris'
     compileSdk 32
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId "com.example.saloris"
         minSdk 26
