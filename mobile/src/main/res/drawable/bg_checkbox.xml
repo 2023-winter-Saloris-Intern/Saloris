@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Unchecked -->
+    <item android:state_checked="false">
+        <layer-list>
+            <item android:width="@dimen/size_icon_checkbox" android:height="@dimen/size_icon_checkbox" android:drawable="@drawable/ic_unchecked" />
+        </layer-list>
+    </item>
+    <!-- Checked -->
+    <item android:state_checked="true">
+        <layer-list>
+            <item android:width="@dimen/size_icon_checkbox" android:height="@dimen/size_icon_checkbox" android:drawable="@drawable/ic_checked" />
+        </layer-list>
+    </item>
+</selector>

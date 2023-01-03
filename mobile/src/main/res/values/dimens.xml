@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_title">@dimen/text_emphasized</dimen>
+    <dimen name="text_button">@dimen/text_medium</dimen>
+    <dimen name="text_editText">@dimen/text_medium</dimen>
+    <dimen name="text_bottomNavigation">@dimen/text_x_small</dimen>
+
+    <dimen name="text_emphasized">40sp</dimen>
+    <dimen name="text_xx_large">28sp</dimen>
+    <dimen name="text_x_large">24sp</dimen>
+    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_medium">17sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_x_small">12sp</dimen>
+    <dimen name="text_xx_small">10sp</dimen>
+
+    <dimen name="img_text_medium">13sp</dimen>
+    <dimen name="img_text_xx_small">8sp</dimen>
+
+    <dimen name="width_max">350dp</dimen>
+    <dimen name="width_max_2">150dp</dimen>
+
+    <dimen name="height_logo">120dp</dimen>
+    <dimen name="height_bottom_menu">90dp</dimen>
+    <dimen name="height_bottom_menu_item">30dp</dimen>
+    <dimen name="height_default">50dp</dimen>
+
+    <dimen name="size_icon_graph">24dp</dimen>
+    <dimen name="size_icon_toolbar">20dp</dimen>
+    <dimen name="size_icon_checkbox">20dp</dimen>
+    <dimen name="size_icon_checkbox_small">15dp</dimen>
+    <dimen name="size_icon_menu">40dp</dimen>
+    <dimen name="size_icon_btn_graph">70dp</dimen>
+
+    <dimen name="margin_largest">40dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_default">20dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_smallest">5dp</dimen>
+
+    <dimen name="padding_largest">60dp</dimen>
+    <dimen name="padding_large">40dp</dimen>
+    <dimen name="padding_default">30dp</dimen>
+    <dimen name="padding_small">20dp</dimen>
+    <dimen name="padding_smallest">10dp</dimen>
+
+    <dimen name="radius_default">25dp</dimen>
+    <dimen name="radius_small">10dp</dimen>
+
+    <dimen name="loading_interval">50</dimen>
+</resources>
