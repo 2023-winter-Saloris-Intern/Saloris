@@ -8,22 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentScanBinding
+import com.example.saloris.databinding.FragmentSettingBinding
 
 class ScanFragment : Fragment() {
-    private var _binding: FragmentScanBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentScanBinding
+
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentScanBinding.inflate(inflater,container,false)
-
-//        binding.deviceScanBtn.setOnClickListener {
-//            loadFragment(ScanFragment())
-//        }
-
+    ): View {
+        binding = FragmentScanBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 

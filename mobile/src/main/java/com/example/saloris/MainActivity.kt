@@ -96,7 +96,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         addMenuProvider(menuProvider)
-
+        /* Toolbar */
+        with(binding.layoutToolbar.toolbarTitle) {
+            text = "심박수 그래프"
+        }
+        addMenuProvider(menuProvider)
+        setSupportActionBar(binding.layoutToolbar.toolbar)
+        supportActionBar?.let {
+            it.setDisplayShowTitleEnabled(false)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeAsUpIndicator(R.drawable.ic_back)
+        }
         /* User Authentication */
         auth = FirebaseAuth.getInstance()
 
@@ -112,8 +122,6 @@ class MainActivity : AppCompatActivity() {
                 NavigationUI.onNavDestinationSelected(item, navController, false)
                 true
             }
-            val bottomMenu = (this@MainActivity).binding.bottomNav
-            bottomMenu.visibility = View.VISIBLE
         }
     }
 }

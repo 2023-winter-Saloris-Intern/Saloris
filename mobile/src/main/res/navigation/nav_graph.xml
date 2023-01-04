@@ -15,6 +15,12 @@
         <action
             android:id="@+id/action_homeFragment_to_scanFragment"
             app:destination="@id/scanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_recordFragment"
+            app:destination="@id/recordFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -70,4 +76,14 @@
         android:name="com.example.saloris.Home.ScanFragment"
         android:label="fragment_scan"
         tools:layout="@layout/fragment_scan" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.saloris.Setting.SettingFragment"
+        android:label="fragment_record"
+        tools:layout="@layout/fragment_record" />
+    <fragment
+        android:id="@+id/recordFragment"
+        android:name="com.example.saloris.Record.RecordFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>

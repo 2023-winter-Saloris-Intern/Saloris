@@ -100,6 +100,7 @@ class HomeFragment : Fragment() {
         binding.deviceScanBtn.setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_scanFragment)
         }
+
     }
 
     override fun onDestroyView() {
