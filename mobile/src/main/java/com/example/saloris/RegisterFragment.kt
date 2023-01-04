@@ -16,14 +16,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentRegisterBinding
+import com.example.saloris.util.MakeToast
+import com.example.saloris.util.OpenDialog
+import com.example.saloris.util.Validator
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
-import world.saloris.donoff.util.user.MakeToast
-import world.saloris.donoff.util.user.OpenDialog
-import world.saloris.donoff.util.user.Validator
 
 class RegisterFragment : Fragment() {
     /* View */

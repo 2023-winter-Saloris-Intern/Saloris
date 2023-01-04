@@ -1,29 +1,25 @@
 package com.example.saloris
 
 import android.app.Activity
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentLoginBinding
+import com.example.saloris.util.MakeToast
+import com.example.saloris.util.Validator
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import world.saloris.donoff.util.user.MakeToast
-import world.saloris.donoff.util.user.Validator
 
 class LoginFragment : Fragment() {
     /* View */
@@ -115,7 +111,7 @@ class LoginFragment : Fragment() {
                                     }
                                     if (auth.currentUser?.isEmailVerified!!) {
                                         saveAutoLoginInfo(username, password)
-                                        //navController.navigate(R.id.action_loginFragment_to_mainFragment)
+                                        navController.navigate(R.id.action_loginFragment_to_homeFragment)
                                     } else {
                                         Firebase.auth.currentUser!!.sendEmailVerification()
                                             .addOnCompleteListener { verifyTask ->
@@ -145,10 +141,10 @@ class LoginFragment : Fragment() {
         binding.btnRegister.setOnClickListener {
             val username = binding.loginEmail.text.toString().trim()
             toast.makeToast(requireContext(), "회원가입 버튼")
-//                    navController.navigate(
-//                R.id.action_loginFragment_to_registerFragment,
-//                bundleOf("id" to username)
-//            )
+                    navController.navigate(
+                R.id.action_loginFragment_to_registerFragment,
+                bundleOf("id" to username)
+            )
         }
 
         binding.btnFindPassword.setOnClickListener {

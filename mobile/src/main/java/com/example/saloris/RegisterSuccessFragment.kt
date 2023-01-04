@@ -1,4 +1,4 @@
-package world.saloris.donoff
+package com.example.saloris
 
 import android.os.Bundle
 import android.view.LayoutInflater

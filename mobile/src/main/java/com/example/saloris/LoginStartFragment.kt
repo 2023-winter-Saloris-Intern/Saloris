@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentLoginStartBinding
+import com.example.saloris.util.MakeToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import world.saloris.donoff.util.user.MakeToast
 
 class LoginStartFragment : Fragment() {
     /* View */
