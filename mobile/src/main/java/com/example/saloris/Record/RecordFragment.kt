@@ -29,6 +29,10 @@ class RecordFragment : Fragment() {
 //            loadFragment(ScanFragment())
 //        }
 
+        binding.dateChoiceBtn.setOnClickListener {
+
+        }
+
 
         return binding.root
     }
