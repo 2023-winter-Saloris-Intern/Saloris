@@ -50,7 +50,7 @@ class LoginFragment : Fragment() {
         val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomMenu.visibility = View.GONE
 
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,14 +83,7 @@ class LoginFragment : Fragment() {
             val password = binding.loginPassword.text.toString().trim()
 
             val currentNetwork = connectivityManager!!.activeNetwork
-            auth.signInWithEmailAndPassword(username,password).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    context?.let { context -> toast.makeToast(context, "성공") }
-                } else  {
-                    context?.let { context -> toast.makeToast(context, "실패") }
-                }
 
-            }
             if (currentNetwork == null) {
                 context?.let { context -> toast.makeToast(context, "네트워크를 확인해 주세요.") }
                 binding.layoutLoading.root.visibility = View.GONE
