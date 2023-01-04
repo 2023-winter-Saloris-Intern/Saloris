@@ -59,11 +59,11 @@ class LoginStartFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.btnFirstRegister.setOnClickListener {
-            //navController.navigate(R.id.action_loginStartFragment_to_registerFragment)
+            navController.navigate(R.id.action_loginStartFragment_to_registerFragment)
         }
 
         binding.textStartLogin.setOnClickListener {
-            //navController.navigate(R.id.action_loginStartFragment_to_loginFragment)
+            navController.navigate(R.id.action_loginStartFragment_to_loginFragment)
         }
     }
 }

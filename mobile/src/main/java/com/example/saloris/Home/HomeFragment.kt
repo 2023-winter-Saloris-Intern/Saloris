@@ -71,9 +71,6 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
-        binding.deviceScanBtn.setOnClickListener {
-            loadFragment(ScanFragment())
-        }
         /* Bottom Menu */
         val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
         bottomMenu.visibility = View.GONE
@@ -83,6 +80,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         navController = Navigation.findNavController(view)
 
         /* User Authentication */
@@ -102,14 +100,6 @@ class HomeFragment : Fragment() {
 //        binding.btnNodOff.setOnClickListener {
 //            navController.navigate(R.id.action_mainFragment_to_scanFragment)
 //        }
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        Log.d("clickTest", "click!->" + fragment.tag)
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
     override fun onDestroyView() {

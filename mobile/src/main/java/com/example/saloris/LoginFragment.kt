@@ -77,7 +77,7 @@ class LoginFragment : Fragment() {
             false
         }
         binding.btnLogin.setOnClickListener {
-            //binding.layoutLoading.root.visibility = View.VISIBLE
+            binding.layoutLoading.root.visibility = View.VISIBLE
             context?.let { context -> toast.makeToast(context, "로그인 버튼") }
             val username = binding.loginEmail.text.toString().trim()
             val password = binding.loginPassword.text.toString().trim()
@@ -93,15 +93,15 @@ class LoginFragment : Fragment() {
             }
             if (currentNetwork == null) {
                 context?.let { context -> toast.makeToast(context, "네트워크를 확인해 주세요.") }
-                //binding.layoutLoading.root.visibility = View.GONE
+                binding.layoutLoading.root.visibility = View.GONE
             } else {
                 if (username.isEmpty() || password.isEmpty()) {
                     context?.let { context -> toast.makeToast(context, "입력란을 모두 작성해주세요") }
-                    //binding.layoutLoading.root.visibility = View.GONE
+                    binding.layoutLoading.root.visibility = View.GONE
                 } else {
                     if (!validator.checkEmail(binding.loginEmail)) {
                         context?.let { context -> toast.makeToast(context, "이메일 형식을 지켜주세요") }
-                        //binding.layoutLoading.root.visibility = View.GONE
+                        binding.layoutLoading.root.visibility = View.GONE
                     } else {
                         auth.signInWithEmailAndPassword(username, password)
                             .addOnCompleteListener { loginTask ->
@@ -131,7 +131,7 @@ class LoginFragment : Fragment() {
                                         toast.makeToast(context, "이메일과 비밀번호를 확인해주세요")
                                     }
                                 }
-                                //binding.layoutLoading.root.visibility = View.GONE
+                                binding.layoutLoading.root.visibility = View.GONE
                             }
                     }
                 }

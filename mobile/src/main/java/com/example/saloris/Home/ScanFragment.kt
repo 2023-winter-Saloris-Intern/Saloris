@@ -27,12 +27,4 @@ class ScanFragment : Fragment() {
         return binding.root
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        Log.d("clickTest", "click!->" + fragment.tag)
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
 }

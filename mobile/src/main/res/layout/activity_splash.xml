@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/notosans_kr_black"
-        android:text="DONOFF"
+        android:text="Saloris"
         android:textColor="@color/white"
         android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="@+id/intro_donoff_logo"
