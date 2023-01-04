@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
                 else -> {
                     binding.layoutToolbar.toolbar.visibility = View.GONE
                 }
-                }
             }
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /* view */

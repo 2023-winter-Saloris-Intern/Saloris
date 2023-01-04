@@ -97,9 +97,9 @@ class HomeFragment : Fragment() {
             binding.userName.text = auth.currentUser!!.displayName
         }
 
-//        binding.btnNodOff.setOnClickListener {
-//            navController.navigate(R.id.action_mainFragment_to_scanFragment)
-//        }
+        binding.deviceScanBtn.setOnClickListener {
+            navController.navigate(R.id.action_homeFragment_to_scanFragment)
+        }
     }
 
     override fun onDestroyView() {
