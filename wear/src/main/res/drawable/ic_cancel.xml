@@ -15,12 +15,13 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <dimen name="icon_size">24dp</dimen>
-    <dimen name="space_2dp">2dp</dimen>
-    <dimen name="space_4dp">4dp</dimen>
-    <dimen name="default_padding">16dp</dimen>
-    <dimen name="header_top_margin">16dp</dimen>
-    <dimen name="header_start_margin">16dp</dimen>
-    <dimen name="header_end_margin">16dp</dimen>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:strokeColor="#000"
+      android:strokeWidth="2.1"
+      android:pathData="M6,6 L18,18 M18,6 L6,18z"/>
+</vector>
