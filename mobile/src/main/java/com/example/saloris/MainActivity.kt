@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     lateinit var binding: ActivityMainBinding
 
-    lateinit var bottomNav: BottomNavigationView
     /* Toolbar */
     private var currFragment = R.id.homeFragment
 
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
             when (menuItem.itemId) {
                 android.R.id.home -> {
-                    //navController.popBackStack()
+                    navController.popBackStack()
                 }
             }
             return true
@@ -96,6 +95,8 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightNavigationBars = true
         }
 
+        addMenuProvider(menuProvider)
+
         /* User Authentication */
         auth = FirebaseAuth.getInstance()
 
@@ -111,37 +112,8 @@ class MainActivity : AppCompatActivity() {
                 NavigationUI.onNavDestinationSelected(item, navController, false)
                 true
             }
+            val bottomMenu = (this@MainActivity).binding.bottomNav
+            bottomMenu.visibility = View.VISIBLE
         }
     }
 }
-//        Log.d("LifeCycleTest", "onCreate")
-//        loadFragment(HomeFragment())
-//        //bottomNav = findViewById(R.id.bottomNav) as BottomNavigationView
-//        binding.bottomNav.setOnItemSelectedListener {
-//            when (it.itemId) {
-//                R.id.home -> {
-//                    Log.d("clickTest", "homeclick!")
-//                    loadFragment(HomeFragment())
-//                    return@setOnItemSelectedListener true
-//                }
-//                R.id.record -> {
-//                    Log.d("clickTest", "friendclick!")
-//                    loadFragment(RecordFragment())
-//                    return@setOnItemSelectedListener true
-//                }
-//                R.id.setting -> {
-//                    Log.d("clickTest", "mypagelick!")
-//                    loadFragment(SettingFragment())
-//                    return@setOnItemSelectedListener true
-//                }
-//            }
-//            false
-//        }
-//    }
-//    private fun loadFragment(fragment: Fragment) {
-//        Log.d("clickTest", "click!->" + fragment.tag)
-//        val transaction = supportFragmentManager.beginTransaction()
-//        transaction.replace(R.id.fragment_container, fragment)
-//        transaction.addToBackStack(null)
-//        transaction.commit()
-//    }

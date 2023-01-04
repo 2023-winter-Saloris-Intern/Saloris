@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
 
         /* Bottom Menu */
         val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
-        bottomMenu.visibility = View.GONE
+        bottomMenu.visibility = View.VISIBLE
 
         return binding.root
     }
