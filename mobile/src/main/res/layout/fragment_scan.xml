@@ -89,15 +89,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/notosans_kr_bold"
+            android:textColor="@color/black"
             android:textSize="20dp"
             android:text="기기 목록"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
-            android:visibility="invisible"/>
+            android:layout_marginBottom="5dp"/>
 
-
-
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/watch_list_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

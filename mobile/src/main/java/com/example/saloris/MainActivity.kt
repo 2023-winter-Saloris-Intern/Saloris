@@ -68,13 +68,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.scanFragment,
                 R.id.graphFragment, //R.id.graphHrFragment,
                 R.id.settingsFragment, R.id.accountFragment -> {
-                    binding.layoutToolbar.toolbar.visibility = View.VISIBLE
+//                    binding.layoutToolbar.toolbar.visibility = View.VISIBLE
 //                    supportActionBar?.setDisplayHomeAsUpEnabled(FRAGMENT_INFO[destination.id]!!.second)
 //                    binding.layoutToolbar.toolbarTitle.text =
 //                        getString(FRAGMENT_INFO[destination.id]!!.first)
                 }
                 else -> {
-                    binding.layoutToolbar.toolbar.visibility = View.GONE
+//                    binding.layoutToolbar.toolbar.visibility = View.GONE
                 }
             }
         }
@@ -95,18 +95,18 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightNavigationBars = true
         }
 
-        addMenuProvider(menuProvider)
+//        addMenuProvider(menuProvider)
         /* Toolbar */
-        with(binding.layoutToolbar.toolbarTitle) {
-            text = "심박수 그래프"
-        }
-        addMenuProvider(menuProvider)
-        setSupportActionBar(binding.layoutToolbar.toolbar)
-        supportActionBar?.let {
-            it.setDisplayShowTitleEnabled(false)
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setHomeAsUpIndicator(R.drawable.ic_back)
-        }
+//        with(binding.layoutToolbar.toolbarTitle) {
+//            text = "심박수 그래프"
+//        }그래프
+//        addMenuProvider(menuProvider)
+//        setSupportActionBar(binding.layoutToolbar.toolbar)
+//        supportActionBar?.let {
+//            it.setDisplayShowTitleEnabled(false)
+//            it.setDisplayHomeAsUpEnabled(true)
+//            it.setHomeAsUpIndicator(R.drawable.ic_back)
+//        }
         /* User Authentication */
         auth = FirebaseAuth.getInstance()
 
