@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/purple_700</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
@@ -36,7 +36,34 @@
         <!-- Font -->
         <item name="android:fontFamily">@font/notosans_kr_regular</item>
         <item name="fontFamily">@font/notosans_kr_regular</item>
+    </style>
+    <style name="Button_Default" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">@drawable/bg_button_default</item>
+        <item name="android:colorButtonNormal">@color/background_secondary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_button</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
+    <style name="Button_Negative" parent="Button_Default">
+        <item name="android:backgroundTint">@color/background_secondary</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 
+    <style name="ImageButton_Default" parent="@style/Widget.AppCompat.ImageButton">
+        <item name="android:paddingStart">25dp</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingEnd">25dp</item>
+        <item name="android:paddingBottom">70dp</item>
+        <item name="android:background">@drawable/bg_button_small</item>
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
+    <style name="EditText_Default" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/bg_edittext</item>
+        <item name="android:textSize">@dimen/text_editText</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/black</item>
     </style>
 </resources>

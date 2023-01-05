@@ -1,4 +1,4 @@
-package world.saloris.donoff.util.user
+package com.example.saloris.util
 
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment

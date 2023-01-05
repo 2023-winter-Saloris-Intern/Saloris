@@ -3,18 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/home"
+        android:id="@+id/homeFragment"
         app:showAsAction="ifRoom"
         android:enabled="true"
         android:icon="@drawable/ic_outline_home_24"
         android:title="시작하기" />
     <item
-        android:id="@+id/record"
+        android:id="@+id/recordFragment"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_outline_format_list_bulleted_24"
         android:title="기록확인" />
     <item
-        android:id="@+id/setting"
+        android:id="@+id/settingFragment"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_outline_settings_24"
         android:title="설정" />

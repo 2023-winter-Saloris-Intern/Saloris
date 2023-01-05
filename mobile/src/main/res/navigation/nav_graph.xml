@@ -12,6 +12,15 @@
         <action
             android:id="@+id/action_homeFragment_to_loginStartFragment"
             app:destination="@id/loginStartFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_scanFragment"
+            app:destination="@id/scanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_recordFragment"
+            app:destination="@id/recordFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -21,6 +30,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginStartFragment"
@@ -45,11 +57,33 @@
     </fragment>
     <fragment
         android:id="@+id/registerSuccessFragment"
-        android:name="world.saloris.donoff.RegisterSuccessFragment"
+        android:name="com.example.saloris.RegisterSuccessFragment"
         android:label="RegisterSuccessFragment" >
         <action
             android:id="@+id/action_registerSuccessFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
-
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.example.saloris.AccountFragment"
+        android:label="AccountFragment" >
+        <action
+            android:id="@+id/action_accountFragment_to_loginStartFragment"
+            app:destination="@id/loginStartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.example.saloris.Home.ScanFragment"
+        android:label="fragment_scan"
+        tools:layout="@layout/fragment_scan" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.saloris.Setting.SettingFragment"
+        android:label="fragment_record"
+        tools:layout="@layout/fragment_record" />
+    <fragment
+        android:id="@+id/recordFragment"
+        android:name="com.example.saloris.Record.RecordFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>

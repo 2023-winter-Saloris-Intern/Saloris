@@ -1,4 +1,4 @@
-package world.saloris.donoff.util.user
+package com.example.saloris.util
 
 import android.content.Context
 import android.widget.Toast
