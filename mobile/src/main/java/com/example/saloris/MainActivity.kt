@@ -68,13 +68,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.scanFragment,
                 R.id.graphFragment, //R.id.graphHrFragment,
                 R.id.settingsFragment, R.id.accountFragment -> {
-//                    binding.layoutToolbar.toolbar.visibility = View.VISIBLE
+                    binding.layoutToolbar.toolbar.visibility = View.GONE
 //                    supportActionBar?.setDisplayHomeAsUpEnabled(FRAGMENT_INFO[destination.id]!!.second)
 //                    binding.layoutToolbar.toolbarTitle.text =
 //                        getString(FRAGMENT_INFO[destination.id]!!.first)
                 }
                 else -> {
-//                    binding.layoutToolbar.toolbar.visibility = View.GONE
+                    binding.layoutToolbar.toolbar.visibility = View.GONE
                 }
             }
         }

@@ -8,9 +8,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<!--    <include-->
-<!--        android:id="@+id/layout_toolbar"-->
-<!--        layout="@layout/toolbar" />-->
+    <include
+        android:id="@+id/layout_toolbar"
+        layout="@layout/toolbar" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
