@@ -10,10 +10,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentScanBinding
+import com.example.saloris.databinding.FragmentWatchConnectListBinding
 
 
 class WatchConnectListFragment : Fragment() {
-    private var _binding: FragmentScanBinding? = null
+    private var _binding: FragmentWatchConnectListBinding? = null
     private val binding get() = _binding!!
     val wachInfo= mutableListOf<WachInfo>()
     val WatchListAdapter=WatchListAdapter(wachInfo)
@@ -30,7 +31,7 @@ class WatchConnectListFragment : Fragment() {
 //        toolbar?.setTitle("문화생활팟")
 
 
-        _binding = FragmentScanBinding.inflate(inflater,container,false)
+        _binding = FragmentWatchConnectListBinding.inflate(inflater,container,false)
 //        binding.petListRecyclerView.layoutManager=LinearLayoutManager(requireContext())
 //        binding.petListRecyclerView.adapter= PetListAdapter(pets)
 

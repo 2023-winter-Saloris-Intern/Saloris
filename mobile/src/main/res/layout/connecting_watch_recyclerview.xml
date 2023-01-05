@@ -45,7 +45,7 @@
             android:fontFamily="@font/notosans_kr_bold"
             android:textColor="@color/black"
             android:text="000"
-            android:textSize="18dp"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/watch_image"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,7 +58,7 @@
             android:fontFamily="@font/notosans_kr_bold"
             android:text="의"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/watch_user_name"
             app:layout_constraintTop_toTopOf="parent" />
@@ -71,9 +71,19 @@
             android:fontFamily="@font/notosans_kr_bold"
             android:text="Galaxy Watch 5"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:background="@color/white"
+            android:src="@drawable/ic_baseline_chevron_right_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
