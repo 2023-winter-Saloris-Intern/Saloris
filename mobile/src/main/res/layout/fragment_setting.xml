@@ -13,7 +13,7 @@
         style="@style/Button_Negative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/account"
+        android:text="@string/account_information"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,12 +21,12 @@
         app:layout_constraintWidth_max="@dimen/width_max" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_face_mesh_settings"
+        android:id="@+id/btn_logout"
         style="@style/Button_Negative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_default"
-        android:text="@string/face_settings"
+        android:text="@string/logout"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,16 +34,16 @@
         app:layout_constraintWidth_max="@dimen/width_max" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_alarm_settings"
+        android:id="@+id/btn_help"
         style="@style/Button_Negative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/alarm_settings"
+        android:text="@string/help"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_face_mesh_settings"
+        app:layout_constraintTop_toBottomOf="@+id/btn_logout"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

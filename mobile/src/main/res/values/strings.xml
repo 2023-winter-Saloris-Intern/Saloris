@@ -1,4 +1,7 @@
 <resources>
+    <string name="help">도움말</string>
+    <string name="account_information">계정정보</string>
+
     <!-- Main -->
     <string name="app_name">DONOFF</string>
     <string name="app_subtitle">Don\'t Nod Off</string>
