@@ -34,13 +34,17 @@
         android:label="PrepareFragment"
         tools:layout="@layout/fragment_prepare" >
     </fragment>
-
     <fragment
         android:id="@+id/notAvailableFragment"
         android:name="com.example.saloris.NotAvailableFragment"
         android:label="NotAvailableFragment"
         tools:layout="@layout/fragment_not_available" />
-
+    <fragment
+        android:id="@+id/NetWorkFragment"
+        android:name="com.example.saloris.NetWorking"
+        android:label="NewWorkFragment"
+        tools:layout="@layout/fragment_network" >
+    </fragment>
     <fragment
         android:id="@+id/exerciseFragment"
         android:name="com.example.saloris.ExerciseFragment"
@@ -53,5 +57,5 @@
 
     <dialog
         android:id="@+id/newExerciseConfirmationFragment"
-        android:label="NewExerciseConfirmationFragment" />
+        android:label="NewExerciseConfirmationFragment"/>
 </navigation>

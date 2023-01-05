@@ -15,8 +15,9 @@
   ~ limitations under the License.
   -->
 
+
 <resources>
-    <string name="app_name">HeartRate</string>
+    <string name="app_name">Heart Rate</string>
     <string name="measure_status">Status: %1$s</string>
     <string name="last_measured">Last measured:</string>
     <string name="starting_up">Starting up</string>

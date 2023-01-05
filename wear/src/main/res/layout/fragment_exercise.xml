@@ -14,8 +14,7 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -50,6 +49,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_v50pct"
         android:layout_width="0dp"
@@ -57,100 +58,17 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".5" />
 
-    <!--    <ImageView-->
-<!--        android:id="@+id/calories_icon"-->
-<!--        android:layout_width="@dimen/icon_size"-->
-<!--        android:layout_height="@dimen/icon_size"-->
-<!--        android:contentDescription="@null"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/calories_text"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/guide_v50pct"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/elapsed_time"-->
-<!--        app:layout_constraintTop_toTopOf="@id/calories_text"-->
-<!--        app:srcCompat="@drawable/ic_calories_burned"-->
-<!--        app:tint="?colorControlActivated" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/calories_text"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="@dimen/space_4dp"-->
-<!--        android:layout_marginTop="@dimen/space_4dp"-->
-<!--        android:enabled="false"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:minHeight="32dp"-->
-<!--        android:text="@string/empty_metric"-->
-<!--        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/calories_icon"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/elapsed_time"-->
-<!--        tools:enabled="true"-->
-<!--        tools:text="200" />-->
-
-<!--    <ImageView-->
-<!--        android:id="@+id/distance_icon"-->
-<!--        android:layout_width="@dimen/icon_size"-->
-<!--        android:layout_height="@dimen/icon_size"-->
-<!--        android:contentDescription="@null"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/distance_text"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@id/distance_text"-->
-<!--        app:srcCompat="@drawable/ic_distance"-->
-<!--        app:tint="?colorControlActivated" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/distance_text"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="@dimen/space_4dp"-->
-<!--        android:enabled="false"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:minHeight="32dp"-->
-<!--        android:text="@string/empty_metric"-->
-<!--        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/start_end_button"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/heart_rate_icon"-->
-<!--        app:layout_constraintRight_toLeftOf="@id/guide_v50pct"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/heart_rate_text"-->
-<!--        tools:enabled="true"-->
-<!--        tools:text="1.1" />-->
-
-<!--    <ImageView-->
-<!--        android:id="@+id/laps_icon"-->
-<!--        android:layout_width="@dimen/icon_size"-->
-<!--        android:layout_height="@dimen/icon_size"-->
-<!--        android:contentDescription="@null"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/laps_text"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/guide_v50pct"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/elapsed_time"-->
-<!--        app:layout_constraintTop_toTopOf="@id/laps_text"-->
-<!--        app:srcCompat="@drawable/ic_lap"-->
-<!--        app:tint="?colorControlActivated" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/laps_text"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="@dimen/space_4dp"-->
-<!--        android:enabled="false"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:minHeight="32dp"-->
-<!--        android:text="@string/empty_metric"-->
-<!--        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/calories_icon"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/calories_text"-->
-<!--        tools:enabled="true"-->
-<!--        tools:text="2" />-->
-
     <ImageView
         android:id="@+id/heart_rate_icon"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
-        android:layout_marginLeft="68dp"
+        android:layout_marginStart="68dp"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="@id/heart_rate_text"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/heart_rate_text"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_heart_outline"
         app:tint="?colorControlActivated" />
 
@@ -166,11 +84,26 @@
         android:minHeight="32dp"
         android:text="@string/empty_metric"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@id/heart_rate_icon"
         app:layout_constraintTop_toBottomOf="@id/elapsed_time"
         tools:enabled="true"
         tools:text="165" />
+
+    <TextView
+        android:id="@+id/connect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:text="mobile device is not connected"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/guide_v50pct"
+        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintStart_toStartOf="@+id/guide_v50pct"
+        tools:ignore="MissingConstraints,SmallSp"
+        tools:layout_editor_absoluteY="39dp" />
 
     <Button
         android:id="@+id/start_end_button"
@@ -195,4 +128,5 @@
         app:layout_constraintLeft_toRightOf="@id/guide_v50pct"
         app:layout_constraintRight_toRightOf="parent"
         tools:enabled="true" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
