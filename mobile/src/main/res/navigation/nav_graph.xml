@@ -89,5 +89,13 @@
         <action
             android:id="@+id/action_settingFragment_to_loginStartFragment"
             app:destination="@id/loginStartFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_helpFragment"
+            app:destination="@id/helpFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.saloris.HelpFragment"
+        android:label="fragment_help"
+        tools:layout="@layout/fragment_help" />
 </navigation>

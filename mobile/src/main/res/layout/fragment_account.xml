@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:padding="@dimen/padding_default"
-    tools:context="world.saloris.donoff.AccountFragment">
+    tools:context="com.example.saloris.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/account_info"

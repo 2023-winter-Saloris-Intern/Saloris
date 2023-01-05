@@ -67,5 +67,9 @@ class SettingFragment : Fragment() {
             deleteAutoLoginInfo()
             navController.navigate(R.id.action_settingFragment_to_loginStartFragment)
         }
+        // 도움말
+        binding.btnHelp.setOnClickListener {
+            navController.navigate(R.id.action_settingFragment_to_helpFragment)
+        }
     }
 }
