@@ -16,13 +16,18 @@
 
 package com.example.saloris
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.health.services.client.data.DataPointContainer
@@ -35,10 +40,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.wear.ambient.AmbientModeSupport
 import com.example.saloris.databinding.FragmentExerciseBinding
+import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
@@ -48,7 +56,12 @@ import kotlin.math.roundToInt
  * Fragment showing the exercise controls and current exercise metrics.
  */
 @AndroidEntryPoint
-class ExerciseFragment : Fragment() {
+class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
+    DataClient.OnDataChangedListener,
+    MessageClient.OnMessageReceivedListener,
+    CapabilityClient.OnCapabilityChangedListener {
+    //message
+
 
     @Inject
     lateinit var healthServicesManager: HealthServicesManager
@@ -68,7 +81,7 @@ class ExerciseFragment : Fragment() {
 
     private lateinit var ambientController: AmbientModeSupport.AmbientController
     private lateinit var ambientModeHandler: AmbientModeHandler
-
+    private lateinit var serviceIt : Intent
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +93,8 @@ class ExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        serviceIt = Intent(activity, NetWorking::class.java)
+        activity?.startService(serviceIt)
 
         binding.startEndButton.setOnClickListener {
             // App could take a perceptible amount of time to transition between states; put button into
@@ -102,9 +117,6 @@ class ExerciseFragment : Fragment() {
 
                 // Set enabled state for relevant text elements.
                 binding.heartRateText.isEnabled = DataType.HEART_RATE_BPM in supportedTypes
-                //binding.caloriesText.isEnabled = DataType.CALORIES_TOTAL in supportedTypes
-                //binding.distanceText.isEnabled = DataType.DISTANCE in supportedTypes
-                //binding.lapsText.isEnabled = true
             }
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.keyPressFlow.collect {
@@ -186,11 +198,6 @@ class ExerciseFragment : Fragment() {
                         it?.let { updateMetrics(it) }
                     }
                 }
-//                launch {
-//                    service.exerciseLaps.collect {
-//                        updateLaps(it)
-//                    }
-//                }
                 launch {
                     service.activeDurationCheckpoint.collect {
                         // We don't update the chronometer here since these updates come at irregular
@@ -236,23 +243,59 @@ class ExerciseFragment : Fragment() {
         latestMetrics.getData(DataType.HEART_RATE_BPM).let {
             if (it.isNotEmpty()) {
                 binding.heartRateText.text = it.last().value.roundToInt().toString()
-                Log.d("Heart Rate",it.last().value.roundToInt().toString())
+                Log.d("Heart Rate", it.last().value.roundToInt().toString())
                 val heart_rate_value = it.last().value.roundToInt().toString()
-                //TODO : send heartrate
-
+                serviceIt.putExtra("heartRate",heart_rate_value)
+                activity?.startService(serviceIt)
             }
         }
-//        latestMetrics.getData(DataType.DISTANCE_TOTAL)?.let {
-//            binding.distanceText.text = formatDistanceKm(it.total)
-//        }
-//        latestMetrics.getData(DataType.CALORIES_TOTAL)?.let {
-//            binding.caloriesText.text = formatCalories(it.total)
-//        }
-    }
 
-//    private fun updateLaps(laps: Int) {
-//        binding.lapsText.text = laps.toString()
-//    }
+    }
+    fun sendmessagetophone(num : String){
+        if (mobileDeviceConnected) {
+            if (binding.heartRateText.text!!.isNotEmpty()) {
+
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                // Set the data of the message to be the bytes of the Uri.
+                val payload: ByteArray =
+                    binding.heartRateText.text.toString().toByteArray()
+
+                // Send the rpc
+                // Instantiates clients without member variables, as clients are inexpensive to
+                // create. (They are cached and shared between GoogleApi instances.)
+                val sendMessageTask =
+                    Wearable.getMessageClient(activityContext!!)
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+
+                binding.connect.visibility = View.GONE
+
+                sendMessageTask.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.d("send1", "Message sent successfully")
+                        val sbTemp = StringBuilder()
+                        sbTemp.append("\n")
+                        sbTemp.append(binding.heartRateText.text.toString())
+                        sbTemp.append(" (Sent to mobile)")
+                        Log.d("receive1", " $sbTemp")
+                        //binding.messagelogTextView.append(sbTemp)
+
+//                        binding.scrollviewTextMessageLog.requestFocus()
+//                        binding.scrollviewTextMessageLog.post {
+//                            binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
+//                        }
+                    } else {
+                        Log.d("send1", "Message failed.")
+                    }
+                }
+            } else {
+                Toast.makeText(
+                    activityContext,
+                    "Message content is empty. Please enter some message and proceed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
     private fun startChronometer() {
         if (chronoTickJob == null) {
@@ -273,9 +316,6 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun updateChronometer() {
-        // We update the chronometer on our own regular intervals independent of the exercise
-        // duration value received. If the exercise is still active, add the difference between
-        // the last duration update and now.
         val duration = activeDurationCheckpoint.displayDuration(Instant.now(), cachedExerciseState)
         binding.elapsedTime.text = formatElapsedTime(duration, !ambientController.isAmbient)
     }
@@ -283,9 +323,6 @@ class ExerciseFragment : Fragment() {
     private fun resetDisplayedFields() {
         getString(R.string.empty_metric).let {
             binding.heartRateText.text = it
-            //binding.caloriesText.text = it
-            //binding.distanceText.text = it
-            //binding.lapsText.text = it
         }
         binding.elapsedTime.text = formatElapsedTime(Duration.ZERO, true)
     }
@@ -302,9 +339,6 @@ class ExerciseFragment : Fragment() {
         ColorStateList.valueOf(iconTint).let {
             binding.clockIcon.imageTintList = it
             binding.heartRateIcon.imageTintList = it
-            //binding.caloriesIcon.imageTintList = it
-            //binding.distanceIcon.imageTintList = it
-            //binding.lapsIcon.imageTintList = it
         }
 
         // Hide the buttons in ambient mode.
@@ -320,7 +354,6 @@ class ExerciseFragment : Fragment() {
             "Failed to achieve ExerciseService instance"
         }
         updateExerciseStatus(service.exerciseState.value)
-        //updateLaps(service.exerciseLaps.value)
 
         service.latestMetrics.value?.let { updateMetrics(it) }
 
@@ -358,4 +391,163 @@ class ExerciseFragment : Fragment() {
     private companion object {
         const val CHRONO_TICK_MS = 200L
     }
+
+    override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()
+
+    private inner class MyAmbientCallback : AmbientModeSupport.AmbientCallback() {
+        override fun onEnterAmbient(ambientDetails: Bundle) {
+            super.onEnterAmbient(ambientDetails)
+        }
+
+        override fun onUpdateAmbient() {
+            super.onUpdateAmbient()
+        }
+
+        override fun onExitAmbient() {
+            super.onExitAmbient()
+        }
+    }
+
+    override fun onDataChanged(p0: DataEventBuffer) {
+        TODO("Not yet implemented")
+    }
+
+    private val TAG_MESSAGE_RECEIVED = "receive1"
+    private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
+    private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
+    private var activityContext: Context? = null
+    private var messageEvent: MessageEvent? = null
+    private var mobileNodeUri: String? = null
+    private var mobileDeviceConnected: Boolean = false
+    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
+
+    override fun onMessageReceived(p0: MessageEvent) {
+        Log.d("message","message recieved")
+        try {
+            Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived event received")
+            val s1 = String(p0.data, StandardCharsets.UTF_8)
+            val messageEventPath: String = p0.path
+
+            Log.d(
+                TAG_MESSAGE_RECEIVED,
+                "onMessageReceived() A message from watch was received:"
+                        + p0.requestId
+                        + " "
+                        + messageEventPath
+                        + " "
+                        + s1
+            )
+
+            //Send back a message back to the source node
+            //This acknowledges that the receiver activity is open
+            if (messageEventPath.isNotEmpty() && messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
+                Log.d("message","connecting")
+                try {
+                    // Get the node id of the node that created the data item from the host portion of
+                    // the uri.
+                    val nodeId: String = p0.sourceNodeId.toString()
+                    // Set the data of the message to be the bytes of the Uri.
+                    val returnPayloadAck = wearableAppCheckPayloadReturnACK
+                    val payload: ByteArray = returnPayloadAck.toByteArray()
+
+                    // Send the rpc
+                    // Instantiates clients without member variables, as clients are inexpensive to
+                    // create. (They are cached and shared between GoogleApi instances.)
+                    val sendMessageTask =
+                        Wearable.getMessageClient(activityContext!!)
+                            .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
+
+                    Log.d(
+                        TAG_MESSAGE_RECEIVED,
+                        "Acknowledgement message successfully with payload : $returnPayloadAck"
+                    )
+
+                    messageEvent = p0
+                    mobileNodeUri = p0.sourceNodeId
+
+                    sendMessageTask.addOnCompleteListener {
+                        Log.d("message","send to mobile")
+                        if (it.isSuccessful) {
+                            Log.d(TAG_MESSAGE_RECEIVED, "Message sent successfully")
+                            //binding.messagelogTextView.visibility = View.VISIBLE
+
+                            val sbTemp = StringBuilder()
+                            sbTemp.append("\nMobile device connected.")
+                            Log.d("receive1", " $sbTemp")
+                            //binding.messagelogTextView.append(sbTemp)
+
+                            mobileDeviceConnected = true
+
+                            //binding.textInputLayout.visibility = View.VISIBLE
+                            //binding.add.visibility = View.VISIBLE
+                            binding.connect.visibility = View.VISIBLE
+                            binding.connect.text = "Mobile device is connected"
+                        } else {
+                            Log.d(TAG_MESSAGE_RECEIVED, "Message failed.")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.d(
+                        TAG_MESSAGE_RECEIVED,
+                        "Handled in sending message back to the sending node"
+                    )
+                    e.printStackTrace()
+                }
+            }//emd of if
+            else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
+                try {
+                    //.messagelogTextView.visibility = View.VISIBLE
+                    //binding.textInputLayout.visibility = View.VISIBLE
+                    //binding.add.visibility = View.VISIBLE
+                    binding.connect.visibility = View.GONE
+
+                    val sbTemp = StringBuilder()
+                    sbTemp.append("\n")
+                    sbTemp.append(s1)
+                    sbTemp.append(" - (Received from mobile)")
+                    Log.d("receive1", " $sbTemp")
+//                    binding.messagelogTextView.append(sbTemp)
+//
+//
+//                    binding.scrollviewTextMessageLog.requestFocus()
+//                    binding.scrollviewTextMessageLog.post {
+//                        binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
+//                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            Log.d(TAG_MESSAGE_RECEIVED, "Handled in onMessageReceived")
+            e.printStackTrace()
+        }
+    }
+
+    override fun onCapabilityChanged(p0: CapabilityInfo) {
+        TODO("Not yet implemented")
+    }
+    override fun onPause() {
+        super.onPause()
+        try {
+            Wearable.getDataClient(activityContext!!).removeListener(this)
+            Wearable.getMessageClient(activityContext!!).removeListener(this)
+            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        try {
+            Wearable.getDataClient(activityContext!!).addListener(this)
+            Wearable.getMessageClient(activityContext!!).addListener(this)
+            Wearable.getCapabilityClient(activityContext!!)
+                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
+
