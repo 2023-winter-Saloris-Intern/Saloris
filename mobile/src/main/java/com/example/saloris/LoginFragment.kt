@@ -142,7 +142,7 @@ class LoginFragment : Fragment() {
 
         binding.btnFindPassword.setOnClickListener {
             toast.makeToast(requireContext(), "비밀번호 찾기 버튼")
-            //navController.navigate(R.id.action_loginFragment_to_findPasswordFragment)
+            navController.navigate(R.id.action_loginFragment_to_findPasswordFragment)
         }
     }
 
