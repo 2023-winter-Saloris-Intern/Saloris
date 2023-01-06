@@ -18,8 +18,6 @@ class ScanFragment : Fragment() {
     val wachInfo= mutableListOf<WachInfo>()
     val WatchListAdapter=WatchListAdapter(wachInfo)
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
