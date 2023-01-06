@@ -61,12 +61,12 @@ class AccountFragment : Fragment() {
         binding.userName.text = auth.currentUser!!.displayName
         binding.userId.text = auth.currentUser!!.email
 
-        // 로그아웃 -> 로그인 화면
-        binding.btnLogout.setOnClickListener {
-            auth.signOut()
-            deleteAutoLoginInfo()
-            navController.navigate(R.id.action_accountFragment_to_loginStartFragment)
-        }
+//        // 로그아웃 -> 로그인 화면
+//        binding.btnLogout.setOnClickListener {
+//            auth.signOut()
+//            deleteAutoLoginInfo()
+//            navController.navigate(R.id.action_accountFragment_to_loginStartFragment)
+//        }
 
         // 회원탈퇴 -> 로그인 화면
         binding.btnAccountRemoval.setOnClickListener {

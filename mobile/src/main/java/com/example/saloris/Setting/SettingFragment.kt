@@ -71,5 +71,8 @@ class SettingFragment : Fragment() {
         binding.btnHelp.setOnClickListener {
             navController.navigate(R.id.action_settingFragment_to_helpFragment)
         }
+        binding.btnAccountSettings.setOnClickListener {
+            navController.navigate(R.id.action_settingFragment_to_accountFragment)
+        }
     }
 }
