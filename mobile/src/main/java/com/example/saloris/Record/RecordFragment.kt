@@ -29,8 +29,17 @@ class RecordFragment : Fragment() {
 //            loadFragment(ScanFragment())
 //        }
 
+        // clickevent로 수정 필요!
         binding.dateChoiceBtn.setOnClickListener {
-
+            var btn = R.id.date_picker
+            if (it.visibility == View.VISIBLE)
+            {
+                binding.datePicker.setVisibility(View.VISIBLE);
+            }
+            else if (it.visibility == View.GONE)
+            {
+                binding.datePicker.setVisibility(View.GONE);
+            }
         }
 
 

@@ -46,18 +46,20 @@ tools:context=".Setting.SettingFragment">
             android:layout_marginLeft="5dp"
             android:src="@drawable/ic_outline_expand_circle_down_24"
             android:background="@color/white"
+            android:clickable="true"
             android:id="@+id/date_choice_btn"/>
 
     </LinearLayout>
 
     <DatePicker
+        android:id="@+id/date_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:datePickerMode="calendar"
         android:layout_marginTop="20dp"
         android:calendarTextColor="@color/black"
-        android:visibility="invisible"/>
+        android:datePickerMode="calendar"
+        android:visibility="invisible" />
 
 </LinearLayout>
 
