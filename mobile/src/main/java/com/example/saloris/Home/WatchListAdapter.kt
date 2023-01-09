@@ -31,7 +31,7 @@ class WatchListAdapter(val watchInfo:MutableList<WachInfo>): RecyclerView.Adapte
 //        binding.potLocationImg.setImageResource(R.drawable.study)
 //        binding.petsitterImg.setImageResource(R.drawable.example1)
         binding.watchUserName.text=watchInfo[position].watchUserName
-        binding.watchKind.text=watchInfo[position].watchKind
+        //binding.watchKind.text=watchInfo[position].watchKind
 
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it, position)

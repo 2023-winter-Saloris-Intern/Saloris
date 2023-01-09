@@ -11,20 +11,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <ToggleButton
+            android:id="@+id/device_scan_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textOff="@string/scan"
+            android:textOn="@string/scanning"/>
+
+        <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/device_scan_card"
             android:layout_width="350dp"
             android:layout_height="224dp"
-            android:layout_marginTop="40dp"
             android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            app:cardElevation="5dp"
-            app:cardCornerRadius="40dp"
-            app:cardBackgroundColor="@color/purple_700"
+            android:layout_marginTop="40dp"
             android:clickable="true"
-            android:id="@+id/device_scan_btn">
+            android:padding="10dp"
+            app:cardBackgroundColor="@color/purple_700"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="5dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -37,23 +43,24 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:layout_marginLeft="30dp"
-                        android:textColor="@color/white"
+                        android:layout_marginTop="20dp"
                         android:fontFamily="@font/notosans_kr_bold"
-                        android:textSize="22dp"
-                        android:text="000"/>
+                        android:text="000"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:textColor="@color/white"
                         android:fontFamily="@font/notosans_kr_bold"
-                        android:textSize="22dp"
-                        android:text=" 님"/>
+                        android:text=" 님"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
 
                 </LinearLayout>
 
@@ -67,17 +74,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="40dp"
                         android:layout_marginTop="5dp"
-                        android:textColor="@color/white"
                         android:fontFamily="@font/notosans_kr_bold"
-                        android:textSize="22dp"
-                        android:text="기기 스캔"/>
+                        android:text="기기 스캔"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/device_scan_img_btn"
+                        android:layout_marginBottom="30dp"
                         android:scaleType="centerCrop"
-                        android:layout_marginBottom="30dp"/>
+                        android:src="@drawable/device_scan_img_btn" />
 
                 </LinearLayout>
 
@@ -88,16 +95,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/notosans_kr_bold"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:text="기기 목록"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/notosans_kr_bold"
+            android:text="기기 목록"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
 
-        <FrameLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -109,7 +115,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="25dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                tools:listitem="@layout/item_list"/>
 
         </FrameLayout>
 

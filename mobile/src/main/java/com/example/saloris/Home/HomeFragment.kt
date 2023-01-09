@@ -21,8 +21,6 @@ import com.google.firebase.ktx.Firebase
 import com.example.saloris.util.MakeToast
 
 class HomeFragment : Fragment() {
-//    private var _binding: FragmentHomeBinding? = null
-//    private val binding get() = _binding!!
     private lateinit var binding: FragmentHomeBinding
     private lateinit var navController: NavController
 
