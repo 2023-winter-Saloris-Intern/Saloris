@@ -40,8 +40,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.wear.ambient.AmbientModeSupport
 import com.example.saloris.databinding.FragmentExerciseBinding
+//import com.example.saloris.databinding.FragmentExerciseBinding
 import com.google.android.gms.wearable.*
-import com.google.android.gms.wearable.R
+//import com.google.android.gms.wearable.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -162,7 +163,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         viewLifecycleOwner.lifecycleScope.launch {
             if (healthServicesManager.isTrackingExerciseInAnotherApp()) {
                 // Show the user a confirmation screen.
-                findNavController().navigate(R.id.to_newExerciseConfirmation)
+                //findNavController().navigate(R.id.to_newExerciseConfirmation)
             } else if (!healthServicesManager.isExerciseInProgress()) {
                 checkNotNull(serviceConnection.exerciseService) {
                     "Failed to achieve ExerciseService instance"
@@ -233,9 +234,9 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     }
 
     private fun updateButtons(state: ExerciseState) {
-        binding.startEndButton.setText(if (state.isEnded) R.string.start else R.string.end)
+        binding.startEndButton.setText(if (state.isEnded) "시작" else "종료")
         binding.startEndButton.isEnabled = true
-        binding.pauseResumeButton.setText(if (state.isPaused) R.string.resume else R.string.pause)
+        binding.pauseResumeButton.setText(if (state.isPaused) "일시중지" else "다시시작")
         binding.pauseResumeButton.isEnabled = !state.isEnded
     }
 
