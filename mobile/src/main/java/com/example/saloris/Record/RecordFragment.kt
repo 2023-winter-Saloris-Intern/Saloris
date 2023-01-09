@@ -42,10 +42,7 @@ class RecordFragment : Fragment() {
             }
         }
 
-
         return binding.root
     }
-
-
 
 }
