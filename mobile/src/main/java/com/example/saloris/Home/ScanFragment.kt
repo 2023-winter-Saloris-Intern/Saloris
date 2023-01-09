@@ -28,12 +28,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.saloris.BleListAdapter
-import com.example.saloris.R
 import com.example.saloris.databinding.FragmentScanBinding
-import com.example.saloris.databinding.FragmentSettingBinding
-import com.example.saloris.databinding.FragmentWatchConnectListBinding
 import com.example.saloris.util.HEART_RATE_SERVICE_STRING
 import com.example.saloris.util.MakeToast
 import com.example.saloris.util.SCAN_TIME
@@ -226,6 +222,9 @@ class ScanFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentScanBinding.inflate(inflater,container,false)
+        bleListAdapter.bluetoothDevices = scanResults
+        binding.watchListRecyclerview.adapter = bleListAdapter
+        return binding.root
 
 //        wachInfo.add(
 //            WachInfo("R.drawable.watch","000","galaxy Watch 5"))
@@ -241,9 +240,7 @@ class ScanFragment : Fragment() {
 //                //loadFragment(DetailInformationFragment())
 //            }
 //        })
-        bleListAdapter.bluetoothDevices = scanResults
-        binding.watchListRecyclerview.adapter = bleListAdapter
-        return binding.root
+
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
