@@ -28,7 +28,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.saloris.BleListAdapter
+import com.example.saloris.util.ble.BleListAdapter
 import com.example.saloris.databinding.FragmentScanBinding
 import com.example.saloris.util.HEART_RATE_SERVICE_STRING
 import com.example.saloris.util.MakeToast

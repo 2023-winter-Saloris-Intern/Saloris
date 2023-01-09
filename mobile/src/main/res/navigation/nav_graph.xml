@@ -78,7 +78,11 @@
         android:id="@+id/scanFragment"
         android:name="com.example.saloris.Home.ScanFragment"
         android:label="fragment_scan"
-        tools:layout="@layout/fragment_scan" />
+        tools:layout="@layout/fragment_scan" >
+        <action
+            android:id="@+id/action_scanFragment_to_recordFragment"
+            app:destination="@id/recordFragment" />
+    </fragment>
     <fragment
         android:id="@+id/recordFragment"
         android:name="com.example.saloris.Record.RecordFragment"
