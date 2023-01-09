@@ -22,9 +22,9 @@
     <string name="last_measured">Last measured:</string>
     <string name="starting_up">Starting up</string>
     <string name="exercise_not_available">Exercise not available on this device</string>
-    <string name="start">시작</string>
-    <string name="end">종료</string>
-    <string name="pause">일시정지</string>
+    <string name="start">start</string>
+    <string name="end">end</string>
+    <string name="pause">pause</string>
     <string name="resume">RESUME</string>
     <string name="new_exercise_confirmation">An exercise is running in another app. End it and start this one?</string>
     <string name="empty_time">00:00</string>
