@@ -114,7 +114,10 @@
         android:text="@string/start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/guide_v50pct" />
+        app:layout_constraintRight_toLeftOf="@id/guide_v50pct"
+        android:background="@drawable/button_round"
+        android:textColor="@color/white"
+        />
 
     <Button
         android:id="@+id/pause_resume_button"
@@ -127,6 +130,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guide_v50pct"
         app:layout_constraintRight_toRightOf="parent"
-        tools:enabled="true" />
+        tools:enabled="true"
+        android:background="@drawable/button_round"
+        android:textColor="@color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
