@@ -16,7 +16,7 @@
   -->
 
 <resources>
-    <color name="primary_orange">#FF9800</color>
+    <color name="primary_orange">#FF134F</color>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/primary_orange</item>
