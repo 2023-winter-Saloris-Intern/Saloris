@@ -30,9 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.util.ble.BleListAdapter
 import com.example.saloris.databinding.FragmentScanBinding
-import com.example.saloris.util.HEART_RATE_SERVICE_STRING
-import com.example.saloris.util.MakeToast
-import com.example.saloris.util.SCAN_TIME
+import com.example.saloris.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -137,14 +135,17 @@ class ScanFragment : Fragment() {
                 if (device.address == scanResult.address) return
             }
             scanResults.add(result.device)
+            scanResults.distinct()
             bleListAdapter.notifyItemInserted(scanResults.size - 1)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun startScan() {
         val filters: MutableList<ScanFilter> = ArrayList()
         val scanFilter: ScanFilter = ScanFilter.Builder()
-            .setServiceUuid(ParcelUuid(UUID.fromString(HEART_RATE_SERVICE_STRING)))
+            //.setDeviceAddress(MAC_ADDR)
+            //.setServiceUuid(ParcelUuid(UUID.fromString(WATCH_STRING)))
             .build()
         val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER).build()
         scanResults.clear()
@@ -242,6 +243,7 @@ class ScanFragment : Fragment() {
 //        })
 
     }
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
@@ -253,7 +255,8 @@ class ScanFragment : Fragment() {
             setFirstFalse()
         }
 
-//        binding.userName.text = auth.currentUser!!.displayName
+        binding.userName.text = auth.currentUser!!.displayName
+
         binding.deviceScanBtn.setOnCheckedChangeListener { button, isChecked ->
             if (isChecked) {
                 button.isEnabled = false

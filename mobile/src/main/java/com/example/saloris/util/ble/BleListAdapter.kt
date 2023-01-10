@@ -2,8 +2,10 @@ package com.example.saloris.util.ble
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -16,13 +18,22 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
 
     inner class RecyclerViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @RequiresApi(Build.VERSION_CODES.R)
         @SuppressLint("MissingPermission")
         fun bind(bluetoothDevice: BluetoothDevice) {
             val bleName = bluetoothDevice.name ?: "noname"
             val bleAddress = bluetoothDevice.address
+            val bleClass = bluetoothDevice.bluetoothClass
+            val bleType = bluetoothDevice.type
+            val bleUUID = bluetoothDevice.uuids ?: "nouuid"
+            val ble = bluetoothDevice.bondState
+            println("$bleName: $bleClass: $ble")
+            if (bleName != "noname") {
+                binding.bleName.text = bleName
+                //binding.bleAddress.text = bleAddress
+                binding.bleAddress.text = ble.toString()
+            }
 
-            binding.bleName.text = bleName
-            binding.bleAddress.text = bleAddress
 
             val bundle = bundleOf("name" to bleName, "address" to bleAddress)
 
@@ -38,6 +49,7 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
         return RecyclerViewHolder(binding)
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         holder.bind(bluetoothDevices[position])
     }
