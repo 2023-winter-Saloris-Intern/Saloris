@@ -47,6 +47,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
@@ -248,6 +249,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
                 val heart_rate_value = it.last().value.roundToInt().toString()
                 serviceIt.putExtra("heartRate",heart_rate_value)
                 activity?.startService(serviceIt)
+                sleep(1000)
             }
         }
 

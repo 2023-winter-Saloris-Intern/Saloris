@@ -1,14 +1,19 @@
-package com.example.saloris
+package com.example.saloris.data
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.insert
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.saloris.databinding.ActivityNetworkingBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
@@ -18,7 +23,12 @@ import java.util.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationCompat.WearableExtender
-import com.example.saloris.databinding.ActivityNetworkingBinding
+import androidx.lifecycle.lifecycleScope
+import com.influxdb.client.domain.WritePrecision
+import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
+import com.influxdb.client.write.Point
+import com.influxdb.exceptions.InfluxException
+import java.time.*
 
 class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -41,7 +51,9 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     private var wearableNodeUri: String? = null
 
     private lateinit var binding: ActivityNetworkingBinding
-
+    var Rate = ""
+    var newRate = ""
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,25 +64,31 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         activityContext = this
         wearableDeviceConnected = false
 
+
+        var influxDB = InfluxDB()
         binding.checkwearablesButton.setOnClickListener {
             if (!wearableDeviceConnected) {
-                val tempAct: Activity = activityContext as MainActivity
+                val tempAct: Activity = activityContext as AppCompatActivity
                 //Couroutine
                 initialiseDevicePairing(tempAct)
             }
         }
-
+        //TODO : send to DB button
+        binding.sendToDB.setOnClickListener {
+            Log.d("clicked",newRate)
+            startActivity(Intent(this@Networking,showData::class.java))
+        }
 
 //TODO : send message to wear os
 
         binding.sendmessageButton.setOnClickListener {
             if (wearableDeviceConnected) {
-                if (binding.messagecontentEditText.text!!.isNotEmpty()) {
-
+                if (binding.messagelogTextView.text!!.isNotEmpty()) {
+                    Log.d("send","send button clicked")
                     val nodeId: String = messageEvent?.sourceNodeId!!
                     // Set the data of the message to be the bytes of the Uri.
                     val payload: ByteArray =
-                        binding.messagecontentEditText.text.toString().toByteArray()
+                        "test the send message".toByteArray()
 
                     // Send the rpc
                     // Instantiates clients without member variables, as clients are inexpensive to
@@ -84,9 +102,9 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                             Log.d("send1", "Message sent successfully")
                             val sbTemp = StringBuilder()
                             sbTemp.append("\n")
-                            sbTemp.append(binding.messagecontentEditText.text.toString())
+                            sbTemp.append(binding.messagelogTextView.text.toString())
                             sbTemp.append(" (Sent to Wearable)")
-                            Log.d("receive1", " $sbTemp")
+                            //Log.d("receive1", " $sbTemp")
                             binding.messagelogTextView.append(sbTemp)
 
                             binding.scrollviewText.requestFocus()
@@ -106,6 +124,34 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                 }
             }
         }
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun insertDB(rate: String):Boolean {
+//val token = System.getenv()["INFLUX_TOKEN"]
+        val user="user"
+        val Uid="C"
+        val org = "intern"
+        val bucket = "HeartRate"
+        val token = "kCQhpgwgcQB4H_5Nr4Uf_lFIZjFQkaDA4IeWm5nBmt9WjfpeyIEsdZM95iGaQcx0BMKT0x-sUjHTOKGSApwjrw=="
+        print(System.getenv())
+        val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
+        client.use {
+            val writeApi = client.getWriteKotlinApi()
+            try {
+                val point = Point
+                    .measurement(user)
+                    .addTag("Uid", Uid)
+                    .addField("HeartRate",rate)
+                    .time(Instant.now(), WritePrecision.NS);
+                writeApi.writePoint(point)
+
+            } catch (ie: InfluxException) {
+                Log.e("InfluxException", "Insert: ${ie.cause}")
+                return false
+            }
+        }
+        client.close()
+        return true
     }
 
 
@@ -272,21 +318,22 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onDataChanged(p0: DataEventBuffer) {
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         try {
             val s =
                 String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path
-            Log.d(
-                TAG_MESSAGE_RECEIVED,
-                "onMessageReceived() Received a message from watch:"
-                        + p0.requestId
-                        + " "
-                        + messageEventPath
-                        + " "
-                        + s
-            )
+//            Log.d(
+//                TAG_MESSAGE_RECEIVED,
+//                "onMessageReceived() Received a message from watch:"
+//                        + p0.requestId
+//                        + " "
+//                        + messageEventPath
+//                        + " "
+//                        + s
+//            )
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 currentAckFromWearForAppOpenCheck = s
                 Log.d(
@@ -297,9 +344,9 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                 val sbTemp = StringBuilder()
                 sbTemp.append(binding.messagelogTextView.text.toString())
                 sbTemp.append("\nWearable device connected.")
-                Log.d("receive1", " $sbTemp")
+                //Log.d("receive1", " $sbTemp")
                 binding.messagelogTextView.text = sbTemp
-                binding.textInputLayout.visibility = View.VISIBLE
+                //binding.textInputLayout.visibility = View.VISIBLE
 
                 binding.checkwearablesButton.visibility = View.GONE
                 messageEvent = p0
@@ -308,19 +355,25 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 try {
                     binding.messagelogTextView.visibility = View.VISIBLE
-                    binding.textInputLayout.visibility = View.VISIBLE
+                    //binding.textInputLayout.visibility = View.VISIBLE
                     binding.sendmessageButton.visibility = View.VISIBLE
-
+                    val dateAndTime : LocalDateTime = LocalDateTime.now().minusHours(9)
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s)
-                    sbTemp.append(" - (Received from wearable)")
-                    Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView.append(sbTemp)
-
+                    sbTemp.append( "==="+dateAndTime.toString())
+                    //Log.d("receive1", " $sbTemp")
+                    binding.messagelogTextView.text=sbTemp
+                    newRate = s
                     binding.scrollviewText.requestFocus()
                     binding.scrollviewText.post {
                         binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
+                    }
+                    //TODO : DB로 데이터 전송
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val isInserted = async { insertDB(newRate) }
+                        Log.d("isInserted",newRate)
+                        Log.d("time", dateAndTime.toString())
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -359,7 +412,6 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             e.printStackTrace()
         }
     }
-
 
 
 }

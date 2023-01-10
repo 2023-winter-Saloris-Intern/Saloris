@@ -28,6 +28,10 @@ android {
     compileSdk 33
 
     defaultConfig {
+        //message
+        vectorDrawables.useSupportLibrary = true
+        wearAppUnbundled true
+
         applicationId "com.example.saloris"
         minSdk 30
         targetSdk 30
