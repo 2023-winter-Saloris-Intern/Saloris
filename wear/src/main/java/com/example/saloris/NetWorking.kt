@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
@@ -191,6 +192,16 @@ class NetWorking : WearableListenerService(),
                     sbTemp.append(s1)
                     sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
+                    Log.d("in networiking",s1)
+                    //TODO : add vibrator in networking
+//                    lifecycleScope.launch(Dispatchers.IO) {
+//                        Log.d("vibrator","vibrator")
+//                        var vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+//                        vibrator.vibrate(500)
+//                    }
+
+                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    vibrator.vibrate(1000)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
