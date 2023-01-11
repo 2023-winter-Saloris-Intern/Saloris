@@ -26,12 +26,12 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
             val bleClass = bluetoothDevice.bluetoothClass
             val bleType = bluetoothDevice.type
             val bleUUID = bluetoothDevice.uuids ?: "nouuid"
-            val ble = bluetoothDevice.bondState
-            println("$bleName: $bleClass: $ble")
+            val ble = bluetoothDevice.uuids
+            //println("$bleName: $bleClass: $bleUUID")
             if (bleName != "noname") {
                 binding.bleName.text = bleName
                 //binding.bleAddress.text = bleAddress
-                binding.bleAddress.text = ble.toString()
+                binding.bleAddress.text = bleUUID.toString()
             }
 
 

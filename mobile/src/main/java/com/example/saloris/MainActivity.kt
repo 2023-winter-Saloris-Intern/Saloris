@@ -11,15 +11,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.WindowInsetsControllerCompat
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.fragment.app.Fragment
-import com.example.saloris.Home.HomeFragment
-import com.example.saloris.Record.RecordFragment
-import com.example.saloris.Setting.SettingFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.saloris.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth

@@ -15,10 +15,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.ParcelUuid
 import android.provider.Settings
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,11 +24,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.saloris.util.ble.BleListAdapter
 import com.example.saloris.databinding.FragmentScanBinding
 import com.example.saloris.util.*
+import com.example.saloris.util.ble.BleListAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -115,12 +114,28 @@ class ScanFragment : Fragment() {
     private val scanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
-            addScanResult(result)
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            if (result.device.name != null)
+                addScanResult(result)
         }
 
         override fun onBatchScanResults(results: List<ScanResult>) {
             for (result in results) {
-                addScanResult(result)
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
+                if (result.device.name != null)
+                    addScanResult(result)
             }
         }
 
@@ -135,11 +150,9 @@ class ScanFragment : Fragment() {
                 if (device.address == scanResult.address) return
             }
             scanResults.add(result.device)
-            scanResults.distinct()
             bleListAdapter.notifyItemInserted(scanResults.size - 1)
         }
     }
-
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun startScan() {
         val filters: MutableList<ScanFilter> = ArrayList()
@@ -149,6 +162,9 @@ class ScanFragment : Fragment() {
             .build()
         val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER).build()
         scanResults.clear()
+
+//        val device: BluetoothDevice
+//        device.name
 
         /* Permission */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
