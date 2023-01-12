@@ -62,6 +62,6 @@ tools:context=".Setting.SettingFragment">
         android:headerBackground="@color/white"
         android:visibility="invisible"/>
 
-</LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>

@@ -38,7 +38,7 @@ class RecordFragment : Fragment() {
                 binding.dateChoiceBtn.setImageResource(R.drawable.ic_outline_arrow_circle_up_24)
                 binding.datePicker.setVisibility(View.VISIBLE);
             }
-            else if(it.isActivated)
+            else if(it.isContextClickable)
             {
                 binding.datePicker.setVisibility(View.INVISIBLE);
             }
