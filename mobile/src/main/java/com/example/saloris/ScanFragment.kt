@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.saloris.Home.PartySortDialog1Fragment
 import com.example.saloris.Home.WachInfo
 import com.example.saloris.Home.WatchListAdapter
 import com.example.saloris.databinding.FragmentTempBinding
@@ -191,7 +192,7 @@ class ScanFragment : Fragment() {
 
         /* BLE */
         if (bluetoothAdapter?.isEnabled == true) {
-            filters.add(scanFilter)
+            //filters.add(scanFilter)
             Log.d("State", "Start Scan!")
             bluetoothAdapter?.bluetoothLeScanner?.startScan(filters, settings, scanCallback)
         }
@@ -239,7 +240,14 @@ class ScanFragment : Fragment() {
     ): View {
         binding = FragmentTempBinding.inflate(inflater,container,false)
         bleListAdapter.bluetoothDevices = scanResults
+
         binding.recyclerview.adapter = bleListAdapter
+
+        binding.recyclerview.setOnClickListener {
+            val bottomSheet = PartySortDialog1Fragment()
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+
         return binding.root
 
 //        wachInfo.add(
