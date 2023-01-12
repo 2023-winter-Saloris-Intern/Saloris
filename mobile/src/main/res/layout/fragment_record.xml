@@ -59,7 +59,8 @@ tools:context=".Setting.SettingFragment">
         android:layout_marginTop="20dp"
         android:calendarTextColor="@color/black"
         android:datePickerMode="calendar"
-        android:visibility="invisible" />
+        android:headerBackground="@color/white"
+        android:visibility="invisible"/>
 
 </LinearLayout>
 
