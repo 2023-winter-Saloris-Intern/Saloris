@@ -10,15 +10,13 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.saloris.R
-import com.example.saloris.databinding.ConnectingWatchRecyclerviewBinding
 import com.example.saloris.databinding.ItemListBinding
+
 
 class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>() {
     var bluetoothDevices: ArrayList<BluetoothDevice> = ArrayList()
-
     inner class RecyclerViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        @RequiresApi(Build.VERSION_CODES.R)
         @SuppressLint("MissingPermission")
         fun bind(bluetoothDevice: BluetoothDevice) {
             val bleName = bluetoothDevice.name ?: "noname"
@@ -34,7 +32,6 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
                 binding.bleAddress.text = bleUUID.toString()
             }
 
-
             val bundle = bundleOf("name" to bleName, "address" to bleAddress)
 
             binding.root.setOnClickListener {
@@ -45,13 +42,12 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
         return RecyclerViewHolder(binding)
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        holder.bind(bluetoothDevices[position])
+        var safePosition = holder.bindingAdapterPosition
+        holder.bind(bluetoothDevices[safePosition])
     }
 
     override fun getItemCount(): Int {

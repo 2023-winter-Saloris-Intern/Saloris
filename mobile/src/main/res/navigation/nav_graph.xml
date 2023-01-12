@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/scanFragment"
-        android:name="com.example.saloris.Home.ScanFragment"
+        android:name="com.example.saloris.ScanFragment"
         android:label="fragment_scan"
         tools:layout="@layout/fragment_scan" >
         <action

@@ -1,4 +1,4 @@
-package com.example.saloris.Home
+package com.example.saloris
 
 import android.Manifest
 import android.app.Activity
@@ -15,6 +15,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.ParcelUuid
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,7 +28,9 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.saloris.databinding.FragmentScanBinding
+import com.example.saloris.Home.WachInfo
+import com.example.saloris.Home.WatchListAdapter
+import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.util.*
 import com.example.saloris.util.ble.BleListAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -39,7 +42,7 @@ import kotlin.concurrent.schedule
 class ScanFragment : Fragment() {
     /* View */
     private lateinit var navController: NavController
-    private lateinit var binding: FragmentScanBinding
+    private lateinit var binding: FragmentTempBinding
 
     /* Toast */
     private val toast = MakeToast()
@@ -151,20 +154,16 @@ class ScanFragment : Fragment() {
             }
             scanResults.add(result.device)
             bleListAdapter.notifyItemInserted(scanResults.size - 1)
+            println(scanResults)
         }
     }
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun startScan() {
         val filters: MutableList<ScanFilter> = ArrayList()
         val scanFilter: ScanFilter = ScanFilter.Builder()
-            //.setDeviceAddress(MAC_ADDR)
-            //.setServiceUuid(ParcelUuid(UUID.fromString(WATCH_STRING)))
+            .setServiceUuid(ParcelUuid(UUID.fromString(HEART_RATE_SERVICE_STRING)))
             .build()
         val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER).build()
         scanResults.clear()
-
-//        val device: BluetoothDevice
-//        device.name
 
         /* Permission */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -238,9 +237,9 @@ class ScanFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentScanBinding.inflate(inflater,container,false)
+        binding = FragmentTempBinding.inflate(inflater,container,false)
         bleListAdapter.bluetoothDevices = scanResults
-        binding.watchListRecyclerview.adapter = bleListAdapter
+        binding.recyclerview.adapter = bleListAdapter
         return binding.root
 
 //        wachInfo.add(
@@ -259,7 +258,6 @@ class ScanFragment : Fragment() {
 //        })
 
     }
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
@@ -271,7 +269,7 @@ class ScanFragment : Fragment() {
             setFirstFalse()
         }
 
-        binding.userName.text = auth.currentUser!!.displayName
+        //binding.userName.text = auth.currentUser!!.displayName
 
         binding.deviceScanBtn.setOnCheckedChangeListener { button, isChecked ->
             if (isChecked) {
