@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.saloris.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class PartySortDialog1Fragment() : DialogFragment() {
+class WatchConnectDialog1Fragment() : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -28,8 +28,8 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.saloris.Home.PartySortDialog1Fragment
 import com.example.saloris.Home.WachInfo
+import com.example.saloris.Home.WatchConnectDialog1Fragment
 import com.example.saloris.Home.WatchListAdapter
 import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.util.*
@@ -161,7 +161,7 @@ class ScanFragment : Fragment() {
     private fun startScan() {
         val filters: MutableList<ScanFilter> = ArrayList()
         val scanFilter: ScanFilter = ScanFilter.Builder()
-            .setServiceUuid(ParcelUuid(UUID.fromString(HEART_RATE_SERVICE_STRING)))
+//            .setServiceUuid(ParcelUuid(UUID.fromString(HEART_RATE_SERVICE_STRING)))
             .build()
         val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER).build()
         scanResults.clear()
@@ -244,8 +244,8 @@ class ScanFragment : Fragment() {
         binding.recyclerview.adapter = bleListAdapter
 
         binding.recyclerview.setOnClickListener {
-            val bottomSheet = PartySortDialog1Fragment()
-            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+            val dialog1Fragment = WatchConnectDialog1Fragment()
+            dialog1Fragment.show(childFragmentManager, dialog1Fragment.tag)
         }
 
         return binding.root

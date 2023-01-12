@@ -47,77 +47,90 @@
             android:textSize="34dp"
             android:text="안녕하세요:)" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="350dp"
-            android:layout_height="224dp"
-            android:layout_marginTop="60dp"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            app:cardElevation="5dp"
-            app:cardCornerRadius="40dp"
-            app:cardBackgroundColor="@color/purple_500"
-            android:clickable="true"
-            android:id="@+id/device_scan_btn">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/user_name2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginLeft="30dp"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/notosans_kr_bold"
-                        android:textSize="22dp"
-                        android:text="000"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/notosans_kr_bold"
-                        android:textSize="22dp"
-                        android:text=" 님"/>
-
-                </LinearLayout>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/device_scan_btn"
+                android:layout_width="340dp"
+                android:layout_height="225dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:clickable="true"
+                android:padding="10dp"
+                app:cardBackgroundColor="@color/purple_500"
+                app:cardCornerRadius="40dp"
+                app:cardElevation="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/notosans_kr_bold"
-                        android:textSize="22dp"
-                        android:text="기기 연결"/>
+                        android:orientation="horizontal">
 
-                    <ImageView
+                        <TextView
+                            android:id="@+id/user_name2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/notosans_kr_bold"
+                            android:text="000"
+                            android:textColor="@color/white"
+                            android:textSize="22dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/notosans_kr_bold"
+                            android:text=" 님"
+                            android:textColor="@color/white"
+                            android:textSize="22dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="160dp"
-                        android:layout_marginBottom="30dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/device_connect_img_btn" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="40dp"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/notosans_kr_bold"
+                            android:text="기기 연결"
+                            android:textColor="@color/white"
+                            android:textSize="22dp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="160dp"
+                            android:layout_marginBottom="30dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/device_connect_img_btn" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-        </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

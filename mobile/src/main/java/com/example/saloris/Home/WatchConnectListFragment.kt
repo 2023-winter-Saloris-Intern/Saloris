@@ -59,6 +59,11 @@ class WatchConnectListFragment : Fragment() {
 
         })
 
+        binding.watchListRecyclerview.setOnClickListener {
+            val bottomSheet = WatchConnectDialog1Fragment()
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+
 //        binding.fab.setOnClickListener {
 //            val intent = Intent(getActivity(), PartyOpenActivity::class.java)
 //            startActivity(intent)
