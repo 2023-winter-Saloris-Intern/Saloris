@@ -22,32 +22,32 @@
     android:padding="@dimen/default_padding"
     tools:deviceIds="wear">
 
-    <ImageView
-        android:id="@+id/clock_icon"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:layout_marginEnd="@dimen/space_4dp"
-        android:contentDescription="@null"
-        app:layout_constraintBottom_toBottomOf="@id/elapsed_time"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/elapsed_time"
-        app:layout_constraintTop_toTopOf="@id/elapsed_time"
-        app:srcCompat="@drawable/ic_clock"
-        app:tint="?colorControlActivated" />
+<!--    <ImageView-->
+<!--        android:id="@+id/clock_icon"-->
+<!--        android:layout_width="@dimen/icon_size"-->
+<!--        android:layout_height="@dimen/icon_size"-->
+<!--        android:layout_marginEnd="@dimen/space_4dp"-->
+<!--        android:contentDescription="@null"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/elapsed_time"-->
+<!--        app:layout_constraintHorizontal_chainStyle="packed"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="@id/elapsed_time"-->
+<!--        app:layout_constraintTop_toTopOf="@id/elapsed_time"-->
+<!--        app:srcCompat="@drawable/ic_clock"-->
+<!--        app:tint="?colorControlActivated" />-->
 
-    <TextView
-        android:id="@+id/elapsed_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        android:text="@string/empty_time"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintBottom_toTopOf="@id/heart_rate_text"
-        app:layout_constraintLeft_toRightOf="@id/clock_icon"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+<!--    <TextView-->
+<!--        android:id="@+id/elapsed_time"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:lines="1"-->
+<!--        android:text="@string/empty_time"-->
+<!--        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/heart_rate_text"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/clock_icon"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_chainStyle="packed" />-->
 
 
 
@@ -58,52 +58,78 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".5" />
 
+    <!--    <TextView-->
+<!--        android:id="@+id/connect"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="center"-->
+<!--        android:scrollbars="vertical"-->
+<!--        android:text="mobile device is not connected"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="10sp"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guide_v50pct"-->
+<!--        app:layout_constraintHorizontal_bias="0.481"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guide_v50pct"-->
+<!--        tools:ignore="MissingConstraints,SmallSp"-->
+<!--        tools:layout_editor_absoluteY="7dp" />-->
+
     <ImageView
         android:id="@+id/heart_rate_icon"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:layout_marginStart="68dp"
+        android:layout_width="56dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="10dp"
         android:contentDescription="@null"
-        app:layout_constraintBottom_toBottomOf="@id/heart_rate_text"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@id/text_heart_rate"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/heart_rate_text"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintRight_toRightOf="parent"
         app:srcCompat="@drawable/ic_heart_outline"
-        app:tint="?colorControlActivated" />
-
+        app:tint="?colorControlActivated"
+        />
     <TextView
-        android:id="@+id/heart_rate_text"
-        android:layout_width="0dp"
+        android:id="@+id/text_heart_rate"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="심박수"
+    android:textSize="20dp"
+    android:textColor="@color/white"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toTopOf="@id/heart_rate_bpm"
+    android:layout_marginBottom="8dp"
+    />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/heart_rate_bpm"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/space_4dp"
-        android:layout_marginLeft="72dp"
-        android:layout_marginTop="44dp"
-        android:enabled="false"
-        android:gravity="center_vertical"
-        android:minHeight="32dp"
-        android:text="@string/empty_metric"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        app:layout_constraintLeft_toRightOf="@id/heart_rate_icon"
-        app:layout_constraintTop_toBottomOf="@id/elapsed_time"
-        tools:enabled="true"
-        tools:text="165" />
+        tools:ignore="MissingConstraints"
+        app:layout_constraintBottom_toTopOf="@id/start_end_button"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-    <TextView
-        android:id="@+id/connect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:scrollbars="vertical"
-        android:text="mobile device is not connected"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/guide_v50pct"
-        app:layout_constraintHorizontal_bias="0.481"
-        app:layout_constraintStart_toStartOf="@+id/guide_v50pct"
-        tools:ignore="MissingConstraints,SmallSp"
-        tools:layout_editor_absoluteY="39dp" />
+        <TextView
+            android:id="@+id/heart_rate_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_metric"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textSize="30dp"
+            tools:enabled="true"
+            tools:ignore="MissingConstraints"
+            tools:text="165" />
+
+        <TextView
+            android:id="@+id/bpm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:text="BPM"
+            android:textSize="20dp"
+            tools:ignore="MissingConstraints" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <Button
         android:id="@+id/start_end_button"
