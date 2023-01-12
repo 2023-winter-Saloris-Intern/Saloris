@@ -270,7 +270,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
                     Wearable.getMessageClient(activityContext!!)
                         .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
-                binding.connect.visibility = View.GONE
+                //binding.connect.visibility = View.GONE
 
                 sendMessageTask.addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -320,14 +320,14 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
 
     private fun updateChronometer() {
         val duration = activeDurationCheckpoint.displayDuration(Instant.now(), cachedExerciseState)
-        binding.elapsedTime.text = formatElapsedTime(duration, !ambientController.isAmbient)
+        //binding.elapsedTime.text = formatElapsedTime(duration, !ambientController.isAmbient)
     }
 
     private fun resetDisplayedFields() {
         getString(R.string.empty_metric).let {
             binding.heartRateText.text = it
         }
-        binding.elapsedTime.text = formatElapsedTime(Duration.ZERO, true)
+        //binding.elapsedTime.text = formatElapsedTime(Duration.ZERO, true)
     }
 
     // -- Ambient Mode support
@@ -340,7 +340,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
             resources.getColor(R.color.primary_orange, null)
         }
         ColorStateList.valueOf(iconTint).let {
-            binding.clockIcon.imageTintList = it
+            //binding.clockIcon.imageTintList = it
             binding.heartRateIcon.imageTintList = it
         }
 
@@ -483,8 +483,8 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
 
                             //binding.textInputLayout.visibility = View.VISIBLE
                             //binding.add.visibility = View.VISIBLE
-                            binding.connect.visibility = View.VISIBLE
-                            binding.connect.text = "Mobile device is connected"
+                           // binding.connect.visibility = View.VISIBLE
+                            //binding.connect.text = "Mobile device is connected"
                         } else {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message failed.")
                         }
@@ -502,7 +502,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
                     //.messagelogTextView.visibility = View.VISIBLE
                     //binding.textInputLayout.visibility = View.VISIBLE
                     //binding.add.visibility = View.VISIBLE
-                    binding.connect.visibility = View.GONE
+                    //binding.connect.visibility = View.GONE
 
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
