@@ -192,7 +192,7 @@ class ScanFragment : Fragment() {
 
         /* BLE */
         if (bluetoothAdapter?.isEnabled == true) {
-            filters.add(scanFilter)
+            //filters.add(scanFilter)
             Log.d("State", "Start Scan!")
             bluetoothAdapter?.bluetoothLeScanner?.startScan(filters, settings, scanCallback)
         }
@@ -241,6 +241,12 @@ class ScanFragment : Fragment() {
         binding = FragmentScanBinding.inflate(inflater,container,false)
         bleListAdapter.bluetoothDevices = scanResults
         binding.watchListRecyclerview.adapter = bleListAdapter
+
+        binding.watchListRecyclerview.setOnClickListener {
+            val bottomSheet = PartySortDialog1Fragment()
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+
         return binding.root
 
 //        wachInfo.add(
