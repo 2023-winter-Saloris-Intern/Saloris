@@ -1,6 +1,7 @@
 package com.example.saloris.Record
 
 import android.os.Bundle
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,13 +33,14 @@ class RecordFragment : Fragment() {
         // clickevent로 수정 필요!
         binding.dateChoiceBtn.setOnClickListener {
             var datePicker = R.id.date_picker
-            if (it.visibility == View.VISIBLE)
+            if (it.isClickable)
             {
+                binding.dateChoiceBtn.setImageResource(R.drawable.ic_outline_arrow_circle_up_24)
                 binding.datePicker.setVisibility(View.VISIBLE);
             }
-            else
+            else if(it.isActivated)
             {
-                binding.datePicker.setVisibility(View.GONE);
+                binding.datePicker.setVisibility(View.INVISIBLE);
             }
         }
 
