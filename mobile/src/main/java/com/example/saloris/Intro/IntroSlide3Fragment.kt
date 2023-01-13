@@ -15,9 +15,9 @@ class IntroSlide3Fragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var navController: NavController
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
 
@@ -26,12 +26,12 @@ class IntroSlide3Fragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
-
-        binding.startBtn.setOnClickListener {
-            navController.navigate(R.id.action_homeFragment_to_scanFragment)
-        }
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        navController = Navigation.findNavController(view)
+//
+//        binding.startBtn.setOnClickListener {
+//            navController.navigate(R.id.action_homeFragment_to_scanFragment)
+//        }
+//    }
 }
