@@ -75,7 +75,7 @@ class SettingFragment : Fragment() {
             navController.navigate(R.id.action_settingFragment_to_accountFragment)
         }
         binding.test.setOnClickListener {
-            navController.navigate(R.id.action_settingFragment_to_ImageSlideFragment)
+            navController.navigate(R.id.action_settingFragment_to_IntroSlideFragment)
         }
     }
 }

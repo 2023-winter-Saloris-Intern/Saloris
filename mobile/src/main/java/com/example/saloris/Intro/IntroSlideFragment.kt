@@ -37,10 +37,16 @@ class IntroSlideFragment() : Fragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                 }
-            })
+            }) //ViewPager, TabLayout 연결
+//        TabLayoutMediator(binding.tapLayoutIntro, binding.sliderViewPager) { tab, position ->
+//            Log.e("YMC", "ViewPager position: ${position}")
+//            when (position) {
+//                0 -> tab.text = "Tab1"
+//                1 -> tab.text = "Tab2"
+//                2 -> tab.text = "Tab3"
+//            }
+//        }.attach()
         }
-
-        //ViewPager, TabLayout 연결
         TabLayoutMediator(binding.tapLayoutIntro, binding.sliderViewPager) { tab, position ->
             Log.e("YMC", "ViewPager position: ${position}")
             when (position) {
