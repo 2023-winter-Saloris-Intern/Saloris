@@ -1,20 +1,28 @@
 package com.example.saloris.util.ble
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.saloris.MainActivity
 import com.example.saloris.R
+import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.databinding.ItemListBinding
+import com.example.saloris.util.CustomDialog
+import com.example.saloris.util.OpenDialog
 
 
 class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>() {
     var bluetoothDevices: ArrayList<BluetoothDevice> = ArrayList()
+
+    /* Dialog */
+    private val dialog = OpenDialog()
+
     inner class RecyclerViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("MissingPermission")
@@ -35,7 +43,12 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
             val bundle = bundleOf("name" to bleName, "address" to bleAddress)
 
             binding.root.setOnClickListener {
-                it.findNavController().navigate(R.id.action_scanFragment_to_recordFragment, bundle)
+                it.findNavController().navigate(R.id.action_scanFragment_to_startDriveFragment, bundle)
+//                val builder = AlertDialog.Builder(requireContext())
+//                builder.setTitle("기기")
+//                builder.setMessage("연결")
+//                builder.setIcon(R.drawable.watch)
+//                builder.show()
             }
         }
     }
@@ -46,8 +59,7 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        var safePosition = holder.bindingAdapterPosition
-        holder.bind(bluetoothDevices[safePosition])
+        holder.bind(bluetoothDevices[position])
     }
 
     override fun getItemCount(): Int {

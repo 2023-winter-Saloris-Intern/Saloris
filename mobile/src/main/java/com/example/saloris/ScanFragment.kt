@@ -32,7 +32,6 @@ import com.example.saloris.Home.WachInfo
 import com.example.saloris.Home.WatchConnectDialog1Fragment
 import com.example.saloris.Home.WatchListAdapter
 import com.example.saloris.databinding.FragmentTempBinding
-import com.example.saloris.databinding.ItemListBinding
 import com.example.saloris.util.*
 import com.example.saloris.util.ble.BleListAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +44,6 @@ class ScanFragment : Fragment() {
     /* View */
     private lateinit var navController: NavController
     private lateinit var binding: FragmentTempBinding
-    private lateinit var _binding: ItemListBinding
 
     /* Toast */
     private val toast = MakeToast()
@@ -245,8 +243,7 @@ class ScanFragment : Fragment() {
 
         binding.recyclerview.adapter = bleListAdapter
 
-        _binding = ItemListBinding.inflate(inflater,container,false)
-        _binding.itemList.setOnClickListener {
+        binding.recyclerview.setOnClickListener {
             val dialog1Fragment = WatchConnectDialog1Fragment()
             dialog1Fragment.show(childFragmentManager, dialog1Fragment.tag)
         }
@@ -286,7 +283,7 @@ class ScanFragment : Fragment() {
             if (isChecked) {
                 button.isEnabled = false
                 //binding.loading.visibility = View.VISIBLE
-
+                binding.complete.visibility = View.GONE
                 if (bluetoothAdapter == null) {
                     context?.let { toast.makeToast(it, "블루투스를 지원하지 않습니다.") }
                     button.post { button.isChecked = false }
@@ -305,6 +302,7 @@ class ScanFragment : Fragment() {
             } else {
                 button.isEnabled = true
                 //binding.loading.visibility = View.GONE
+                binding.complete.visibility = View.VISIBLE
 
                 stopScan()
             }

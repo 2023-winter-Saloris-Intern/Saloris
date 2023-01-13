@@ -102,12 +102,6 @@
         <action
             android:id="@+id/action_settingFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_ImageSlideFragment"
-            app:destination="@+id/IntroSlideFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_IntroSlideFragment"
-            app:destination="@id/IntroSlideFragment" />
     </fragment>
     <fragment
         android:id="@+id/helpFragment"
