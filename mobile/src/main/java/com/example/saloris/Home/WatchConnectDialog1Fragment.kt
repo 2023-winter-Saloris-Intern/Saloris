@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.saloris.R
 import com.example.saloris.databinding.DialogFindPasswordBinding
-import com.example.saloris.databinding.FragmentWatchConnectDialog1Binding
 import com.example.saloris.util.OpenDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -19,27 +18,27 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class WatchConnectDialog1Fragment() : DialogFragment() {
 
     /* View */
-    private lateinit var binding: FragmentWatchConnectDialog1Binding
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentWatchConnectDialog1Binding.inflate(layoutInflater, container, false)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        /* Bottom Menu */
-        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomMenu.visibility = View.GONE
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // 확인 버튼 입력
-        binding.yesBtn.setOnClickListener { dismiss() }
-    }
+//    private lateinit var binding: FragmentWatchConnectDialog1Binding
+//
+//
+//    override fun onCreateView(
+//        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+//    ): View {
+//        binding = FragmentWatchConnectDialog1Binding.inflate(layoutInflater, container, false)
+//        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//        /* Bottom Menu */
+//        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+//        bottomMenu.visibility = View.GONE
+//
+//        return binding.root
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        // 확인 버튼 입력
+//        binding.yesBtn.setOnClickListener { dismiss() }
+//    }
 
 
 //    override fun onCreateView(

@@ -11,8 +11,7 @@ import com.example.saloris.R
 import com.example.saloris.databinding.FragmentIntroSlide3Binding
 
 class IntroSlide3Fragment : Fragment() {
-    private var _binding: FragmentIntroSlide3Binding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentIntroSlide3Binding
     private lateinit var navController: NavController
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +20,7 @@ class IntroSlide3Fragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
 
-        _binding = FragmentIntroSlide3Binding.inflate(inflater, container, false)
+        binding = FragmentIntroSlide3Binding.inflate(inflater, container, false)
 
         return binding.root
     }
