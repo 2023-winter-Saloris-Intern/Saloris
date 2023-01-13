@@ -3,6 +3,7 @@ package com.example.saloris.util.ble
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -45,10 +46,7 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
             binding.root.setOnClickListener {
                 it.findNavController().navigate(R.id.action_scanFragment_to_startDriveFragment, bundle)
 //                val builder = AlertDialog.Builder(requireContext())
-//                builder.setTitle("기기")
-//                builder.setMessage("연결")
-//                builder.setIcon(R.drawable.watch)
-//                builder.show()
+
             }
         }
     }
@@ -60,6 +58,17 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         holder.bind(bluetoothDevices[position])
+
+        holder.itemView.setOnClickListener {
+            showDialog(it.context)
+        }
+    }
+    private fun showDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("기기")
+        builder.setMessage("연결")
+        builder.setIcon(R.drawable.watch)
+        builder.show()
     }
 
     override fun getItemCount(): Int {
