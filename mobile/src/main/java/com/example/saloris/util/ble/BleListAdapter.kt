@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.saloris.MainActivity
 import com.example.saloris.R
+import com.example.saloris.databinding.DialogWatchConnectBinding
 import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.databinding.ItemListBinding
 import com.example.saloris.util.CustomDialog
@@ -20,7 +21,7 @@ import com.example.saloris.util.OpenDialog
 
 class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>() {
     var bluetoothDevices: ArrayList<BluetoothDevice> = ArrayList()
-
+    private lateinit var binding: DialogWatchConnectBinding
     /* Dialog */
     private val dialog = OpenDialog()
 
@@ -64,11 +65,12 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
         }
     }
     private fun showDialog(context: Context) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("기기")
-        builder.setMessage("연결")
-        builder.setIcon(R.drawable.watch)
-        builder.show()
+        //binding = DialogWatchConnectBinding.inflate(context.layoutInflater)
+//        val builder = AlertDialog.Builder(context)
+//        builder.setTitle("기기")
+//        builder.setMessage("연결")
+//        builder.setIcon(R.drawable.watch)
+//        builder.show()
     }
 
     override fun getItemCount(): Int {

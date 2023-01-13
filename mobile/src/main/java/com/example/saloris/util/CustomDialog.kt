@@ -8,7 +8,7 @@ class CustomDialog(context: Context) : Dialog(context) {
     private val dialog = Dialog(context)
 
     fun showDia(){
-        dialog.setContentView(R.layout.fragment_watch_connect_dialog)
+        dialog.setContentView(R.layout.dialog_watch_connect)
         dialog.show()
     }
 }
