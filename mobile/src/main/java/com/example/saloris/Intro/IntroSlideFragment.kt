@@ -11,11 +11,13 @@ import androidx.navigation.Navigation
 import androidx.viewpager2.widget.ViewPager2
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentIntroSlideBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class IntroSlideFragment() : Fragment() {
     lateinit var binding: FragmentIntroSlideBinding
     private var viewPager: ViewPager2? = null
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,6 +26,11 @@ class IntroSlideFragment() : Fragment() {
         // Inflate the layout for this fragment
         val view:View = inflater.inflate(R.layout.fragment_intro_slide, container, false)
         viewPager = view.findViewById(R.id.sliderViewPager)
+
+        /* Bottom Menu */
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
+
         return view
     }
 
@@ -44,6 +51,13 @@ class IntroSlideFragment() : Fragment() {
                 Log.e("ViewPagerFragment", "Page ${position+1}")
             }
         })
+//
+//        navController = Navigation.findNavController(view)
+//
+//        binding.startBtn.setOnClickListener {
+//            navController.navigate(R.id.action_IntroSlideFragment_to_homeFragment)
+//        }
+//
     }
 
 }

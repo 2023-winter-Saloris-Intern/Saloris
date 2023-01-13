@@ -26,12 +26,12 @@ class IntroSlide3Fragment : Fragment() {
         return binding.root
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 //        navController = Navigation.findNavController(view)
 //
 //        binding.startBtn.setOnClickListener {
-//            navController.navigate(R.id.action_homeFragment_to_scanFragment)
+//            navController.navigate(R.id.action_IntroSlide3Fragment_to_homeFragment)
 //        }
-//    }
+    }
 }
