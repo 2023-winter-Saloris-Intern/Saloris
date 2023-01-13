@@ -120,7 +120,7 @@
     <fragment
         android:id="@+id/IntroSlideFragment"
         android:name="com.example.saloris.Intro.IntroSlideFragment"
-        android:label="fragment_imageSlide"
+        android:label="fragment_intro_slide"
         tools:layout="@layout/fragment_intro_slide" >
         <action
             android:id="@+id/action_IntroSlideFragment_to_homeFragment"
@@ -129,17 +129,17 @@
     <fragment
         android:id="@+id/IntroSlide1Fragment"
         android:name="com.example.saloris.Intro.IntroSlide1Fragment"
-        android:label="fragment_imageSlide"
+        android:label="fragment_intro_slide1"
         tools:layout="@layout/fragment_intro_slide1" />
     <fragment
         android:id="@+id/IntroSlide2Fragment"
         android:name="com.example.saloris.Intro.IntroSlide2Fragment"
-        android:label="fragment_imageSlide"
+        android:label="fragment_intro_Slide2"
         tools:layout="@layout/fragment_intro_slide2" />
     <fragment
         android:id="@+id/IntroSlide3Fragment"
         android:name="com.example.saloris.Intro.IntroSlide3Fragment"
-        android:label="fragment_imageSlide"
+        android:label="fragment_intro_Slide3"
         tools:layout="@layout/fragment_intro_slide3" >
         <action
             android:id="@+id/action_IntroSlide3Fragment_to_homeFragment"
@@ -147,6 +147,9 @@
         <action
             android:id="@+id/action_IntroSlide3Fragment_to_settingFragment"
             app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_IntroSlide3Fragment_to_IntroSlideFragment"
+            app:destination="@id/IntroSlideFragment" />
     </fragment>
     <fragment
         android:id="@+id/startDriveFragment"
