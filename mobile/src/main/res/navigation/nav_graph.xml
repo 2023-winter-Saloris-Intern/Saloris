@@ -80,8 +80,8 @@
         android:label="fragment_scan"
         tools:layout="@layout/fragment_scan" >
         <action
-            android:id="@+id/action_scanFragment_to_recordFragment"
-            app:destination="@id/recordFragment" />
+            android:id="@+id/action_scanFragment_to_startDriveFragment"
+            app:destination="@id/startDriveFragment" />
     </fragment>
     <fragment
         android:id="@+id/recordFragment"
@@ -133,5 +133,10 @@
         android:name="com.example.saloris.Intro.IntroSlide3Fragment"
         android:label="fragment_imageSlide"
         tools:layout="@layout/fragment_intro_slide3" />
+    <fragment
+        android:id="@+id/startDriveFragment"
+        android:name="com.example.saloris.StartDriveFragment"
+        android:label="fragment_start_drive"
+        tools:layout="@layout/fragment_start_drive" />
 
 </navigation>
