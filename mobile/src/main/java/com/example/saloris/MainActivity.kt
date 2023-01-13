@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.registerFragment,
                 R.id.homeFragment,
                 R.id.scanFragment,
-                R.id.graphFragment, //R.id.graphHrFragment,
+                R.id.graphFragment, R.id.IntroSlide3Fragment,
                 R.id.settingsFragment, R.id.accountFragment -> {
                     binding.layoutToolbar.toolbar.visibility = View.GONE
 //                    supportActionBar?.setDisplayHomeAsUpEnabled(FRAGMENT_INFO[destination.id]!!.second)

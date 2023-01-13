@@ -27,10 +27,10 @@ class IntroSlide3Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        navController = Navigation.findNavController(view)
-//
-//        binding.startBtn.setOnClickListener {
-//            navController.navigate(R.id.action_IntroSlide3Fragment_to_homeFragment)
-//        }
+        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+
+        binding.startBtn.setOnClickListener {
+            navController.navigate(R.id.action_IntroSlide3Fragment_to_homeFragment)
+        }
     }
 }
