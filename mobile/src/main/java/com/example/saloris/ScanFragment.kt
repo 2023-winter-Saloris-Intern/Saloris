@@ -32,6 +32,7 @@ import com.example.saloris.Home.WachInfo
 import com.example.saloris.Home.WatchConnectDialog1Fragment
 import com.example.saloris.Home.WatchListAdapter
 import com.example.saloris.databinding.FragmentTempBinding
+import com.example.saloris.databinding.ItemListBinding
 import com.example.saloris.util.*
 import com.example.saloris.util.ble.BleListAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +45,7 @@ class ScanFragment : Fragment() {
     /* View */
     private lateinit var navController: NavController
     private lateinit var binding: FragmentTempBinding
+    private lateinit var _binding: ItemListBinding
 
     /* Toast */
     private val toast = MakeToast()
@@ -243,7 +245,8 @@ class ScanFragment : Fragment() {
 
         binding.recyclerview.adapter = bleListAdapter
 
-        binding.recyclerview.setOnClickListener {
+        _binding = ItemListBinding.inflate(inflater,container,false)
+        _binding.itemList.setOnClickListener {
             val dialog1Fragment = WatchConnectDialog1Fragment()
             dialog1Fragment.show(childFragmentManager, dialog1Fragment.tag)
         }

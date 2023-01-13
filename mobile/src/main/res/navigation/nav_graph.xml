@@ -102,6 +102,9 @@
         <action
             android:id="@+id/action_settingFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_ImageSlideFragment"
+            app:destination="@+id/ImgaeSlideFragment" />
     </fragment>
     <fragment
         android:id="@+id/helpFragment"
@@ -113,4 +116,29 @@
         android:name="com.example.saloris.FindPasswordFragment"
         android:label="fragment_find_password"
         tools:layout="@layout/fragment_find_password" />
+    <fragment
+        android:id="@+id/ImgaeSlideFragment"
+        android:name="com.example.saloris.Intro.IntroSlideFragment"
+        android:label="fragment_imageSlide"
+        tools:layout="@layout/fragment_intro_slide" />
+    <fragment
+        android:id="@+id/ImgaeSlide1Fragment"
+        android:name="com.example.saloris.Intro.IntroSlide1Fragment"
+        android:label="fragment_imageSlide"
+        tools:layout="@layout/fragment_intro_slide1" />
+    <fragment
+        android:id="@+id/ImgaeSlide2Fragment"
+        android:name="com.example.saloris.Intro.IntroSlide2Fragment"
+        android:label="fragment_imageSlide"
+        tools:layout="@layout/fragment_intro_slide2" />
+    <fragment
+        android:id="@+id/ImgaeSlide3Fragment"
+        android:name="com.example.saloris.Intro.IntroSlide3Fragment"
+        android:label="fragment_imageSlide"
+        tools:layout="@layout/fragment_intro_slide3" >
+        <action
+            android:id="@+id/action_ImageSlide3Fragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
 </navigation>
