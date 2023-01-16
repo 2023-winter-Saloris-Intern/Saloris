@@ -10,19 +10,13 @@ import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.saloris.MainActivity
 import com.example.saloris.R
 import com.example.saloris.databinding.DialogWatchConnectBinding
-import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.databinding.ItemListBinding
-import com.example.saloris.util.CustomDialog
 import com.example.saloris.util.MakeToast
-import com.example.saloris.util.OpenDialog
-import kotlinx.coroutines.Dispatchers
 
 
 class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>() {

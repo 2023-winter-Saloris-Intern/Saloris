@@ -27,9 +27,6 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.saloris.Home.WachInfo
-import com.example.saloris.Home.WatchConnectDialogFragment
-import com.example.saloris.Home.WatchListAdapter
 import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.util.*
 import com.example.saloris.util.ble.BleListAdapter
@@ -100,8 +97,7 @@ class ScanFragment : Fragment() {
         }
         startActivity(intent)
     }
-    private val wachInfo = mutableListOf<WachInfo>()
-    private val WatchListAdapter = WatchListAdapter(wachInfo)
+
 
 
     /* BLE */
@@ -242,28 +238,7 @@ class ScanFragment : Fragment() {
 
         binding.recyclerview.adapter = bleListAdapter
 
-//        binding.recyclerview.setOnClickListener {
-//            Log.d("recyclerview", "click!!!!!!!")
-//            val dialogFragment = WatchConnectDialogFragment()
-//            dialogFragment.show(childFragmentManager, dialogFragment.tag)
-//        }
-
         return binding.root
-
-//        wachInfo.add(
-//            WachInfo("R.drawable.watch","000","galaxy Watch 5"))
-//        wachInfo.add(
-//            WachInfo("R.drawable.watch","000","galaxy Watch Active"))
-//        wachInfo.add(
-//            WachInfo("R.drawable.watch","000","galaxy Watch 4"))
-//
-//        binding.watchListRecyclerview.layoutManager= LinearLayoutManager(requireContext())
-//        binding.watchListRecyclerview.adapter=WatchListAdapter
-//        WatchListAdapter.setItemClickListener(object : WatchListAdapter.OnItemClickListener{
-//            override fun onClick(v: View, position: Int) {
-//                //loadFragment(DetailInformationFragment())
-//            }
-//        })
 
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -318,10 +293,6 @@ class ScanFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-//        /* Toolbar */
-//        val toolbar = (requireActivity() as MainActivity).binding.layoutToolbar.toolbar
-//        toolbar.removeOnLayoutChangeListener(onLayoutChangeListener)
-//        menuCamera?.isVisible = false
     }
 
 }
