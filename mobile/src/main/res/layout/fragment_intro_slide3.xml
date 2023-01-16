@@ -72,10 +72,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/go_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="40dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_baseline_chevron_left_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/start_btn"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
     <Button
         android:id="@+id/start_btn"
-        android:layout_width="300dp"
+        android:layout_width="280dp"
         android:layout_height="60dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/connect_watch_btn"
         android:fontFamily="@font/notosans_kr_bold"

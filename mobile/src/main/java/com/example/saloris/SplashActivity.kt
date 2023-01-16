@@ -1,5 +1,6 @@
 package com.example.saloris
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -25,6 +26,10 @@ class SplashActivity : AppCompatActivity() {
 
     }
 
+    private fun isOnBoardingFinished(): Boolean {
+        val prefs = getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+        return prefs.getBoolean("finished", false)
+    }
 
     override fun onPause() {
         super.onPause()

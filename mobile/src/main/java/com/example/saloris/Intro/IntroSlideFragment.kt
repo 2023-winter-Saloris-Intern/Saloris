@@ -15,56 +15,102 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class IntroSlideFragment() : Fragment() {
-    lateinit var binding: FragmentIntroSlideBinding
-    private var viewPager: ViewPager2? = null
-    private lateinit var navController: NavController
+    private var _binding: FragmentIntroSlideBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view:View = inflater.inflate(R.layout.fragment_intro_slide, container, false)
-        viewPager = view.findViewById(R.id.sliderViewPager)
-
-        /* Bottom Menu */
-        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomMenu.visibility = View.GONE
-
-        return view
+    ): View {
+        _binding = FragmentIntroSlideBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //1
+        setupViewPager()
+    }
 
-        val pagerAdapter = ViewPager2Adapter(requireActivity())
-        // 6개의 fragment add
-        pagerAdapter.addFragment(IntroSlide1Fragment())
-        pagerAdapter.addFragment(IntroSlide2Fragment())
-        pagerAdapter.addFragment(IntroSlide3Fragment())
+    private fun setupViewPager() {
+        val fragmentList = arrayListOf(
+            IntroSlide1Fragment.newInstance(),
+            IntroSlide2Fragment.newInstance(),
+            IntroSlide3Fragment.newInstance()
+        )
 
-        // adapter 연결
-        viewPager?.adapter = pagerAdapter
-        viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int){
-                super.onPageSelected(position)
-                Log.e("ViewPagerFragment", "Page ${position+1}")
-            }
-        })
+        val adapter = ViewPager2Adapter(
+            fragmentList,
+            requireActivity().supportFragmentManager,
+            lifecycle
+        )
+
+        binding.sliderViewPager.adapter = adapter
+        //2
+        binding.sliderViewPager.isUserInputEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+
+//    lateinit var binding: FragmentIntroSlideBinding
+//    private var viewPager: ViewPager2? = null
+////    private lateinit var navController: NavController
 //
+//    override fun onCreateView(
+//        inflater: LayoutInflater, container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        // Inflate the layout for this fragment
+//        val view: View = inflater.inflate(R.layout.fragment_intro_slide, container, false)
+//        viewPager = view.findViewById(R.id.sliderViewPager)
+//
+//        /* Bottom Menu */
+//        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+//        bottomMenu.visibility = View.GONE
+//
+//        return view
+//    }
+//
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//        val pagerAdapter = ViewPager2Adapter(requireActivity())
+//        // 6개의 fragment add
+//        pagerAdapter.addFragment(IntroSlide1Fragment())
+//        pagerAdapter.addFragment(IntroSlide2Fragment())
+//        pagerAdapter.addFragment(IntroSlide3Fragment())
+//
+//        // adapter 연결
+//        viewPager?.adapter = pagerAdapter
+//        viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+//            override fun onPageSelected(position: Int) {
+//                super.onPageSelected(position)
+//                Log.e("ViewPagerFragment", "Page ${position + 1}")
+//            }
+//        })
+//
+//        binding.sliderViewPager.adapter = pagerAdapter
+//        //2
+//        binding.sliderViewPager.isUserInputEnabled = false
+
 //        navController = Navigation.findNavController(view)
 //
 //        binding.startBtn.setOnClickListener {
 //            navController.navigate(R.id.action_IntroSlideFragment_to_homeFragment)
 //        }
-
+//
 //        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 //
 //        navController.navigate(R.id.action_IntroSlideFragment_to_homeFragment)
 //
-    }
+//    }
+//}
 
-}
+//}
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)

@@ -2,31 +2,47 @@ package com.example.saloris.Intro
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class ViewPager2Adapter(fragmentActivity: FragmentActivity) :
-    FragmentStateAdapter(fragmentActivity) {
-    var fragments: ArrayList<Fragment> = ArrayList()
+// class ViewPager2Adapter (fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+//    var fragments: ArrayList<Fragment> = ArrayList()
+//
+//    override fun getItemCount(): Int {
+//        return fragments.size
+//    }
+//
+//    override fun createFragment(position: Int): Fragment {
+//        return fragments[position]
+//    }
+//
+//    fun addFragment(fragment: Fragment) {
+//        fragments.add(fragment)
+//        notifyItemInserted(fragments.size - 1)
+//        //TODO: notifyItemInserted!!
+//    }
+//
+//    fun removeFragement() {
+//        fragments.removeLast()
+//        notifyItemRemoved(fragments.size)
+//        //TODO: notifyItemRemoved!!
+//    }
+//
+//}
 
-    override fun getItemCount(): Int {
-        return fragments.size
-    }
+class ViewPager2Adapter(
+    list: ArrayList<Fragment>,
+    fm: FragmentManager,
+    lifecycle: Lifecycle
+) : FragmentStateAdapter(fm, lifecycle) {
 
-    override fun createFragment(position: Int): Fragment {
-        return fragments[position]
-    }
+    private val fragmentList = list
 
-    fun addFragment(fragment: Fragment) {
-        fragments.add(fragment)
-        notifyItemInserted(fragments.size - 1)
-        //TODO: notifyItemInserted!!
-    }
+    override fun getItemCount() = fragmentList.size
 
-    fun removeFragement() {
-        fragments.removeLast()
-        notifyItemRemoved(fragments.size)
-        //TODO: notifyItemRemoved!!
-    }
+    override fun createFragment(position: Int) = fragmentList[position]
+}
 
 //    override fun getItemCount(): Int = 3
 //
@@ -38,4 +54,4 @@ class ViewPager2Adapter(fragmentActivity: FragmentActivity) :
 //        }
 //    }
 
-}
+// }
