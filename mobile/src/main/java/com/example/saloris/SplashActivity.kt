@@ -36,3 +36,13 @@ class SplashActivity : AppCompatActivity() {
         finish()
     }
 }
+
+//Handler(Looper.getMainLooper()).postDelayed({
+//    if (isIntroSlideFinished()) {
+//        val intent = Intent(applicationContext, MainActivity::class.java)
+//        startActivity(intent)
+//        finish()
+//    } else {
+//
+//    }
+//}, 5000)

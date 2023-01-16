@@ -23,6 +23,18 @@
             app:destination="@id/settingFragment" />
     </fragment>
     <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.saloris.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_IntroSlideFragment"
+            app:destination="@id/IntroSlideFragment" />
+    </fragment>
+     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.saloris.LoginFragment"
         android:label="fragment_login"
