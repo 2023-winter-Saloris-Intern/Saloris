@@ -44,35 +44,12 @@ tools:context=".Record.RecordFragment">
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_baseline_arrow_circle_down_24"
+            android:src="@drawable/ic_baseline_navigate_next_24"
             android:background="@color/white"
             android:clickable="true"
             android:id="@+id/date_choice_btn"/>
 
     </LinearLayout>
-
-    <DatePicker
-        android:id="@+id/date_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:calendarTextColor="@color/black"
-        android:datePickerMode="calendar"
-        android:headerBackground="@color/white"
-        android:visibility="invisible"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="선택"
-        android:fontFamily="@font/notosans_kr_bold"
-        android:background="@drawable/connect_watch_btn"
-        android:id="@+id/date_confirm_btn"
-        android:visibility="invisible"/>
 
     </LinearLayout>
 
