@@ -1,11 +1,15 @@
 package com.example.saloris.util.ble
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -16,15 +20,18 @@ import com.example.saloris.databinding.DialogWatchConnectBinding
 import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.databinding.ItemListBinding
 import com.example.saloris.util.CustomDialog
+import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
+import kotlinx.coroutines.Dispatchers
 
 
 class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>() {
     var bluetoothDevices: ArrayList<BluetoothDevice> = ArrayList()
     private lateinit var binding: DialogWatchConnectBinding
+    /* Toast */
+    private val toast = MakeToast()
     /* Dialog */
-    private val dialog = OpenDialog()
-
+    private var name: String = ""
     inner class RecyclerViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("MissingPermission")
@@ -59,18 +66,34 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         holder.bind(bluetoothDevices[position])
-
         holder.itemView.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(it.context,
+                    Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return@setOnClickListener
+            }
+            name = bluetoothDevices[position].name
             showDialog(it.context)
         }
     }
     private fun showDialog(context: Context) {
-        //binding = DialogWatchConnectBinding.inflate(context.layoutInflater)
-//        val builder = AlertDialog.Builder(context)
-//        builder.setTitle("기기")
-//        builder.setMessage("연결")
-//        builder.setIcon(R.drawable.watch)
-//        builder.show()
+
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle(name)
+            .setMessage("이 기기와 연결하시겠습니까?")
+            .setIcon(R.drawable.watch)
+            .setPositiveButton("확인",
+                DialogInterface.OnClickListener { dialog, which ->
+                    toast.makeToast(context, "다이얼로그 확인")
+                    binding.yesBtn.text = "확인 클릭"
+                })
+            .setNegativeButton("취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    toast.makeToast(context, "다이얼로그 취소")
+                    binding.noBtn.text = "취소 클릭"
+                })
+        builder.show()
     }
 
     override fun getItemCount(): Int {

@@ -1,15 +1,11 @@
 package com.example.saloris.Home
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.saloris.R
-import com.example.saloris.databinding.FragmentScanBinding
 import com.example.saloris.databinding.FragmentWatchConnectListBinding
 
 
@@ -59,10 +55,10 @@ class WatchConnectListFragment : Fragment() {
 
         })
 
-        binding.watchListRecyclerview.setOnClickListener {
-            val bottomSheet = WatchConnectDialog1Fragment()
-            bottomSheet.show(childFragmentManager, bottomSheet.tag)
-        }
+//        binding.watchListRecyclerview.setOnClickListener {
+//            val bottomSheet = WatchConnectDialogFragment()
+//            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+//        }
 
 //        binding.fab.setOnClickListener {
 //            val intent = Intent(getActivity(), PartyOpenActivity::class.java)

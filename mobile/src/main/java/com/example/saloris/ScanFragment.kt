@@ -15,7 +15,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.ParcelUuid
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,7 +28,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.Home.WachInfo
-import com.example.saloris.Home.WatchConnectDialog1Fragment
+import com.example.saloris.Home.WatchConnectDialogFragment
 import com.example.saloris.Home.WatchListAdapter
 import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.util.*
@@ -243,10 +242,11 @@ class ScanFragment : Fragment() {
 
         binding.recyclerview.adapter = bleListAdapter
 
-        binding.recyclerview.setOnClickListener {
-            val dialog1Fragment = WatchConnectDialog1Fragment()
-            dialog1Fragment.show(childFragmentManager, dialog1Fragment.tag)
-        }
+//        binding.recyclerview.setOnClickListener {
+//            Log.d("recyclerview", "click!!!!!!!")
+//            val dialogFragment = WatchConnectDialogFragment()
+//            dialogFragment.show(childFragmentManager, dialogFragment.tag)
+//        }
 
         return binding.root
 
