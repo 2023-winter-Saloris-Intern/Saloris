@@ -6,6 +6,7 @@ import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.saloris.R
@@ -35,6 +36,20 @@ class RecordFragment : Fragment() {
 //            loadFragment(ScanFragment())
 //        }
 
+//        val view = inflater.inflate(R.layout.fragment_record, container, false)
+//        val dateTextView: TextView = view.findViewById(R.id.date_text)
+//        val datePicker: DatePicker = view.findViewById(R.id.date_picker)
+//
+//        val iYear: Int = datePicker.year
+//        val iMonth: Int = datePicker.month+1
+//        val iDay: Int = datePicker.dayOfMonth
+//
+////        dateTextView.text = "${iYear}년 ${iMonth}월 ${iDay}일"
+//
+//        datePicker.setOnDateChangedListener { datePicker, year, month, dayOfMonth ->
+//            dateTextView.text = "${year}년 ${month+1}월 ${dayOfMonth}일"
+//        }
+
         // clickevent로 수정 필요!
         binding.dateChoiceBtn.setOnClickListener {
 
@@ -54,6 +69,7 @@ class RecordFragment : Fragment() {
                 binding.dateConfirmBtn.setVisibility(View.INVISIBLE);
             }
         }
+
 
 //        binding.datePicker.setOnClickListener {
 ////            datepickerdialog에 표시할 달력
