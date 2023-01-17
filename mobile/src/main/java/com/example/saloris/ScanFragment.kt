@@ -2,13 +2,12 @@ package com.example.saloris
 
 import android.Manifest
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
+import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -30,10 +29,12 @@ import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentTempBinding
 import com.example.saloris.util.*
 import com.example.saloris.util.ble.BleListAdapter
+import com.example.saloris.util.ble.BluetoothUtils.Companion.findResponseCharacteristic
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 class ScanFragment : Fragment() {
@@ -108,6 +109,9 @@ class ScanFragment : Fragment() {
             activity?.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
+
+    // BLE Gatt
+    private var bleGatt: BluetoothGatt? = null
 
     private var scanResults: ArrayList<BluetoothDevice> = ArrayList()
     private val scanCallback: ScanCallback = object : ScanCallback() {
@@ -213,7 +217,10 @@ class ScanFragment : Fragment() {
         if (bluetoothAdapter?.isEnabled == true) {
             Log.d("State", "Stop Scan!")
             bluetoothAdapter!!.bluetoothLeScanner?.stopScan(scanCallback)
+            scanResults = ArrayList()
         }
+        scanResults = ArrayList()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -283,7 +290,6 @@ class ScanFragment : Fragment() {
             }
         }
     }
-
     override fun onStart() {
         super.onStart()
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
@@ -13,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.saloris.DeviceControlActivity
 import com.example.saloris.R
 import com.example.saloris.databinding.DialogWatchConnectBinding
 import com.example.saloris.databinding.ItemListBinding
@@ -22,6 +24,8 @@ import com.example.saloris.util.MakeToast
 class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>() {
     var bluetoothDevices: ArrayList<BluetoothDevice> = ArrayList()
     private lateinit var binding: DialogWatchConnectBinding
+    private var bleGatt: BluetoothGatt? = null
+    private var mContext:Context? = null
     /* Toast */
     private val toast = MakeToast()
     /* Dialog */
@@ -67,10 +71,12 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
                 return@setOnClickListener
             }
             name = bluetoothDevices[position].name
-            showDialog(it.context)
+            val device = bluetoothDevices[position]
+            showDialog(it.context, device)
+
         }
     }
-    private fun showDialog(context: Context) {
+    private fun showDialog(context: Context, device: BluetoothDevice) {
 
         val builder = AlertDialog.Builder(context)
         builder
@@ -80,13 +86,14 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
             .setPositiveButton("확인",
                 DialogInterface.OnClickListener { dialog, which ->
                     toast.makeToast(context, "다이얼로그 확인")
-                    binding.yesBtn.text = "확인 클릭"
+                    bleGatt = DeviceControlActivity(context, bleGatt).connectGatt(device)
+
                 })
             .setNegativeButton("취소",
                 DialogInterface.OnClickListener { dialog, which ->
                     toast.makeToast(context, "다이얼로그 취소")
-                    binding.noBtn.text = "취소 클릭"
                 })
+        builder.create()
         builder.show()
     }
 
