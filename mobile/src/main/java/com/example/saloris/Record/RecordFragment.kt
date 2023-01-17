@@ -31,10 +31,10 @@ import java.util.*
 //    }
 //}
 
-data class ChartData(
-    var lableData: String = "",
-    var valData: Double = 0.0
-)
+//data class ChartData(
+//    var lableData: String = "",
+//    var valData: Double = 0.0
+//)
 
 class RecordFragment : Fragment() {
     private var _binding: FragmentRecordBinding? = null
