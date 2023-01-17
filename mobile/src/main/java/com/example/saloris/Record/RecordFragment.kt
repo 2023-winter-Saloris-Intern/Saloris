@@ -11,41 +11,43 @@ import androidx.fragment.app.Fragment
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentRecordBinding
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.MarkerView
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.components.*
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.toTimeUnit
 
 
-class TimeAxisValueFormat : IndexAxisValueFormatter() {
+//line chart 시도
+//class TimeAxisValueFormat : IndexAxisValueFormatter() {
+//
+//    @OptIn(ExperimentalTime::class)
+//    override fun getFormattedValue(value: Float): String {
+//        //Float(min) -> date
+//        var valueToMinutes = DurationUnit.MINUTES.toTimeUnit().toMillis(value.toLong())
+//        var timeMinutes = Date(valueToMinutes)
+//        var formatMinutes = SimpleDateFormat("HH:mm")
+//
+//        return formatMinutes.format(timeMinutes)
+//    }
+//}
 
-    @OptIn(ExperimentalTime::class)
-    override fun getFormattedValue(value: Float): String {
-        //Float(min) -> date
-        var valueToMinutes = DurationUnit.MINUTES.toTimeUnit().toMillis(value.toLong())
-        var timeMinutes = Date(valueToMinutes)
-        var formatMinutes = SimpleDateFormat("HH:mm")
-
-        return formatMinutes.format(timeMinutes)
-    }
-}
+data class ChartData(
+    var lableData: String = "",
+    var valData: Double = 0.0
+)
 
 class RecordFragment : Fragment() {
     private var _binding: FragmentRecordBinding? = null
     private val binding get() = _binding!!
 
-    private var chartData = ArrayList<Entry>() // 데이터배열
-    private var lineDataSet = ArrayList<ILineDataSet>() // 데이터배열 -> 데이터 셋
-    private var lineData: LineData = LineData()
-    lateinit var chart: LineChart
+//    private var chartData = ArrayList<Entry>() // 데이터배열
+//    private var lineDataSet = ArrayList<ILineDataSet>() // 데이터배열 -> 데이터 셋
+//    private var lineData: LineData = LineData()
+//    lateinit var chart: LineChart
+
+    private var chart: LineChart? = null
+
+    private var lineChart: LineChart? = null
 
     // Item의 클릭 상태를 저장할 array 객체
     private val selectedItems = SparseBooleanArray()
@@ -94,13 +96,16 @@ class RecordFragment : Fragment() {
             val cal = java.util.Calendar.getInstance()
             // 사용자가 OK버튼을 누르면 바인딩된 text가 바뀜
             val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
-                binding.dateText.text = "${year}년 ${month+1}월 ${day}일"
+                binding.dateText.text = "${year}년 ${month + 1}월 ${day}일"
             }
             // 다이얼로그 생성, 다이얼로그를 띄울때 오늘 날짜를 기본 데이터로 잡아준다.
             //DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
             //스피너 모드로 바꿔주기 deprecated 됐기 때문에 themes 에서 추가해줘야함
-            val dateDialog = DatePickerDialog(requireActivity(), dateSetListener, cal.get(java.util.Calendar.YEAR), cal.get(
-                java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH))
+            val dateDialog = DatePickerDialog(
+                requireActivity(), dateSetListener, cal.get(java.util.Calendar.YEAR), cal.get(
+                    java.util.Calendar.MONTH
+                ), cal.get(java.util.Calendar.DAY_OF_MONTH)
+            )
                 .apply {
                     datePicker.maxDate = System.currentTimeMillis()
                 }
@@ -108,7 +113,6 @@ class RecordFragment : Fragment() {
             dateDialog.show()
             //dateDialog.datePicker.spinnersShown = true
         }
-
 
 //        그래프 출력
 //        chart = view?.findViewById(R.id.day_chart) as LineChart
@@ -139,77 +143,183 @@ class RecordFragment : Fragment() {
 //            dateDialog.datePicker.spinnersShown = true
 //
 //        }
+
+//        view?.let { setChartView(it) }
+
         return binding.root
     }
 
-    private fun initChartData() {
-        //더미데이터
-        chartData.add(Entry(-240f, 0f))
-        chartData.add(Entry(-200f, 30f))
-        chartData.add(Entry(-50f, 100f))
-        chartData.add(Entry(-120f, 20f))
-        chartData.add(Entry((1200).toFloat(), 0f))
 
-        var set = LineDataSet(chartData, "set1")
-        lineDataSet.add(set)
-        lineData = LineData(lineDataSet)
+//    Line Chart 시도
+//    private fun initChartData() {
+//        //더미데이터
+//        chartData.add(Entry(-240f, 0f))
+//        chartData.add(Entry(-200f, 30f))
+//        chartData.add(Entry(-50f, 100f))
+//        chartData.add(Entry(-120f, 20f))
+//        chartData.add(Entry((1200).toFloat(), 0f))
+//
+//        var set = LineDataSet(chartData, "set1")
+//        lineDataSet.add(set)
+//        lineData = LineData(lineDataSet)
+//
+//        set.lineWidth = 2F
+//        set.setDrawValues(false)
+//        set.highLightColor = Color.TRANSPARENT
+//        set.mode = LineDataSet.Mode.STEPPED
+//
+//    }
+//
+//    private fun initChart() {
+//        chart.run {
+//            setDrawGridBackground(false)
+//            setBackgroundColor(Color.WHITE)
+//            legend.isEnabled = false
+//        }
+//
+//        val xAxis = chart.xAxis
+//        xAxis.setDrawLabels(true) // label 표시 여부
+//        xAxis.axisMaximum = 1200f // 60min * 24hour
+//        xAxis.axisMinimum = -240f
+//        xAxis.labelCount = 5
+//        xAxis.valueFormatter = TimeAxisValueFormat()
+//
+//        xAxis.textColor = Color.BLACK
+//        xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 라벨 위치
+//        xAxis.setDrawLabels(true) // gridLine 표시
+//        xAxis.setDrawAxisLine(true) // AxisLine 표시
+//
+//        // 왼쪽 y축 값
+//        val yLAxis = chart.axisLeft
+//        yLAxis.axisMaximum = 4.5f // y축 최대값
+//        yLAxis.axisMinimum = -0.5f // y축 최소값
+//
+//        // 왼쪽 y축 도메인 변경
+//        val yAxisVals = ArrayList<String>(Arrays.asList("20", "50", "80", "110", "140"))
+//        yLAxis.valueFormatter = IndexAxisValueFormatter(yAxisVals)
+//        yLAxis.granularity = 1f
+//
+//        // 오른쪽 y축 값
+//        val yRAxix = chart.axisRight
+//        yRAxix.setDrawLabels(false)
+//        yRAxix.setDrawAxisLine(false)
+//        yRAxix.setDrawGridLines(false)
+//
+//        // 마커 설정
+//        val marker = MarkerView(requireContext(), R.drawable.graph_marker)
+//        marker.chartView = chart
+//        chart.marker = marker
+//
+//        chart!!.description.isEnabled = false // 설명
+//        chart!!.data = lineData // 데이터 설정
+//
+//        chart!!.invalidate() // 다시 그리기
+//    }
+//
+//    private fun prepareChartData(data: LineData, lineChart: LineChart) {
+//        lineChart.data = data // LineData 전달
+//        lineChart.invalidate() // LineChart 갱신해 데이터 표시
+//    }
 
-        set.lineWidth = 2F
-        set.setDrawValues(false)
-        set.highLightColor = Color.TRANSPARENT
-        set.mode = LineDataSet.Mode.STEPPED
 
-    }
-
-    private fun initChart() {
-        chart.run {
-            setDrawGridBackground(false)
-            setBackgroundColor(Color.WHITE)
-            legend.isEnabled = false
-        }
-
-        val xAxis = chart.xAxis
-        xAxis.setDrawLabels(true) // label 표시 여부
-        xAxis.axisMaximum = 1200f // 60min * 24hour
-        xAxis.axisMinimum = -240f
-        xAxis.labelCount = 5
-        xAxis.valueFormatter = TimeAxisValueFormat()
-
-        xAxis.textColor = Color.BLACK
-        xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 라벨 위치
-        xAxis.setDrawLabels(true) // gridLine 표시
-        xAxis.setDrawAxisLine(true) // AxisLine 표시
-
-        // 왼쪽 y축 값
-        val yLAxis = chart.axisLeft
-        yLAxis.axisMaximum = 4.5f // y축 최대값
-        yLAxis.axisMinimum = -0.5f // y축 최소값
-
-        // 왼쪽 y축 도메인 변경
-        val yAxisVals = ArrayList<String>(Arrays.asList("20", "50", "80", "110", "140"))
-        yLAxis.valueFormatter = IndexAxisValueFormatter(yAxisVals)
-        yLAxis.granularity = 1f
-
-        // 오른쪽 y축 값
-        val yRAxix = chart.axisRight
-        yRAxix.setDrawLabels(false)
-        yRAxix.setDrawAxisLine(false)
-        yRAxix.setDrawGridLines(false)
-
-        // 마커 설정
-        val marker = MarkerView(requireContext(), R.drawable.graph_marker)
-        marker.chartView = chart
-        chart.marker = marker
-
-        chart!!.description.isEnabled = false // 설명
-        chart!!.data = lineData // 데이터 설정
-
-        chart!!.invalidate() // 다시 그리기
-    }
-
-    private fun prepareChartData(data: LineData, lineChart: LineChart) {
-        lineChart.data = data // LineData 전달
-        lineChart.invalidate() // LineChart 갱신해 데이터 표시
-    }
-
+//    bar Chart 시도
+//    private fun setChartView(view: View) {
+//        var chart = view.findViewById<BarChart>(R.id.day_chart)
+//        setChart(chart)
+//    }
+//
+//    private fun initBarDataSet(barDataSet: BarDataSet) {
+//        //Changing the color of the bar
+//        barDataSet.color = Color.parseColor("#304567")
+//        //Setting the size of the form in the legend
+//        barDataSet.formSize = 15f
+//        //showing the value of the bar, default true if not set
+//        barDataSet.setDrawValues(false)
+//        //setting the text size of the value of the bar
+//        barDataSet.valueTextSize = 12f
+//    }
+//
+//    private fun setChart(barChart: BarChart) {
+//        initBarChart(barChart)
+//
+//        barChart.setScaleEnabled(false) //Zoom In/Out
+//
+//        val valueList = ArrayList<Double>()
+//        val entries: ArrayList<BarEntry> = ArrayList()
+//        val title = "걸음 수"
+//
+//        //input data
+//        for (i in 0..5) {
+//            valueList.add(i * 100.1)
+//        }
+//
+//        //fit the data into a bar
+//        for (i in 0 until valueList.size) {
+//            val barEntry = BarEntry(i.toFloat(), valueList[i].toFloat())
+//            entries.add(barEntry)
+//        }
+//        val barDataSet = BarDataSet(entries, title)
+//        val data = BarData(barDataSet)
+//        barChart.data = data
+//        barChart.invalidate()
+//    }
+//
+//    private fun initBarChart(barChart: BarChart) {
+//        //hiding the grey background of the chart, default false if not set
+//        barChart.setDrawGridBackground(false)
+//        //remove the bar shadow, default false if not set
+//        barChart.setDrawBarShadow(false)
+//        //remove border of the chart, default false if not set
+//        barChart.setDrawBorders(false)
+//
+//        //remove the description label text located at the lower right corner
+//        val description = Description()
+//        description.setEnabled(false)
+//        barChart.setDescription(description)
+//
+//        //X, Y 바의 애니메이션 효과
+//        barChart.animateY(1000)
+//        barChart.animateX(1000)
+//
+//
+//        //바텀 좌표 값
+//        val xAxis: XAxis = barChart.getXAxis()
+//        //change the position of x-axis to the bottom
+//        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//        //set the horizontal distance of the grid line
+//        xAxis.granularity = 1f
+//        xAxis.textColor = Color.RED
+//        //hiding the x-axis line, default true if not set
+//        xAxis.setDrawAxisLine(false)
+//        //hiding the vertical grid lines, default true if not set
+//        xAxis.setDrawGridLines(false)
+//
+//
+//        //좌측 값 hiding the left y-axis line, default true if not set
+//        val leftAxis: YAxis = barChart.getAxisLeft()
+//        leftAxis.setDrawAxisLine(false)
+//        leftAxis.textColor = Color.RED
+//
+//
+//        //우측 값 hiding the right y-axis line, default true if not set
+//        val rightAxis: YAxis = barChart.getAxisRight()
+//        rightAxis.setDrawAxisLine(false)
+//        rightAxis.textColor = Color.RED
+//
+//
+//        //바차트의 타이틀
+//        val legend: Legend = barChart.getLegend()
+//        //setting the shape of the legend form to line, default square shape
+//        legend.form = Legend.LegendForm.LINE
+//        //setting the text size of the legend
+//        legend.textSize = 11f
+//        legend.textColor = Color.YELLOW
+//        //setting the alignment of legend toward the chart
+//        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+//        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+//        //setting the stacking direction of legend
+//        legend.orientation = Legend.LegendOrientation.HORIZONTAL
+//        //setting the location of legend outside the chart, default false if not set
+//        legend.setDrawInside(false)
+//    }
 }
