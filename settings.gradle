@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" } // MPAndroidChart 의존 추가
     }
 }
 rootProject.name = "Saloris"

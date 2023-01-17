@@ -51,6 +51,14 @@ tools:context=".Record.RecordFragment">
 
     </LinearLayout>
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/day_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"/>
+
     </LinearLayout>
 
 </FrameLayout>
