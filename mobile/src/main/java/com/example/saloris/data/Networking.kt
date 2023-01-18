@@ -191,7 +191,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             val time_min = dateAndTime.toString().substring(14,16)
             Log.d("time_hour-main",time_hour)
             Log.d("time_min-main",time_min)
-            val time  = (time_hour.toInt()-9)*60+time_min.toInt()
+            val time  = (time_hour.toInt()+9)*60+time_min.toInt()
             Log.d("time-main",time.toString())
             //val rand = (Math.random() * 4).toFloat() + 60f
             Log.d("value-main",newRate)

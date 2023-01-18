@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import com.example.saloris.R
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.CandleEntry
 import com.github.mikephil.charting.data.Entry
@@ -29,9 +28,9 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
         val minute = (time_min%60).toString()
         var hour =""
         if(type=="Show"){
-            hour = (time_min/60+9).toString()
+            hour = (time_min/60).toString()
         }else{
-            hour = (time_min/60+9).toString()
+            hour = (time_min/60).toString()
         }
         val mark = hour + ":"+minute
         if (e is CandleEntry) {
