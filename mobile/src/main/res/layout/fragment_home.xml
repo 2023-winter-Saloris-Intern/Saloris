@@ -134,5 +134,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+<!--todo : 삭제해야함-->
+    <Button
+        android:id="@+id/button_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 
 </FrameLayout>
