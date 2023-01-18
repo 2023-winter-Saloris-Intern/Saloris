@@ -33,6 +33,9 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
 import com.influxdb.client.write.Point
@@ -62,6 +65,9 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     private var chart: LineChart? = null
     private var thread: Thread? = null
 
+    /* User Authentication */
+    private lateinit var auth: FirebaseAuth
+
     private lateinit var binding: ActivityNetworkingBinding
     var Rate = ""
     var newRate = ""
@@ -69,6 +75,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         binding = ActivityNetworkingBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -242,7 +249,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     private suspend fun insertDB(rate: String):Boolean {
 //val token = System.getenv()["INFLUX_TOKEN"]
         val user="user"
-        val Uid="C"
+        val Uid=auth.currentUser?.uid
         val org = "intern"
         val bucket = "HeartRate"
         val token = "kCQhpgwgcQB4H_5Nr4Uf_lFIZjFQkaDA4IeWm5nBmt9WjfpeyIEsdZM95iGaQcx0BMKT0x-sUjHTOKGSApwjrw=="
