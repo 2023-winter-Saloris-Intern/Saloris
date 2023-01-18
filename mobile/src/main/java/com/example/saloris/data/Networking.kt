@@ -191,16 +191,19 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             val time_min = dateAndTime.toString().substring(14,16)
             Log.d("time_hour-main",time_hour)
             Log.d("time_min-main",time_min)
-            val time  = (time_hour.toInt()+9)*60+time_min.toInt()
+            val time  = (time_hour.toInt())*60+time_min.toInt()
             Log.d("time-main",time.toString())
             //val rand = (Math.random() * 4).toFloat() + 60f
             Log.d("value-main",newRate)
-            data.addEntry(Entry(time.toFloat(),newRate.toFloat()), 0)
+            //TODO time :real time
+            val time_to = time.toFloat()-9*60
+            data.addEntry(Entry(time_to,newRate.toFloat()), 0)
+            Log.d("time_x",time.toString())
             data.notifyDataChanged()
             chart!!.notifyDataSetChanged()
             chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
-            chart!!.moveViewToX(time.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
-            Log.d("addEntry_mainActivity",(time.toFloat()-10f).toString())
+            chart!!.moveViewToX(time_to.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
+            Log.d("addEntry_mainActivity",(time_to.toFloat()-10f).toString())
         }
     }
 
@@ -250,9 +253,10 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
 //val token = System.getenv()["INFLUX_TOKEN"]
         val user="user"
         val Uid=auth.currentUser?.uid
+        //val Uid = "T"
         val org = "intern"
         val bucket = "HeartRate"
-        val token = "kCQhpgwgcQB4H_5Nr4Uf_lFIZjFQkaDA4IeWm5nBmt9WjfpeyIEsdZM95iGaQcx0BMKT0x-sUjHTOKGSApwjrw=="
+        val token = "xnL71S-I14RbadodTl0e-nxkbwqNjTjXDG_q449SyMYyZeefmHomu81MjWneYxn6EBKQJWmsLCeKQU0o3_TC7A=="
         print(System.getenv())
         val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         client.use {
@@ -477,7 +481,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.messagelogTextView.visibility = View.VISIBLE
                     //binding.textInputLayout.visibility = View.VISIBLE
                     binding.sendmessageButton.visibility = View.VISIBLE
-                    val dateAndTime : LocalDateTime = LocalDateTime.now().minusHours(9)
+                    val dateAndTime : LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s)

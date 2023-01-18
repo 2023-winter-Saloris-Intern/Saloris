@@ -118,7 +118,7 @@ class showData : AppCompatActivity() {
             Log.d("DB start",LocalDateTime.now().toString())
             lifecycleScope.launch(Dispatchers.IO) {
                 val Uid=auth.currentUser?.uid
-                //val Uid = "E"
+//                val Uid = "T"
                 val year=Dyear
                 val month = Dmonth
                 val day =Dday
@@ -154,7 +154,7 @@ class showData : AppCompatActivity() {
             val time_min = time.toString().substring(14,16)
             Log.d("time_hour",time_hour)
             Log.d("time_min",time_min)
-            val time  = (time_hour.toInt()+9)*60+time_min.toInt()
+            val time  = (time_hour.toInt()-9)*60+time_min.toInt()
             Log.d("time",time.toString())
             Log.d("last_time",last_time)
             if(last_time!="" && (last_time.toInt()+1)<time){
