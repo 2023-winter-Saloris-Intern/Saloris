@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,6 +79,7 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
             name = bluetoothDevices[position].name
             val device = bluetoothDevices[position]
             showDialog(it.context, device, it)
+            device.createBond()
         }
     }
     private fun showDialog(context: Context, device: BluetoothDevice, view: View) {
