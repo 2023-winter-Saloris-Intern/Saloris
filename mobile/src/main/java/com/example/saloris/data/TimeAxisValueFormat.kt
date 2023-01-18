@@ -8,7 +8,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class TimeAxisValueFormat :IndexAxisValueFormatter(){
-    override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+    override fun getFormattedValue(value: Float): String {
         val valueToMinutes = TimeUnit.MINUTES.toMillis(value.toLong())
         var timeMimutes = Date(valueToMinutes)
         var formatMinutes = SimpleDateFormat("HH:mm")
