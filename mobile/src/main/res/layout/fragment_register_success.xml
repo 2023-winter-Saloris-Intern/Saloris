@@ -14,15 +14,14 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="98dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/welcome"
         android:src="@drawable/congrats"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@+id/btn_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
     <TextView
@@ -39,6 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <TextView
+        android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -50,16 +50,21 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login"
-        android:layout_width="0dp"
+        android:id="@+id/btn_required_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/go_login"
+        android:layout_marginTop="16dp"
+        android:text="필수 정보 등록하기"
+        android:background="@drawable/blue_round_button"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:fontFamily="@font/notosans_kr_bold"
         app:layout_constrainedHeight="true"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_min="@dimen/height_default"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

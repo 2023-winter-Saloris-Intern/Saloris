@@ -75,9 +75,14 @@
         android:name="com.example.saloris.RegisterSuccessFragment"
         android:label="RegisterSuccessFragment" >
         <action
-            android:id="@+id/action_registerSuccessFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            android:id="@+id/action_registerSuccessFragment_to_RequiredInfoFragment"
+            app:destination="@id/requiredInfoFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/requiredInfoFragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfoFragment"
+        android:label="fragment_required_info"
+        tools:layout="@layout/fragment_required_info" />
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.saloris.AccountFragment"
@@ -114,6 +119,9 @@
         <action
             android:id="@+id/action_settingFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_requiredInfoFragment"
+            app:destination="@id/requiredInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/helpFragment"
