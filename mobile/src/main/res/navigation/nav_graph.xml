@@ -82,7 +82,44 @@
         android:id="@+id/requiredInfoFragment"
         android:name="com.example.saloris.RequiredInfo.RequiredInfoFragment"
         android:label="fragment_required_info"
-        tools:layout="@layout/fragment_required_info" />
+        tools:layout="@layout/fragment_required_info" >
+        <action
+            android:id="@+id/action_requiredInfoFragment_to_requiredInfo1Fragment"
+            app:destination="@id/requiredInfo1Fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/requiredInfo1Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo1Fragment"
+        android:label="fragment_required_info1"
+        tools:layout="@layout/fragment_required_info1">
+        <action
+            android:id="@+id/action_requiredInfo1Fragment_to_requiredInfo2Fragment"
+            app:destination="@id/requiredInfo2Fragment"/>
+        <action
+            android:id="@+id/action_requiredInfo1Fragment_to_requiredInfoFragment"
+            app:destination="@id/requiredInfoFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/requiredInfo2Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo2Fragment"
+        android:label="fragment_required_info2"
+        tools:layout="@layout/fragment_required_info2">
+        <action
+            android:id="@+id/action_requiredInfo2Fragment_to_requiredInfo1Fragment"
+            app:destination="@id/requiredInfo1Fragment"/>
+        <action
+            android:id="@+id/action_requiredInfo2Fragment_to_requiredInfo3Fragment"
+            app:destination="@id/requiredInfo3Fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/requiredInfo3Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo3Fragment"
+        android:label="fragment_required_info3"
+        tools:layout="@layout/fragment_required_info3">
+        <action
+            android:id="@+id/action_requiredInfo3Fragment_to_requiredInfo2Fragment"
+            app:destination="@id/requiredInfo2Fragment"/>
+    </fragment>
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.saloris.AccountFragment"

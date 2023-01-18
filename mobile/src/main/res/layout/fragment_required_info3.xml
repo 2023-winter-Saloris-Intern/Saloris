@@ -9,6 +9,16 @@
     android:padding="@dimen/padding_default"
     tools:context="Setting.SettingFragment">
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/go_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:background="@color/white"
+        android:src="@drawable/ic_baseline_chevron_left_24"
+        android:tint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
@@ -17,7 +27,7 @@
         android:text="필수 정보 입력"
         android:textColor="@color/black"
         android:textSize="26dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/go_back_btn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -63,19 +73,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/notosans_kr_bold"
-        android:text="생년 월일을 선택해주세요"
+        android:text="키를 선택해주세요"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <DatePicker
-        android:id="@+id/datePicker"
+    <NumberPicker
+        android:id="@+id/number_picker"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:calendarViewShown="false"
         android:datePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +97,7 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/blue_round_button"
         android:fontFamily="@font/notosans_kr_bold"
-        android:text="다음(1 / 6)"
+        android:text="다음(4 / 6)"
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
