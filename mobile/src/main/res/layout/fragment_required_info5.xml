@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/padding_default"
-    tools:context="RequiredInfo.RequiredInfo2Fragment">
+    tools:context="RequiredInfo.RequiredInfo5Fragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/go_back_btn"
@@ -75,22 +75,57 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/notosans_kr_bold"
-        android:text="몸무게를 선택해주세요"
+        android:text="흡연 여부를 선택해주세요"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <NumberPicker
-        android:id="@+id/number_picker"
-        android:layout_width="320dp"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/never_smoke"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:datePickerMode="spinner"
+        android:background="@drawable/gender_choice_btn"
+        android:elevation="0dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="아예 안피워요"
+        android:textColor="@color/white"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sometime_smoke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/gender_choice_btn"
+        android:elevation="0dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="가끔 피워요"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/never_smoke" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/usually_smoke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/gender_choice_btn"
+        android:elevation="0dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="자주 피워요"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sometime_smoke" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/go_next_step_btn"
@@ -99,7 +134,7 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/blue_round_button"
         android:fontFamily="@font/notosans_kr_bold"
-        android:text="다음(3 / 6)"
+        android:text="시작하기"
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"

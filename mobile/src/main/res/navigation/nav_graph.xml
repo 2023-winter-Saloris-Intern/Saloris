@@ -119,6 +119,34 @@
         <action
             android:id="@+id/action_requiredInfo3Fragment_to_requiredInfo2Fragment"
             app:destination="@id/requiredInfo2Fragment"/>
+        <action
+            android:id="@+id/action_requiredInfo3Fragment_to_requiredInfo4Fragment"
+            app:destination="@id/requiredInfo4Fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/requiredInfo4Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo4Fragment"
+        android:label="fragment_required_info4"
+        tools:layout="@layout/fragment_required_info4">
+        <action
+            android:id="@+id/action_requiredInfo4Fragment_to_requiredInfo3Fragment"
+            app:destination="@id/requiredInfo3Fragment"/>
+        <action
+            android:id="@+id/action_requiredInfo4Fragment_to_requiredInfo5Fragment"
+            app:destination="@id/requiredInfo5Fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/requiredInfo5Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo5Fragment"
+        android:label="fragment_required_info5"
+        tools:layout="@layout/fragment_required_info5">
+        <action
+            android:id="@+id/action_requiredInfo5Fragment_to_requiredInfo4Fragment"
+            app:destination="@id/requiredInfo2Fragment"/>
+        <action
+            android:id="@+id/action_requiredInfo5Fragment_to_homeFragment"
+            app:destination="@id/homeFragment"/>
     </fragment>
     <fragment
         android:id="@+id/accountFragment"

@@ -7,13 +7,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/padding_default"
-    tools:context="Setting.SettingFragment">
+    tools:context="RequiredInfo.RequiredInfo1Fragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/go_back_btn"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
+        android:layout_marginStart="-8dp"
         android:background="@color/white"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_baseline_chevron_left_24"
         android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"

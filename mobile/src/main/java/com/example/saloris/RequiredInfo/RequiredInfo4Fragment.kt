@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentRequiredInfo2Binding
-import com.example.saloris.databinding.FragmentRequiredInfo3Binding
+import com.example.saloris.databinding.FragmentRequiredInfo4Binding
 import com.example.saloris.databinding.FragmentRequiredInfoBinding
 import com.example.saloris.databinding.FragmentSettingBinding
 import com.example.saloris.util.MakeToast
@@ -20,13 +20,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class RequiredInfo3Fragment : Fragment() {
+class RequiredInfo4Fragment : Fragment() {
 
     /* View */
-    private lateinit var binding: FragmentRequiredInfo3Binding
+    private lateinit var binding: FragmentRequiredInfo4Binding
     private lateinit var navController: NavController
 
-    lateinit var numberPicker: NumberPicker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +36,7 @@ class RequiredInfo3Fragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRequiredInfo3Binding.inflate(layoutInflater, container, false)
-
-//        numberPicker!!.setMinValue(40);
-//        numberPicker!!.setValue(50);
+        binding = FragmentRequiredInfo4Binding.inflate(layoutInflater, container, false)
 
         return binding.root
     }
@@ -50,11 +46,11 @@ class RequiredInfo3Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo3Fragment_to_requiredInfo4Fragment)
+            navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo5Fragment)
         }
 
         binding.goBackBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo3Fragment_to_requiredInfo2Fragment)
+            navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo3Fragment)
         }
     }
 }
