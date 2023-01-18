@@ -55,12 +55,12 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/start_btn"
-                android:layout_width="340dp"
+                android:layout_width="match_parent"
                 android:layout_height="225dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="28dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="40dp"
+                android:layout_marginEnd="28dp"
                 android:clickable="true"
                 android:padding="10dp"
                 app:cardBackgroundColor="@color/purple_500"
