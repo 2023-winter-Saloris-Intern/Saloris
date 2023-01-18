@@ -33,8 +33,8 @@ class RegisterSuccessFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         // 로그인하기 -> 로그인
-        binding.btnLogin.setOnClickListener {
-            navController.navigate(R.id.action_registerSuccessFragment_to_loginFragment, arguments)
+        binding.btnRequiredInfo.setOnClickListener {
+            navController.navigate(R.id.action_registerSuccessFragment_to_RequiredInfoFragment, arguments)
         }
     }
 }
