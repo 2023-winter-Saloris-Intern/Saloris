@@ -10,7 +10,7 @@
     tools:context="Setting.SettingFragment">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/notosans_kr_bold"
@@ -20,23 +20,137 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="워치 연결 정보"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/device_scan_btn"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:padding="10dp"
+        app:cardBackgroundColor="@color/card_grey_background"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="48dp"
+                android:src="@drawable/watch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/notosans_kr_regular"
+                android:text="워치 정보"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/watch_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/notosans_kr_bold"
+                android:text="워치 연결 정보 없음"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/notosans_kr_regular"
+                android:text="연결 일시"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toBottomOf="@+id/watch_info" />
+
+            <TextView
+                android:id="@+id/watch_connect_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/notosans_kr_bold"
+                android:text="연결 정보 없음"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/appCompatButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/setting_connect_btn"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="연결 해제하기"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/device_scan_btn" />
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_account_settings"
-        android:background="@drawable/setting_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/setting_bg"
+        android:elevation="10dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:gravity="start|center"
         android:text="        계정정보"
         android:textColor="@color/white"
-        android:fontFamily="@font/notosans_kr_bold"
         android:textSize="20dp"
-        android:gravity="start|center"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.262"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatButton"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -50,6 +164,7 @@
         android:text="        로그아웃"
         android:textColor="@color/white"
         android:textSize="20dp"
+        android:elevation="10dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
@@ -67,6 +182,7 @@
         android:textColor="@color/white"
         android:fontFamily="@font/notosans_kr_bold"
         android:textSize="20dp"
+        android:elevation="10dp"
         android:gravity="start|center"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
