@@ -16,8 +16,10 @@
 
 package com.example.saloris
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
@@ -37,6 +39,7 @@ import androidx.health.services.client.data.ExerciseUpdate
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.wear.ambient.AmbientModeSupport
 import com.example.saloris.databinding.FragmentExerciseBinding
@@ -51,6 +54,7 @@ import java.lang.Thread.sleep
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -78,9 +82,10 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     private var cachedExerciseState = ExerciseState.ENDED
     private var activeDurationCheckpoint =
         ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO)
-    private var chronoTickJob: Job? = null
+    //private var chronoTickJob: Job? = null
     private var uiBindingJob: Job? = null
-
+    //TODO : 2min
+    private var lastTime = ""
     private lateinit var ambientController: AmbientModeSupport.AmbientController
     private lateinit var ambientModeHandler: AmbientModeHandler
     private lateinit var serviceIt : Intent
@@ -97,7 +102,8 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         super.onViewCreated(view, savedInstanceState)
         serviceIt = Intent(activity, NetWorking::class.java)
         activity?.startService(serviceIt)
-
+        //todo : stop service ...
+        activity?.let { register(it) }
         binding.startEndButton.setOnClickListener {
             // App could take a perceptible amount of time to transition between states; put button into
             // an intermediary "disabled" state to provide UI feedback.
@@ -143,6 +149,19 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         bindViewsToService()
     }
 
+    private fun register(ctx: Context) {
+        LocalBroadcastManager.getInstance(ctx).registerReceiver(
+            testReceiver, IntentFilter("test")
+        )
+    }
+    private val testReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val stop = intent.getStringExtra("stop")
+            Log.d("stop in Exercise","stop!!")
+            //binding.startEndButton.isEnabled = false
+            startEndExercise()
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         // Unbind from the service.
@@ -223,12 +242,12 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
             // We're starting a new exercise. Clear metrics from any prior exercise.
             resetDisplayedFields()
         }
-
-        if (state == ExerciseState.ACTIVE && !ambientController.isAmbient) {
-            startChronometer()
-        } else {
-            stopChronometer()
-        }
+//
+//        if (state == ExerciseState.ACTIVE && !ambientController.isAmbient) {
+//            startChronometer()
+//        } else {
+//            stopChronometer()
+//        }
 
         updateButtons(state)
         cachedExerciseState = state
@@ -245,11 +264,20 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         latestMetrics.getData(DataType.HEART_RATE_BPM).let {
             if (it.isNotEmpty()) {
                 binding.heartRateText.text = it.last().value.roundToInt().toString()
-                Log.d("Heart Rate", it.last().value.roundToInt().toString())
+                Log.d("Heart Rate_ExerciseFragment_updateMetrics", it.last().value.roundToInt().toString())
+
                 val heart_rate_value = it.last().value.roundToInt().toString()
-                serviceIt.putExtra("heartRate",heart_rate_value)
-                activity?.startService(serviceIt)
-                sleep(1000)
+                //TODO : git
+                //시간순으로 해보자
+                val dateAndtime: String = LocalDateTime.now().toString().substring(14,16)
+                if(lastTime!=dateAndtime)//TODO : 1min
+                {
+                    serviceIt.putExtra("heartRate",heart_rate_value)
+                    activity?.startService(serviceIt)
+                    Log.d("time_ExerciseFragment_updateMetrics",dateAndtime)
+                    Log.d("putValue_ExerciseFragment_updateMetrics",heart_rate_value)
+                    lastTime=dateAndtime
+                }
             }
         }
 
@@ -300,23 +328,23 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         }
     }
 
-    private fun startChronometer() {
-        if (chronoTickJob == null) {
-            chronoTickJob = viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    while (true) {
-                        delay(CHRONO_TICK_MS)
-                        updateChronometer()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun stopChronometer() {
-        chronoTickJob?.cancel()
-        chronoTickJob = null
-    }
+//    private fun startChronometer() {
+//        if (chronoTickJob == null) {
+//            chronoTickJob = viewLifecycleOwner.lifecycleScope.launch {
+//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                    while (true) {
+//                        delay(CHRONO_TICK_MS)
+//                        updateChronometer()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun stopChronometer() {
+//        chronoTickJob?.cancel()
+//        chronoTickJob = null
+//    }
 
     private fun updateChronometer() {
         val duration = activeDurationCheckpoint.displayDuration(Instant.now(), cachedExerciseState)
@@ -361,7 +389,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         service.latestMetrics.value?.let { updateMetrics(it) }
 
         activeDurationCheckpoint = service.activeDurationCheckpoint.value
-        updateChronometer()
+        //updateChronometer()
     }
 
     inner class AmbientModeHandler {
@@ -391,9 +419,9 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         }
     }
 
-    private companion object {
-        const val CHRONO_TICK_MS = 200L
-    }
+//    private companion object {
+//        const val CHRONO_TICK_MS = 200L
+//    }
 
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()
 

@@ -161,6 +161,15 @@
         android:id="@+id/startDriveFragment"
         android:name="com.example.saloris.StartDriveFragment"
         android:label="fragment_start_drive"
-        tools:layout="@layout/fragment_start_drive" />
+        tools:layout="@layout/fragment_start_drive">
+        <action
+            android:id="@+id/action_Networking"
+            app:destination="@+id/Networking"/>
+    </fragment>
+    <fragment
+        android:id="@+id/Networking"
+        android:name="com.example.saloris.data.Networking"
+        android:label="fragment_networking"
+        tools:layout="@layout/activity_networking" />
 
 </navigation>

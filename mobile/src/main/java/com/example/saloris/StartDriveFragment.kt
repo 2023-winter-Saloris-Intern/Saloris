@@ -45,6 +45,11 @@ class StartDriveFragment: Fragment() {
         val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
         bottomMenu.visibility = View.VISIBLE
 
+        binding.startBtn.setOnClickListener {
+            //netwroking으로 이동
+            navController.navigate(R.id.action_Networking, arguments)
+        }
+
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

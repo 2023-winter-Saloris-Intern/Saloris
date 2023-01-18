@@ -35,14 +35,10 @@
 
 
 
-            <TextView
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="Message log"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_height="200dp"/>
 
 
 
@@ -159,7 +155,16 @@
                     android:textStyle="bold" />
 
             </androidx.cardview.widget.CardView>
-
+            <Button
+                android:id="@+id/stopWearOS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="left"
+                android:scrollbars="vertical"
+                android:text="stopWearOS"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

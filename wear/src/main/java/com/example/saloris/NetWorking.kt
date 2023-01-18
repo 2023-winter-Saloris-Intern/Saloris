@@ -28,6 +28,7 @@ import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.ambient.AmbientModeSupport.AmbientCallback
@@ -51,6 +52,7 @@ class NetWorking : WearableListenerService(),
 
     private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
 
+    private lateinit var serviceIt : Intent
 
     private var messageEvent: MessageEvent? = null
     private var mobileNodeUri: String? = null
@@ -186,19 +188,27 @@ class NetWorking : WearableListenerService(),
             }//emd of if
             else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 try {
-
+                    //todo : intent
+                    //TODO : git add
+                    Log.d("wear_netwroking","intent")
+                    serviceIt = Intent("test")
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s1)
                     sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
                     Log.d("in networiking",s1)
-                    //TODO : add vibrator in networking
-//                    lifecycleScope.launch(Dispatchers.IO) {
-//                        Log.d("vibrator","vibrator")
-//                        var vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-//                        vibrator.vibrate(500)
-//                    }
+                    if(s1 == "vibrator"){
+                        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                        vibrator.vibrate(500)
+                        Log.d("wear_netwroking",s1)
+                    }else if (s1 == "stop"){
+                        //TODO : stop wearOS
+                        serviceIt.putExtra("stop","stop")
+                        Log.d("wear_netwroking",s1)
+//                        startActivity(serviceIt)
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(serviceIt)
+                    }
 
                     val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                     vibrator.vibrate(1000)
