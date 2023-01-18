@@ -2,6 +2,7 @@ package com.example.saloris.Home
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,6 +15,8 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.example.saloris.MainActivity
 import com.example.saloris.R
+import com.example.saloris.data.Networking
+import com.example.saloris.data.showData
 import com.example.saloris.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -97,6 +100,10 @@ class HomeFragment : Fragment() {
 
         binding.deviceScanBtn.setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_scanFragment)
+        }
+        binding.buttonTest.setOnClickListener {
+            val intent = Intent(getActivity(), Networking::class.java)
+            startActivity(intent)
         }
 
     }
