@@ -47,7 +47,7 @@ class RequiredInfo5Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo5Fragment_to_homeFragment)
+            navController.navigate(R.id.action_requiredInfo5Fragment_to_loginFragment)
         }
 
         binding.goBackBtn.setOnClickListener {
