@@ -22,7 +22,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -103,4 +102,7 @@ dependencies {
     def coroutines_version = "1.6.3"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
+
+    //chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 }

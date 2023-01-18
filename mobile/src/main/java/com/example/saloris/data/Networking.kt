@@ -1,9 +1,10 @@
 package com.example.saloris.data
-
+import com.example.saloris.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -24,6 +25,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationCompat.WearableExtender
 import androidx.lifecycle.lifecycleScope
+import com.example.saloris.MyMarkerView
+import com.example.saloris.TimeAxisValueFormat
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
 import com.influxdb.client.write.Point
@@ -49,6 +58,9 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
 
     private var messageEvent: MessageEvent? = null
     private var wearableNodeUri: String? = null
+    //chart
+    private var chart: LineChart? = null
+    private var thread: Thread? = null
 
     private lateinit var binding: ActivityNetworkingBinding
     var Rate = ""
@@ -60,6 +72,27 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = ActivityNetworkingBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+//chart
+        chart = findViewById<View>(R.id.chart) as LineChart
+        chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        //chart!!.yAxis.axisMinimum=0f
+        chart!!.xAxis.valueFormatter = TimeAxisValueFormat()
+        chart!!.xAxis.setDrawLabels(true)
+        chart!!.xAxis.axisMinimum=0f
+        chart!!.xAxis.axisMaximum=1200f
+        chart!!.axisRight.isEnabled = false
+        chart!!.axisLeft.axisMaximum=80f // y축 min,max
+        chart!!.axisLeft.axisMinimum=50f
+        chart!!.legend.textColor = Color.BLUE
+        chart!!.animateXY(1000, 1000)
+        chart!!.invalidate()
+        val data = LineData()
+        chart!!.data = data
+        val mv = MyMarkerView(this, R.layout.custom_marker_view,"Realtime")
+        // set the marker to the chart
+        chart!!.setMarker(mv);
+        //feedMultiple()
+
 
         activityContext = this
         wearableDeviceConnected = false
@@ -73,57 +106,137 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                 initialiseDevicePairing(tempAct)
             }
         }
+        binding.stopWearOS.setOnClickListener {
+            Log.d("clicked stop","stop")
+            //send message to wear os
+            sendMessage("stop")
+        }
         //TODO : send to DB button
         binding.sendToDB.setOnClickListener {
             Log.d("clicked",newRate)
             startActivity(Intent(this@Networking,showData::class.java))
         }
-
 //TODO : send message to wear os
 
         binding.sendmessageButton.setOnClickListener {
-            if (wearableDeviceConnected) {
-                if (binding.messagelogTextView.text!!.isNotEmpty()) {
-                    Log.d("send","send button clicked")
-                    val nodeId: String = messageEvent?.sourceNodeId!!
-                    // Set the data of the message to be the bytes of the Uri.
-                    val payload: ByteArray =
-                        "test the send message".toByteArray()
+            Log.d("clicked vibrator","vibrator")
+            sendMessage("vibrator")
 
-                    // Send the rpc
-                    // Instantiates clients without member variables, as clients are inexpensive to
-                    // create. (They are cached and shared between GoogleApi instances.)
-                    val sendMessageTask =
-                        Wearable.getMessageClient(activityContext!!)
-                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+        }
+    }
+    private fun sendMessage(message : String){
+        if (wearableDeviceConnected) {
+            if (binding.messagelogTextView.text!!.isNotEmpty()) {
+                Log.d("send","send button clicked")
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                // Set the data of the message to be the bytes of the Uri.
+                val payload: ByteArray =
+                    message.toByteArray()
 
-                    sendMessageTask.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d("send1", "Message sent successfully")
-                            val sbTemp = StringBuilder()
-                            sbTemp.append("\n")
-                            sbTemp.append(binding.messagelogTextView.text.toString())
-                            sbTemp.append(" (Sent to Wearable)")
-                            //Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView.append(sbTemp)
+                // Send the rpc
+                // Instantiates clients without member variables, as clients are inexpensive to
+                // create. (They are cached and shared between GoogleApi instances.)
+                val sendMessageTask =
+                    Wearable.getMessageClient(activityContext!!)
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
-                            binding.scrollviewText.requestFocus()
-                            binding.scrollviewText.post {
-                                binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                            }
-                        } else {
-                            Log.d("send1", "Message failed.")
+                sendMessageTask.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.d("send1", "Message sent successfully")
+                        val sbTemp = StringBuilder()
+                        sbTemp.append("\n")
+                        sbTemp.append(message.toString())
+                        sbTemp.append(" (Sent to Wearable)")
+                        //Log.d("receive1", " $sbTemp")
+                        binding.messagelogTextView.append(sbTemp)
+
+                        binding.scrollviewText.requestFocus()
+                        binding.scrollviewText.post {
+                            binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
                         }
+                    } else {
+                        Log.d("send1", "Message failed.")
                     }
-                } else {
-                    Toast.makeText(
-                        activityContext,
-                        "Message content is empty. Please enter some message and proceed",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
+            } else {
+                Toast.makeText(
+                    activityContext,
+                    "Message content is empty. Please enter some message and proceed",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
+    }
+    //chart
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addEntry() {
+        val data = chart!!.data
+        Log.d("addEntry_mainActivity",data.toString())
+        if (data != null) {
+            var set = data.getDataSetByIndex(0)
+            if (set == null) {
+                set = createSet()
+                data.addDataSet(set)
+            }
+            val dateAndTime : LocalDateTime = LocalDateTime.now()
+            Log.d("dateAndTime-main",dateAndTime.toString())
+            val time_hour = dateAndTime.toString().substring(11,13)
+            val time_min = dateAndTime.toString().substring(14,16)
+            Log.d("time_hour-main",time_hour)
+            Log.d("time_min-main",time_min)
+            val time  = (time_hour.toInt()-9)*60+time_min.toInt()
+            Log.d("time-main",time.toString())
+            //val rand = (Math.random() * 4).toFloat() + 60f
+            Log.d("value-main",newRate)
+            data.addEntry(Entry(time.toFloat(),newRate.toFloat()), 0)
+            data.notifyDataChanged()
+            chart!!.notifyDataSetChanged()
+            chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
+            chart!!.moveViewToX(time.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
+            Log.d("addEntry_mainActivity",(time.toFloat()-10f).toString())
+        }
+    }
+
+    private fun createSet(): LineDataSet {
+        Log.d("createSet_mainActivity","createSet")
+        val set = LineDataSet(null, "Heart Rate")
+        set.fillAlpha = 110
+
+        set.fillColor = Color.parseColor("#d7e7fa")
+        set.color = Color.parseColor("#0B80C9")
+
+        set.setCircleColor(Color.parseColor("#FFA1B4DC"))
+        //set.setCircleColorHole(Color.BLUE)
+        set.valueTextColor = Color.BLUE //TODO : 글자 색 .. chart에 값 확인하기
+        set.valueTextSize=10f
+        set.setDrawValues(false)
+        set.lineWidth = 2f
+        set.circleRadius = 6f
+        set.setDrawCircleHole(false)
+        set.setDrawCircles(false)
+        set.valueTextSize = 9f
+        set.setDrawFilled(true)
+        set.axisDependency = YAxis.AxisDependency.LEFT
+        set.highLightColor = Color.rgb(244, 117, 117)
+        return set
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun feedMultiple() {
+        if (thread != null) thread!!.interrupt()
+        val runnable = Runnable { addEntry() }
+        Log.d("feedMultiple_mainActivity","feedMultiple")
+        thread = Thread {
+//            while (true) {
+            runOnUiThread(runnable)
+//                try {
+//                    Thread.sleep(60000)// TODO : sleep 1min
+//                } catch (ie: InterruptedException) {
+//                    ie.printStackTrace()
+//                }
+//            }
+        }
+        thread!!.start()
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun insertDB(rate: String):Boolean {
@@ -368,7 +481,9 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.scrollviewText.requestFocus()
                     binding.scrollviewText.post {
                         binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                    }
+                    }                    //TODO : feedMultiple in recievedDB
+                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
+                    feedMultiple()
                     //TODO : DB로 데이터 전송
                     lifecycleScope.launch(Dispatchers.IO) {
                         val isInserted = async { insertDB(newRate) }
