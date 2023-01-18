@@ -9,9 +9,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.saloris.DeviceControlActivity
@@ -26,10 +29,12 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
     private lateinit var binding: DialogWatchConnectBinding
     private var bleGatt: BluetoothGatt? = null
     private var mContext:Context? = null
+    private lateinit var navController: NavController
     /* Toast */
     private val toast = MakeToast()
     /* Dialog */
     private var name: String = ""
+    private var temp: Int = 0
     inner class RecyclerViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("MissingPermission")
@@ -72,12 +77,10 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
             }
             name = bluetoothDevices[position].name
             val device = bluetoothDevices[position]
-            showDialog(it.context, device)
-
+            showDialog(it.context, device, it)
         }
     }
-    private fun showDialog(context: Context, device: BluetoothDevice) {
-
+    private fun showDialog(context: Context, device: BluetoothDevice, view: View) {
         val builder = AlertDialog.Builder(context)
         builder
             .setTitle(name)
@@ -87,11 +90,13 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
                 DialogInterface.OnClickListener { dialog, which ->
                     toast.makeToast(context, "다이얼로그 확인")
                     bleGatt = DeviceControlActivity(context, bleGatt).connectGatt(device)
-
+                    view.findNavController().navigate(R.id.action_scanFragment_to_startDriveFragment)
+                    return@OnClickListener
                 })
             .setNegativeButton("취소",
                 DialogInterface.OnClickListener { dialog, which ->
                     toast.makeToast(context, "다이얼로그 취소")
+                    return@OnClickListener
                 })
         builder.create()
         builder.show()
