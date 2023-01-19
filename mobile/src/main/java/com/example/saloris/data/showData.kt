@@ -211,7 +211,7 @@ class showData : AppCompatActivity() {
         val user="user"
         val org = "intern"
         val bucket = "HeartRate"
-        val token = "kCQhpgwgcQB4H_5Nr4Uf_lFIZjFQkaDA4IeWm5nBmt9WjfpeyIEsdZM95iGaQcx0BMKT0x-sUjHTOKGSApwjrw=="
+        val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val heartrate = ArrayList<HeartRate>()
         val fluxQuery = ("from(bucket: \"HeartRate\")\n" +
