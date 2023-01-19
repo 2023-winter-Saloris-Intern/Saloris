@@ -51,7 +51,7 @@
         android:fontFamily="@font/notosans_kr_bold"
         android:text="맞춤형 분석"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
@@ -64,7 +64,7 @@
         android:fontFamily="@font/notosans_kr_regular"
         android:text="        보다 정확하고 세세한 졸음 분석을 위해\n 회원님에 대한 몇 가지 기본 정보가 필요합니다."
         android:textColor="#5F5F5F"
-        android:textSize="14dp"
+        android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -101,7 +101,7 @@
         android:fontFamily="@font/notosans_kr_bold"
         android:text="다음(4 / 6)"
         android:textColor="@color/white"
-        android:textSize="20dp"
+        android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
