@@ -256,7 +256,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         //val Uid = "T"
         val org = "intern"
         val bucket = "HeartRate"
-        val token = "xnL71S-I14RbadodTl0e-nxkbwqNjTjXDG_q449SyMYyZeefmHomu81MjWneYxn6EBKQJWmsLCeKQU0o3_TC7A=="
+        val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         print(System.getenv())
         val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         client.use {
