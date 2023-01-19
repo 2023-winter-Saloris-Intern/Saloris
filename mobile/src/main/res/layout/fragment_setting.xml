@@ -129,7 +129,7 @@
         android:elevation="0dp"
         android:text="연결 해제하기"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:textColor="@color/black"
+        android:textColor="#B5B5B5"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

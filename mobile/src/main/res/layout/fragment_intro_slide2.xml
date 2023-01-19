@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/intro_bg"
     tools:context=".Intro.IntroSlide2Fragment">
 
 <!--    <ImageView-->
@@ -27,11 +26,11 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:fontFamily="@font/notosans_kr_bold"
         android:text="    날짜 별로 볼 수 있는\n나의 심박수 별 졸음 상태"
-        android:textColor="@color/white"
-        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,8 +41,8 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/notosans_kr_regular"
         android:text="      그래프로 한 눈에 확인하는 그날의 심박수 상태 변화\n최대/최소/평균 심박수를 통해 자세하게 분석할 수 있어요"
-        android:textColor="@color/white"
-        android:textSize="14dp"
+        android:textColor="@color/black"
+        android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
@@ -52,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="110dp"
         android:scaleType="centerCrop"
         android:src="@drawable/intro_slide2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +68,8 @@
         android:src="@drawable/ic_baseline_chevron_left_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
 
     <ImageButton
         android:id="@+id/go_next_btn"
@@ -81,6 +81,7 @@
         android:src="@drawable/ic_baseline_chevron_right_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
