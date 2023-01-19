@@ -124,8 +124,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/setting_connect_btn"
+        android:background="@drawable/light_grey_btn"
         android:fontFamily="@font/notosans_kr_bold"
+        android:elevation="0dp"
         android:text="연결 해제하기"
         android:textColor="@color/black"
         android:textSize="16dp"
@@ -134,17 +135,17 @@
         app:layout_constraintTop_toBottomOf="@+id/device_scan_btn" />
 
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_account_settings"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/blue_round_button"
+        android:background="@drawable/light_grey_btn"
         android:elevation="10dp"
         android:fontFamily="@font/notosans_kr_bold"
         android:gravity="start|center"
-        android:text="   계정정보"
-        android:textColor="@color/white"
+        android:text="        계정정보"
+        android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -153,17 +154,17 @@
         app:layout_constraintTop_toBottomOf="@+id/appCompatButton"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/blue_round_button"
+        android:background="@drawable/light_grey_btn"
         android:elevation="10dp"
         android:fontFamily="@font/notosans_kr_bold"
         android:gravity="start|center"
-        android:text="   로그아웃"
-        android:textColor="@color/white"
+        android:text="        로그아웃"
+        android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -172,17 +173,17 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_account_settings"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_help"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/blue_round_button"
+        android:background="@drawable/light_grey_btn"
         android:elevation="10dp"
         android:fontFamily="@font/notosans_kr_bold"
         android:gravity="start|center"
-        android:text="   도움말"
-        android:textColor="@color/white"
+        android:text="        도움말"
+        android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"

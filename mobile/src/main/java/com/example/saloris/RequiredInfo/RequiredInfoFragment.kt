@@ -15,6 +15,7 @@ import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
 class RequiredInfoFragment : Fragment() {
@@ -23,9 +24,14 @@ class RequiredInfoFragment : Fragment() {
     private lateinit var binding: FragmentRequiredInfoBinding
     private lateinit var navController: NavController
 
+    private lateinit var auth: FirebaseAuth
+    lateinit var firestore : FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
     }
 
     override fun onCreateView(
