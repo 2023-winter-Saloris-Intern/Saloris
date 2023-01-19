@@ -29,9 +29,9 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
         val minute = (time_min%60).toString()
         var hour =""
         if(type=="Show"){
-            hour = (time_min/60).toString()
+            hour = (time_min/60+9).toString()
         }else{
-            hour = (time_min/60).toString()
+            hour = (time_min/60+9).toString()
         }
         // 시 : 분 형식으로 바꿔서
         val mark = hour + ":"+minute
