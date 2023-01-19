@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.startBtn.setOnClickListener {
-            navController.navigate(R.id.action_homeFragment_to_Networking)
+            navController.navigate(R.id.action_homeFragment_to_driveFragment)
         }
         binding.buttonTest.setOnClickListener {
             val intent = Intent(getActivity(), Networking::class.java)

@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_homeFragment_to_Networking"
             app:destination="@id/Networking" />
+        <action
+            android:id="@+id/action_homeFragment_to_driveFragment"
+            app:destination="@id/driveFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -226,5 +229,10 @@
         android:name="com.example.saloris.data.Networking"
         android:label="fragment_networking"
         tools:layout="@layout/activity_networking" />
+    <fragment
+        android:id="@+id/driveFragment"
+        android:name="com.example.saloris.DriveFragment"
+        android:label="fragment_drive"
+        tools:layout="@layout/fragment_drive" />
 
 </navigation>
