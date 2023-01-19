@@ -23,7 +23,7 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
     // callbacks everytime the MarkerView is redrawn, can be used to update the
     // content (user-interface)
     override fun refreshContent(e: Entry, highlight: Highlight) {
-        //선택한 것의 x축의 값 : 시간을 분으로 표현한 것
+        //선택한 것의 x축의 값 =시간을 분으로 표현한 것
         Log.d("x",e.x.toString())
         val time_min = Utils.formatNumber(e.x.toInt().toFloat(), 0, true).toInt()
         val minute = (time_min%60).toString()
@@ -38,27 +38,12 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
         if (e is CandleEntry) {
             //markerView layout의 text에 넣기
             tvContent.text ="heartRate:"+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"time"+mark
-
         } else {
             tvContent.text ="heartRate:"+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\ntime"+mark
         }// "" +  Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+ "" + Utils.formatNumber(e.high.toInt().toFloat(), 0, true) +
         super.refreshContent(e, highlight)
     }
-
     override fun getOffset(): MPPointF {
         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat())
     }
-//    private fun getValue(e:Entry): String? {
-//        // e => x : 시간(분) y: 심박수
-//        val t=e.toString().split(',')[1].replace(":", "=").replace(" ","")
-//        val t1=t.replace("x","time").replace("y","heartrate")
-//        Log.d("hello",t)
-//        return t
-//    }
-//    private fun getTime(time_min :Int):String{
-//        val time : String = ""
-//        val minute = (time_min%60).toString()
-//        val hour = (time_min/60-9).toString()
-//        return hour + ":"+minute
-//    }
 }

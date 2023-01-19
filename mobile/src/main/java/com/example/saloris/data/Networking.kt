@@ -75,19 +75,20 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //user auth
         auth = Firebase.auth
         binding = ActivityNetworkingBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-//chart
+        //chart
         chart = findViewById<View>(R.id.chart) as LineChart
-        chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 밑으로
         //chart!!.yAxis.axisMinimum=0f
-        chart!!.xAxis.valueFormatter = TimeAxisValueFormat()
+        chart!!.xAxis.valueFormatter = TimeAxisValueFormat() // x축의 출력 형식을 시:분으로
         chart!!.xAxis.setDrawLabels(true)
-        chart!!.xAxis.axisMinimum=0f
-        chart!!.xAxis.axisMaximum=1200f
-        chart!!.axisRight.isEnabled = false
+        chart!!.xAxis.axisMinimum=0f // 9시부터
+        chart!!.xAxis.axisMaximum=1200f // 오전 5시까지..?
+        chart!!.axisRight.isEnabled = false // 오른쪽 y축은 없애고
         chart!!.axisLeft.axisMaximum=80f // y축 min,max
         chart!!.axisLeft.axisMinimum=50f
         chart!!.legend.textColor = Color.BLUE
@@ -95,18 +96,17 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         chart!!.invalidate()
         val data = LineData()
         chart!!.data = data
-        val mv = MyMarkerView(this, R.layout.custom_marker_view,"Realtime")
+        val mv = MyMarkerView(this, R.layout.custom_marker_view,"Realtime") // markerview
         // set the marker to the chart
         chart!!.setMarker(mv);
         //feedMultiple()
 
-
         activityContext = this
         wearableDeviceConnected = false
 
-
         var influxDB = InfluxDB()
         binding.checkwearablesButton.setOnClickListener {
+            //wearable device가 연결되었는지 확인하는 버튼
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as AppCompatActivity
                 //Couroutine
@@ -114,23 +114,23 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         }
         binding.stopWearOS.setOnClickListener {
+            //워치 앱 종료 버튼
             Log.d("clicked stop","stop")
             //send message to wear os
             sendMessage("stop")
         }
-        //TODO : send to DB button
         binding.sendToDB.setOnClickListener {
+            //DB에서 가져온 데이터를 출력하는 화면으로 이동
             Log.d("clicked",newRate)
             startActivity(Intent(this@Networking,showData::class.java))
         }
-//TODO : send message to wear os
-
         binding.sendmessageButton.setOnClickListener {
+            //워치 진동 버튼 => 누르면 워치에서 진동 발생
             Log.d("clicked vibrator","vibrator")
             sendMessage("vibrator")
-
         }
     }
+
     private fun sendMessage(message : String){
         if (wearableDeviceConnected) {
             if (binding.messagelogTextView.text!!.isNotEmpty()) {
@@ -191,6 +191,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             val time_min = dateAndTime.toString().substring(14,16)
             Log.d("time_hour-main",time_hour)
             Log.d("time_min-main",time_min)
+            //현재 시간을 분으로 바꿔서 Entry x축에 넣기
             val time  = (time_hour.toInt())*60+time_min.toInt()
             Log.d("time-main",time.toString())
             //val rand = (Math.random() * 4).toFloat() + 60f
@@ -208,12 +209,13 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun createSet(): LineDataSet {
+        //chart : 설정
         Log.d("createSet_mainActivity","createSet")
         val set = LineDataSet(null, "Heart Rate")
         set.fillAlpha = 110
 
-        set.fillColor = Color.parseColor("#d7e7fa")
-        set.color = Color.parseColor("#0B80C9")
+        set.fillColor = Color.parseColor("#d7e7fa")//선 밑에 색채우기
+        set.color = Color.parseColor("#0B80C9")//선 색
 
         set.setCircleColor(Color.parseColor("#FFA1B4DC"))
         //set.setCircleColorHole(Color.BLUE)
@@ -237,25 +239,21 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         val runnable = Runnable { addEntry() }
         Log.d("feedMultiple_mainActivity","feedMultiple")
         thread = Thread {
-//            while (true) {
             runOnUiThread(runnable)
-//                try {
-//                    Thread.sleep(60000)// TODO : sleep 1min
-//                } catch (ie: InterruptedException) {
-//                    ie.printStackTrace()
-//                }
-//            }
         }
         thread!!.start()
     }
+    //DB에 heartrate를 넣는 함수
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun insertDB(rate: String):Boolean {
 //val token = System.getenv()["INFLUX_TOKEN"]
         val user="user"
+        //사용자 uid
         val Uid=auth.currentUser?.uid
         //val Uid = "T"
         val org = "intern"
         val bucket = "HeartRate"
+        //influxDB token
         val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         print(System.getenv())
         val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
@@ -268,7 +266,6 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     .addField("HeartRate",rate)
                     .time(Instant.now(), WritePrecision.NS);
                 writeApi.writePoint(point)
-
             } catch (ie: InfluxException) {
                 Log.e("InfluxException", "Insert: ${ie.cause}")
                 return false
@@ -277,8 +274,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         client.close()
         return true
     }
-
-
+    //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
         //Coroutine
@@ -337,13 +333,12 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         }
     }
-
-
+    //현재 모바일이랑 연동된 워치의 node를 가져와서 확인
     private fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
         val resBool = BooleanArray(2)
-        resBool[0] = false //nodePresent
-        resBool[1] = false //wearableReturnAckReceived
+        resBool[0] = false //nodePresent : true이면 연결되어있다
+        resBool[1] = false //wearableReturnAckReceived : true이면 워치에 앱이 열려있다
         val nodeListTask =
             Wearable.getNodeClient(context).connectedNodes
         try {
@@ -367,6 +362,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                         Wearable.getMessageClient(context)
                             .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
                     Log.d("sendMessageToWearable","send message")
+                    //워치로 메시지를 보내고 5번동안 받으면 앱이 열려있고 안받으면 앱이 없다
                     try {
                         // Block on a task and get the result synchronously (because this is on a background thread).
                         val result = Tasks.await(sendMessageTask)
@@ -449,34 +445,24 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             val s =
                 String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path
-//            Log.d(
-//                TAG_MESSAGE_RECEIVED,
-//                "onMessageReceived() Received a message from watch:"
-//                        + p0.requestId
-//                        + " "
-//                        + messageEventPath
-//                        + " "
-//                        + s
-//            )
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
+                //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
                 currentAckFromWearForAppOpenCheck = s
                 Log.d(
                     TAG_MESSAGE_RECEIVED,
                     "Received acknowledgement message that app is open in wear"
                 )
-
                 val sbTemp = StringBuilder()
                 sbTemp.append(binding.messagelogTextView.text.toString())
                 sbTemp.append("\nWearable device connected.")
-                //Log.d("receive1", " $sbTemp")
+
                 binding.messagelogTextView.text = sbTemp
-                //binding.textInputLayout.visibility = View.VISIBLE
 
                 binding.checkwearablesButton.visibility = View.GONE
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
-
+                //워치에서 보낸 심박수를 받는다
                 try {
                     binding.messagelogTextView.visibility = View.VISIBLE
                     //binding.textInputLayout.visibility = View.VISIBLE
@@ -484,7 +470,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     val dateAndTime : LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
-                    sbTemp.append(s)
+                    sbTemp.append(s)//심박수
                     sbTemp.append( "==="+dateAndTime.toString())
                     //Log.d("receive1", " $sbTemp")
                     binding.messagelogTextView.text=sbTemp
@@ -492,10 +478,11 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.scrollviewText.requestFocus()
                     binding.scrollviewText.post {
                         binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                    }                    //TODO : feedMultiple in recievedDB
+                    }
                     Log.d("onMessageReceived_mainActivity","feedMultiple()")
+                    //chart에 표시
                     feedMultiple()
-                    //TODO : DB로 데이터 전송
+                    //DB로 데이터 전송
                     lifecycleScope.launch(Dispatchers.IO) {
                         val isInserted = async { insertDB(newRate) }
                         Log.d("isInserted",newRate)
