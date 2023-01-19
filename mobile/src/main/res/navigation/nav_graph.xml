@@ -13,14 +13,14 @@
             android:id="@+id/action_homeFragment_to_loginStartFragment"
             app:destination="@id/loginStartFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_scanFragment"
-            app:destination="@id/scanFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_recordFragment"
             app:destination="@id/recordFragment" />
         <action
             android:id="@+id/action_homeFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_Networking"
+            app:destination="@id/Networking" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -157,15 +157,6 @@
             app:destination="@id/loginStartFragment" />
     </fragment>
     <fragment
-        android:id="@+id/scanFragment"
-        android:name="com.example.saloris.ScanFragment"
-        android:label="fragment_scan"
-        tools:layout="@layout/fragment_scan" >
-        <action
-            android:id="@+id/action_scanFragment_to_startDriveFragment"
-            app:destination="@id/startDriveFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/recordFragment"
         android:name="com.example.saloris.Record.RecordFragment"
         android:label="fragment_record"
@@ -229,15 +220,6 @@
         <action
             android:id="@+id/action_IntroSlide3Fragment_to_homeFragment"
             app:destination="@+id/homeFragment"/>
-    </fragment>
-    <fragment
-        android:id="@+id/startDriveFragment"
-        android:name="com.example.saloris.StartDriveFragment"
-        android:label="fragment_start_drive"
-        tools:layout="@layout/fragment_start_drive">
-        <action
-            android:id="@+id/action_Networking"
-            app:destination="@+id/Networking"/>
     </fragment>
     <fragment
         android:id="@+id/Networking"

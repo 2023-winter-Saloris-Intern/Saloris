@@ -98,8 +98,8 @@ class HomeFragment : Fragment() {
             binding.userName.text = auth.currentUser!!.displayName
         }
 
-        binding.deviceScanBtn.setOnClickListener {
-            navController.navigate(R.id.action_homeFragment_to_scanFragment)
+        binding.startBtn.setOnClickListener {
+            navController.navigate(R.id.action_homeFragment_to_Networking)
         }
         binding.buttonTest.setOnClickListener {
             val intent = Intent(getActivity(), Networking::class.java)
