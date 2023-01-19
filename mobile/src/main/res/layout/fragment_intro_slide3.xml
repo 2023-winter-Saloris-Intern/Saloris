@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/intro_bg"
     tools:context=".Intro.IntroSlide3Fragment">
 
 <!--    <ImageView-->
@@ -27,11 +26,11 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/notosans_kr_bold"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/notosans_kr_regular"
         android:text="더 새로워진"
-        android:textColor="@color/white"
-        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,9 +39,9 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/notosans_kr_bold"
+        android:fontFamily="@font/pyeongchangpeace_light"
         android:text="DONOFF"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +53,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/notosans_kr_regular"
         android:text="지금 바로 시작해 볼까요?"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,26 +76,27 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="32dp"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_baseline_chevron_left_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/start_btn"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/black" />
 
 
     <Button
         android:id="@+id/start_btn"
         android:layout_width="280dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="32dp"
-        android:background="@drawable/connect_watch_btn"
+        android:background="@drawable/blue_round_button"
         android:fontFamily="@font/notosans_kr_bold"
         android:text="시작하기"
         android:textAlignment="center"
-        android:textSize="20dp"
+        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
