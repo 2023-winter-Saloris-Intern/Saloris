@@ -134,11 +134,31 @@ tools:context=".Home.HomeFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
-    <!--todo : 삭제해야함-->
+    <TextView
+        android:id="@+id/not_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="연결이 안되었으면 이게 보임" />
+
+    <TextView
+        android:id="@+id/is_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="연결이 되었으면 이게 보임" />
+
+    <Button
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="check connect" />
+
     <Button
         android:id="@+id/button_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button" />
+
+</LinearLayout>
+    <!--todo : 삭제해야함-->
+
 </FrameLayout>
