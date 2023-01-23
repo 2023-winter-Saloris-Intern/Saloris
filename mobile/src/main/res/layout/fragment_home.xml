@@ -157,6 +157,21 @@ tools:context=".Home.HomeFragment">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button" />
+    <Button
+        android:id="@+id/vibrate_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="vibrate" />
+    <TextView
+        android:id="@+id/vibrate_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="진동"/>
+    <TextView
+        android:id="@+id/messagelogTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="진동"/>
 
 </LinearLayout>
     <!--todo : 삭제해야함-->

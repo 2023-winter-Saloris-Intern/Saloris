@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
@@ -29,6 +32,8 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.*
+import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
 import java.util.HashSet
 
 class HomeFragment : Fragment(), CoroutineScope by MainScope() {
@@ -136,9 +141,55 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
                 initialiseDevicePairing(tempAct)
             }
         }
-
+        binding.vibrateBtn.setOnClickListener {
+            //워치 진동 버튼 => 누르면 워치에서 진동 발생
+            toast.makeToast(requireContext(), "vibrate")
+            sendMessage("vibrator")
+        }
     }
 
+    private fun sendMessage(message : String){
+        if (wearableDeviceConnected) {
+            if (binding.vibrateTv.text!!.isNotEmpty()) {
+                Log.d("send","send button clicked")
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                // Set the data of the message to be the bytes of the Uri.
+                val payload: ByteArray =
+                    message.toByteArray()
+
+                // Send the rpc
+                // Instantiates clients without member variables, as clients are inexpensive to
+                // create. (They are cached and shared between GoogleApi instances.)
+                val sendMessageTask =
+                    Wearable.getMessageClient(requireActivity()!!)
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+
+                sendMessageTask.addOnCompleteListener {
+                    toast.makeToast(requireContext(), "addOnCompleteListener")
+
+                    if (it.isSuccessful) {
+                        toast.makeToast(requireContext(), "isSuccessful")
+                        val sbTemp = StringBuilder()
+                        sbTemp.append("\n")
+                        sbTemp.append(message.toString())
+                        sbTemp.append(" (Sent to Wearable)")
+                        //Log.d("receive1", " $sbTemp")
+                        binding.messagelogTextView.append(sbTemp)
+
+
+                    } else {
+                        toast.makeToast(requireContext(), "fail")
+                    }
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Message content is empty. Please enter some message and proceed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
     //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
@@ -289,6 +340,66 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
         }
         return resBool
     }
+
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    @SuppressLint("SetTextI18n")
+//    fun onMessageReceived(p0: MessageEvent) {
+//        try {
+//            val s =
+//                String(p0.data, StandardCharsets.UTF_8)
+//            val messageEventPath: String = p0.path
+//            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
+//                //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
+//                currentAckFromWearForAppOpenCheck = s
+//                Log.d(
+//                    TAG_MESSAGE_RECEIVED,
+//                    "Received acknowledgement message that app is open in wear"
+//                )
+//                val sbTemp = StringBuilder()
+//                sbTemp.append(binding.messagelogTextView.text.toString())
+//                sbTemp.append("\nWearable device connected.")
+//
+//                binding.messagelogTextView.text = sbTemp
+//
+//                binding.checkwearablesButton.visibility = View.GONE
+//                messageEvent = p0
+//                wearableNodeUri = p0.sourceNodeId
+//            } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
+//                //워치에서 보낸 심박수를 받는다
+//                try {
+//                    binding.messagelogTextView.visibility = View.VISIBLE
+//                    //binding.textInputLayout.visibility = View.VISIBLE
+//                    binding.sendmessageButton.visibility = View.VISIBLE
+//                    val dateAndTime : LocalDateTime = LocalDateTime.now()
+//                    val sbTemp = StringBuilder()
+//                    sbTemp.append("\n")
+//                    sbTemp.append(s)//심박수
+//                    sbTemp.append( "==="+dateAndTime.toString())
+//                    //Log.d("receive1", " $sbTemp")
+//                    binding.messagelogTextView.text=sbTemp
+//                    newRate = s
+//                    binding.scrollviewText.requestFocus()
+//                    binding.scrollviewText.post {
+//                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
+//                    }
+//                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
+//                    //chart에 표시
+//                    feedMultiple()
+//                    //DB로 데이터 전송
+//                    lifecycleScope.launch(Dispatchers.IO) {
+//                        val isInserted = async { insertDB(newRate) }
+//                        Log.d("isInserted",newRate)
+//                        Log.d("time", dateAndTime.toString())
+//                    }
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            Log.d("receive1", "Handled")
+//        }
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
