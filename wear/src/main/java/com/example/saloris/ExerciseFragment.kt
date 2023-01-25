@@ -267,17 +267,14 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
                 Log.d("Heart Rate_ExerciseFragment_updateMetrics", it.last().value.roundToInt().toString())
 
                 val heart_rate_value = it.last().value.roundToInt().toString()
-                //TODO : git
-                //시간순으로 해보자
+                //TODO : send to mobile 1s
                 val dateAndtime: String = LocalDateTime.now().toString().substring(14,16)
-                if(lastTime!=dateAndtime)//TODO : 1min
-                {
-                    serviceIt.putExtra("heartRate",heart_rate_value)
-                    activity?.startService(serviceIt)
-                    Log.d("time_ExerciseFragment_updateMetrics",dateAndtime)
-                    Log.d("putValue_ExerciseFragment_updateMetrics",heart_rate_value)
-                    lastTime=dateAndtime
-                }
+                serviceIt.putExtra("heartRate",heart_rate_value)
+                activity?.startService(serviceIt)
+                Log.d("time_ExerciseFragment_updateMetrics",dateAndtime)
+                Log.d("putValue_ExerciseFragment_updateMetrics",heart_rate_value)
+                lastTime=dateAndtime
+
             }
         }
 

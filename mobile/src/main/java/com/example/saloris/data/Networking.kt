@@ -71,6 +71,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityNetworkingBinding
     var Rate = ""
     var newRate = ""
+    var last_time=""
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +85,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         chart = findViewById<View>(R.id.chart) as LineChart
         chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 밑으로
         //chart!!.yAxis.axisMinimum=0f
-        chart!!.xAxis.valueFormatter = TimeAxisValueFormat() // x축의 출력 형식을 시:분으로
+        //chart!!.xAxis.valueFormatter = TimeAxisValueFormat() // x축의 출력 형식을 시:분으로
         chart!!.xAxis.setDrawLabels(true)
         chart!!.xAxis.axisMinimum=0f // 9시부터
         chart!!.xAxis.axisMaximum=1200f // 오전 5시까지..?
@@ -92,7 +93,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         chart!!.axisLeft.axisMaximum=80f // y축 min,max
         chart!!.axisLeft.axisMinimum=50f
         chart!!.legend.textColor = Color.BLUE
-        chart!!.animateXY(1000, 1000)
+        chart!!.animateXY(10, 10)
         chart!!.invalidate()
         val data = LineData()
         chart!!.data = data
@@ -198,12 +199,12 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             Log.d("value-main",newRate)
             //TODO time :real time
             val time_to = time.toFloat()-9*60
-            data.addEntry(Entry(time_to,newRate.toFloat()), 0)
+            data.addEntry(Entry(set.entryCount.toFloat(),newRate.toFloat()), 0)
             Log.d("time_x",time.toString())
             data.notifyDataChanged()
             chart!!.notifyDataSetChanged()
             chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
-            chart!!.moveViewToX(time_to.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
+            chart!!.moveViewToX(set.entryCount.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
             Log.d("addEntry_mainActivity",(time_to.toFloat()-10f).toString())
         }
     }
@@ -483,10 +484,12 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     //chart에 표시
                     feedMultiple()
                     //DB로 데이터 전송
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val isInserted = async { insertDB(newRate) }
-                        Log.d("isInserted",newRate)
-                        Log.d("time", dateAndTime.toString())
+                    if(last_time!=dateAndTime.toString().substring(14,16))
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val isInserted = async { insertDB(newRate) }
+                            Log.d("isInserted",newRate)
+                            Log.d("time", dateAndTime.toString().substring(14,16))
+                            last_time = dateAndTime.toString().substring(14,16)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
