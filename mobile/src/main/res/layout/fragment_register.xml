@@ -334,7 +334,7 @@
         android:text="@string/register"
         app:layout_constrainedHeight="true"
         android:fontFamily="@font/notosans_kr_regular"
-        android:background="@color/card_grey_background"
+        android:background="@drawable/light_grey_btn"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

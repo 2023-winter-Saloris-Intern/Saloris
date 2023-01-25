@@ -72,11 +72,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_first_register"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="시작하기"
-            android:background="@color/card_grey_background"
+            android:background="@drawable/light_grey_btn"
+            android:elevation="0dp"
             android:fontFamily="@font/notosans_kr_regular"
+            style="@style/Widget.AppCompat.Button.Borderless"
             app:layout_constrainedHeight="true"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
