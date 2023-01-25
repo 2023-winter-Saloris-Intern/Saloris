@@ -75,7 +75,7 @@ class showData : AppCompatActivity() {
         chart!!.xAxis.axisMinimum=0f
         chart!!.xAxis.axisMaximum=1200f
         chart!!.axisRight.isEnabled = false
-        chart!!.axisLeft.axisMaximum=80f // y축 min,max
+        chart!!.axisLeft.axisMaximum=100f // y축 min,max
         chart!!.axisLeft.axisMinimum=50f
         chart!!.legend.textColor = Color.BLUE
         chart!!.animateXY(1000, 1000)
