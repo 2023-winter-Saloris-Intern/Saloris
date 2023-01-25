@@ -126,13 +126,13 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
             startActivity(Intent(this@Networking,showData::class.java))
         }
         binding.sendmessageButton.setOnClickListener {
-            //워치 진동 버튼 => 누르면 워치에서 진동 발생
-            Log.d("clicked vibrator","vibrator")
+            //워치 진동 버튼 => 누르면 워치에서 진동 발생F
             sendMessage("vibrator")
         }
     }
 
     private fun sendMessage(message : String){
+        println("send Message$wearableDeviceConnected")
         if (wearableDeviceConnected) {
             if (binding.messagelogTextView.text!!.isNotEmpty()) {
                 Log.d("send","send button clicked")

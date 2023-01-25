@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -29,16 +31,21 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.example.saloris.util.MakeToast
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.util.HashSet
 
-class HomeFragment : Fragment(), CoroutineScope by MainScope() {
+class HomeFragment : Fragment(), CoroutineScope by MainScope(),
+    DataClient.OnDataChangedListener,
+    MessageClient.OnMessageReceivedListener,
+    CapabilityClient.OnCapabilityChangedListener{
+    var activityContext: Context? = null
+
     private val wearableAppCheckPayload = "AppOpenWearable"
     private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
+    private var wearableDeviceConnected: Boolean = false
 
     private var currentAckFromWearForAppOpenCheck: String? = null
     private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
@@ -53,7 +60,6 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var navController: NavController
-    private var wearableDeviceConnected: Boolean = false
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     var btnBackPressedTime: Long = 0
 
@@ -62,6 +68,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
 
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
+    var newRate = ""
 
     private fun isAutoLogined(): Boolean {
         val autoLoginPref =
@@ -87,7 +94,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        activityContext = this.context
+        wearableDeviceConnected = false
         /* User Authentication */
         auth = Firebase.auth
     }
@@ -110,7 +118,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
         super.onViewCreated(view, savedInstanceState)
         wearableDeviceConnected = false
         navController = Navigation.findNavController(view)
-
+        activityContext = this.context
         /* User Authentication */
         if (auth.currentUser == null) {
             if (isAutoLogined()) {
@@ -133,25 +141,34 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
             startActivity(intent)
         }
 
-        binding.check.setOnClickListener {
-            //wearable device가 연결되었는지 확인하는 버튼
-            if (!wearableDeviceConnected) {
-                val tempAct: Activity = requireActivity() as AppCompatActivity
-                //Couroutine
-                initialiseDevicePairing(tempAct)
-            }
+//        binding.check.setOnClickListener {
+//            //wearable device가 연결되었는지 확인하는 버튼
+//            if (!wearableDeviceConnected) {
+//                val tempAct: Activity = requireActivity() as AppCompatActivity
+//                //Couroutine
+//                initialiseDevicePairing(tempAct)
+//            }
+//        }
+        //wearable device가 연결되었는지 확인
+        if (!wearableDeviceConnected) {
+            val tempAct: Activity = activityContext as AppCompatActivity
+            //Couroutine
+            initialiseDevicePairing(tempAct)
         }
         binding.vibrateBtn.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             toast.makeToast(requireContext(), "vibrate")
             sendMessage("vibrator")
         }
+
     }
 
     private fun sendMessage(message : String){
+        toast.makeToast(requireContext(), "send message")
+        println(wearableDeviceConnected)
         if (wearableDeviceConnected) {
-            if (binding.vibrateTv.text!!.isNotEmpty()) {
-                Log.d("send","send button clicked")
+            if (binding.messagelogTextView.text!!.isNotEmpty()) {
+                toast.makeToast(requireContext(), "send message")
                 val nodeId: String = messageEvent?.sourceNodeId!!
                 // Set the data of the message to be the bytes of the Uri.
                 val payload: ByteArray =
@@ -161,12 +178,11 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
                 // Instantiates clients without member variables, as clients are inexpensive to
                 // create. (They are cached and shared between GoogleApi instances.)
                 val sendMessageTask =
-                    Wearable.getMessageClient(requireActivity()!!)
+                    Wearable.getMessageClient(activityContext!!)
                         .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
                 sendMessageTask.addOnCompleteListener {
                     toast.makeToast(requireContext(), "addOnCompleteListener")
-
                     if (it.isSuccessful) {
                         toast.makeToast(requireContext(), "isSuccessful")
                         val sbTemp = StringBuilder()
@@ -183,7 +199,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
                 }
             } else {
                 Toast.makeText(
-                    requireContext(),
+                    activityContext,
                     "Message content is empty. Please enter some message and proceed",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -193,6 +209,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
     //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
+        var cardColor = ContextCompat.getColor(requireContext(),R.color.line_primary)
+
         //Coroutine
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
@@ -217,6 +235,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
                         //binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                         wearableDeviceConnected = true
                         //binding.sendmessageButton.visibility = View.VISIBLE
+                        cardColor = ContextCompat.getColor(requireContext(),R.color.teal_200)
+                        binding.startBtn.setCardBackgroundColor(cardColor)
                         binding.notConnect.visibility = View.GONE
                         binding.isConnect.visibility = View.VISIBLE
                     } else {
@@ -225,6 +245,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
                         //binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                         wearableDeviceConnected = false
                         //binding.sendmessageButton.visibility = View.GONE
+                        cardColor = ContextCompat.getColor(requireContext(),R.color.white)
+                        binding.startBtn.setCardBackgroundColor(cardColor)
                         binding.notConnect.visibility = View.GONE
                         binding.isConnect.visibility = View.VISIBLE
                     }
@@ -234,6 +256,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
                     //binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                     wearableDeviceConnected = false
                     //binding.sendmessageButton.visibility = View.GONE
+                    cardColor = ContextCompat.getColor(requireContext(),R.color.line_primary)
+                    binding.startBtn.setCardBackgroundColor(cardColor)
                     binding.notConnect.visibility = View.VISIBLE
                     binding.isConnect.visibility = View.GONE
                 }
@@ -245,7 +269,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
         val nodeResults = HashSet<String>()
         val resBool = BooleanArray(2)
         resBool[0] = false //nodePresent : true이면 연결되어있다
-        resBool[1] = false //wearableReturnAckReceived : true이면 워치에 앱이 열려있다
+        resBool[1] = false //wearableReturnAckR eceived : true이면 워치에 앱이 열려있다
         val nodeListTask =
             Wearable.getNodeClient(context).connectedNodes
         try {
@@ -341,65 +365,61 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
         return resBool
     }
 
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    @SuppressLint("SetTextI18n")
-//    fun onMessageReceived(p0: MessageEvent) {
-//        try {
-//            val s =
-//                String(p0.data, StandardCharsets.UTF_8)
-//            val messageEventPath: String = p0.path
-//            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
-//                //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
-//                currentAckFromWearForAppOpenCheck = s
-//                Log.d(
-//                    TAG_MESSAGE_RECEIVED,
-//                    "Received acknowledgement message that app is open in wear"
-//                )
-//                val sbTemp = StringBuilder()
-//                sbTemp.append(binding.messagelogTextView.text.toString())
-//                sbTemp.append("\nWearable device connected.")
-//
-//                binding.messagelogTextView.text = sbTemp
-//
-//                binding.checkwearablesButton.visibility = View.GONE
-//                messageEvent = p0
-//                wearableNodeUri = p0.sourceNodeId
-//            } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
-//                //워치에서 보낸 심박수를 받는다
-//                try {
-//                    binding.messagelogTextView.visibility = View.VISIBLE
-//                    //binding.textInputLayout.visibility = View.VISIBLE
-//                    binding.sendmessageButton.visibility = View.VISIBLE
-//                    val dateAndTime : LocalDateTime = LocalDateTime.now()
-//                    val sbTemp = StringBuilder()
-//                    sbTemp.append("\n")
-//                    sbTemp.append(s)//심박수
-//                    sbTemp.append( "==="+dateAndTime.toString())
-//                    //Log.d("receive1", " $sbTemp")
-//                    binding.messagelogTextView.text=sbTemp
-//                    newRate = s
+    @SuppressLint("SetTextI18n")
+    override fun onMessageReceived(p0: MessageEvent) {
+        try {
+            val s =
+                String(p0.data, StandardCharsets.UTF_8)
+            val messageEventPath: String = p0.path
+            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
+                //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
+                currentAckFromWearForAppOpenCheck = s
+                Log.d(
+                    TAG_MESSAGE_RECEIVED,
+                    "Received acknowledgement message that app is open in wear"
+                )
+                val sbTemp = StringBuilder()
+                sbTemp.append(binding.messagelogTextView.text.toString())
+                sbTemp.append("\nWearable device connected.")
+
+                binding.messagelogTextView.text = sbTemp
+
+                messageEvent = p0
+                wearableNodeUri = p0.sourceNodeId
+            } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
+                //워치에서 보낸 심박수를 받는다
+                try {
+                    binding.messagelogTextView.visibility = View.VISIBLE
+                    val dateAndTime : LocalDateTime = LocalDateTime.now()
+                    val sbTemp = StringBuilder()
+                    sbTemp.append("\n")
+                    sbTemp.append(s)//심박수
+                    //sbTemp.append( "==="+dateAndTime.toString())
+                    //Log.d("receive1", " $sbTemp")
+                    binding.messagelogTextView.text = sbTemp.toString()
+                    newRate = s
 //                    binding.scrollviewText.requestFocus()
 //                    binding.scrollviewText.post {
 //                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
 //                    }
-//                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
-//                    //chart에 표시
-//                    feedMultiple()
-//                    //DB로 데이터 전송
+                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
+                    //chart에 표시
+                    //feedMultiple()
+                    //DB로 데이터 전송
 //                    lifecycleScope.launch(Dispatchers.IO) {
 //                        val isInserted = async { insertDB(newRate) }
 //                        Log.d("isInserted",newRate)
 //                        Log.d("time", dateAndTime.toString())
 //                    }
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Log.d("receive1", "Handled")
-//        }
-//    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("receive1", "Handled")
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -412,6 +432,14 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope() {
     override fun onDetach() {
         super.onDetach()
         onBackPressedCallback.remove()
+    }
+
+    override fun onDataChanged(p0: DataEventBuffer) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCapabilityChanged(p0: CapabilityInfo) {
+        TODO("Not yet implemented")
     }
 
 }
