@@ -13,23 +13,28 @@ import com.example.saloris.databinding.FragmentRecordBinding
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toTimeUnit
 
 
 //line chart 시도
-//class TimeAxisValueFormat : IndexAxisValueFormatter() {
-//
-//    @OptIn(ExperimentalTime::class)
-//    override fun getFormattedValue(value: Float): String {
-//        //Float(min) -> date
-//        var valueToMinutes = DurationUnit.MINUTES.toTimeUnit().toMillis(value.toLong())
-//        var timeMinutes = Date(valueToMinutes)
-//        var formatMinutes = SimpleDateFormat("HH:mm")
-//
-//        return formatMinutes.format(timeMinutes)
-//    }
-//}
+class TimeAxisValueFormat : IndexAxisValueFormatter() {
+
+    @OptIn(ExperimentalTime::class)
+    override fun getFormattedValue(value: Float): String {
+        //Float(min) -> date
+        var valueToMinutes = DurationUnit.MINUTES.toTimeUnit().toMillis(value.toLong())
+        var timeMinutes = Date(valueToMinutes)
+        var formatMinutes = SimpleDateFormat("HH:mm")
+
+        return formatMinutes.format(timeMinutes)
+    }
+}
 
 //data class ChartData(
 //    var lableData: String = "",
@@ -40,14 +45,14 @@ class RecordFragment : Fragment() {
     private var _binding: FragmentRecordBinding? = null
     private val binding get() = _binding!!
 
-//    private var chartData = ArrayList<Entry>() // 데이터배열
-//    private var lineDataSet = ArrayList<ILineDataSet>() // 데이터배열 -> 데이터 셋
-//    private var lineData: LineData = LineData()
-//    lateinit var chart: LineChart
+    private var chartData = ArrayList<Entry>() // 데이터배열
+    private var lineDataSet = ArrayList<ILineDataSet>() // 데이터배열 -> 데이터 셋
+    private var lineData: LineData = LineData()
+    lateinit var chart: LineChart
 
-    private var chart: LineChart? = null
+    //private var chart: LineChart? = null
 
-    private var lineChart: LineChart? = null
+    //private var lineChart: LineChart? = null
 
     // Item의 클릭 상태를 저장할 array 객체
     private val selectedItems = SparseBooleanArray()
@@ -114,6 +119,38 @@ class RecordFragment : Fragment() {
             //dateDialog.datePicker.spinnersShown = true
         }
 
+//        chart = findFragmentById(com.example.saloris.R.id.day_chart)
+//
+//        val values: ArrayList<Map.Entry<*, *>> = ArrayList()
+//
+//        for (i in 0..9) {
+//            val `val` = (Math.random() * 10).toFloat()
+//            values.add(MutableMap.MutableEntry<Any?, Any?>(i, `val`))
+//        }
+//
+//        val set1: LineDataSet
+//        set1 = LineDataSet(values, "DataSet 1")
+//
+//        val dataSets: ArrayList<ILineDataSet> = ArrayList()
+//        dataSets.add(set1) // add the data sets
+//
+//
+//        // create a data object with the data sets
+//
+//        // create a data object with the data sets
+//        val data = LineData(dataSets)
+//
+//        // black lines and points
+//
+//        // black lines and points
+//        set1.color = Color.BLACK
+//        set1.setCircleColor(Color.BLACK)
+//
+//        // set data
+//
+//        // set data
+//        chart.setData(data)
+
 //        그래프 출력
 //        chart = view?.findViewById(R.id.day_chart) as LineChart
 //
@@ -146,80 +183,81 @@ class RecordFragment : Fragment() {
 
 //        view?.let { setChartView(it) }
 
+
         return binding.root
     }
 
 
 //    Line Chart 시도
-//    private fun initChartData() {
-//        //더미데이터
-//        chartData.add(Entry(-240f, 0f))
-//        chartData.add(Entry(-200f, 30f))
-//        chartData.add(Entry(-50f, 100f))
-//        chartData.add(Entry(-120f, 20f))
-//        chartData.add(Entry((1200).toFloat(), 0f))
-//
-//        var set = LineDataSet(chartData, "set1")
-//        lineDataSet.add(set)
-//        lineData = LineData(lineDataSet)
-//
-//        set.lineWidth = 2F
-//        set.setDrawValues(false)
-//        set.highLightColor = Color.TRANSPARENT
-//        set.mode = LineDataSet.Mode.STEPPED
-//
-//    }
-//
-//    private fun initChart() {
-//        chart.run {
-//            setDrawGridBackground(false)
-//            setBackgroundColor(Color.WHITE)
-//            legend.isEnabled = false
-//        }
-//
-//        val xAxis = chart.xAxis
-//        xAxis.setDrawLabels(true) // label 표시 여부
-//        xAxis.axisMaximum = 1200f // 60min * 24hour
-//        xAxis.axisMinimum = -240f
-//        xAxis.labelCount = 5
-//        xAxis.valueFormatter = TimeAxisValueFormat()
-//
-//        xAxis.textColor = Color.BLACK
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 라벨 위치
-//        xAxis.setDrawLabels(true) // gridLine 표시
-//        xAxis.setDrawAxisLine(true) // AxisLine 표시
-//
-//        // 왼쪽 y축 값
-//        val yLAxis = chart.axisLeft
-//        yLAxis.axisMaximum = 4.5f // y축 최대값
-//        yLAxis.axisMinimum = -0.5f // y축 최소값
-//
-//        // 왼쪽 y축 도메인 변경
-//        val yAxisVals = ArrayList<String>(Arrays.asList("20", "50", "80", "110", "140"))
-//        yLAxis.valueFormatter = IndexAxisValueFormatter(yAxisVals)
-//        yLAxis.granularity = 1f
-//
-//        // 오른쪽 y축 값
-//        val yRAxix = chart.axisRight
-//        yRAxix.setDrawLabels(false)
-//        yRAxix.setDrawAxisLine(false)
-//        yRAxix.setDrawGridLines(false)
-//
-//        // 마커 설정
-//        val marker = MarkerView(requireContext(), R.drawable.graph_marker)
-//        marker.chartView = chart
-//        chart.marker = marker
-//
-//        chart!!.description.isEnabled = false // 설명
-//        chart!!.data = lineData // 데이터 설정
-//
-//        chart!!.invalidate() // 다시 그리기
-//    }
-//
-//    private fun prepareChartData(data: LineData, lineChart: LineChart) {
-//        lineChart.data = data // LineData 전달
-//        lineChart.invalidate() // LineChart 갱신해 데이터 표시
-//    }
+    private fun initChartData() {
+        //더미데이터
+        chartData.add(Entry(-240f, 0f))
+        chartData.add(Entry(-200f, 30f))
+        chartData.add(Entry(-50f, 100f))
+        chartData.add(Entry(-120f, 20f))
+        chartData.add(Entry((1200).toFloat(), 0f))
+
+        var set = LineDataSet(chartData, "set1")
+        lineDataSet.add(set)
+        lineData = LineData(lineDataSet)
+
+        set.lineWidth = 2F
+        set.setDrawValues(false)
+        set.highLightColor = Color.TRANSPARENT
+        set.mode = LineDataSet.Mode.STEPPED
+
+    }
+
+    private fun initChart() {
+        chart.run {
+            setDrawGridBackground(false)
+            setBackgroundColor(Color.WHITE)
+            legend.isEnabled = false
+        }
+
+        val xAxis = chart.xAxis
+        xAxis.setDrawLabels(true) // label 표시 여부
+        xAxis.axisMaximum = 1200f // 60min * 24hour
+        xAxis.axisMinimum = -240f
+        xAxis.labelCount = 5
+        xAxis.valueFormatter = TimeAxisValueFormat()
+
+        xAxis.textColor = Color.BLACK
+        xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 라벨 위치
+        xAxis.setDrawLabels(true) // gridLine 표시
+        xAxis.setDrawAxisLine(true) // AxisLine 표시
+
+        // 왼쪽 y축 값
+        val yLAxis = chart.axisLeft
+        yLAxis.axisMaximum = 4.5f // y축 최대값
+        yLAxis.axisMinimum = -0.5f // y축 최소값
+
+        // 왼쪽 y축 도메인 변경
+        val yAxisVals = ArrayList<String>(Arrays.asList("20", "50", "80", "110", "140"))
+        yLAxis.valueFormatter = IndexAxisValueFormatter(yAxisVals)
+        yLAxis.granularity = 1f
+
+        // 오른쪽 y축 값
+        val yRAxix = chart.axisRight
+        yRAxix.setDrawLabels(false)
+        yRAxix.setDrawAxisLine(false)
+        yRAxix.setDrawGridLines(false)
+
+        // 마커 설정
+        val marker = MarkerView(requireContext(), com.example.saloris.R.drawable.graph_marker)
+        marker.chartView = chart
+        chart.marker = marker
+
+        chart!!.description.isEnabled = false // 설명
+        chart!!.data = lineData // 데이터 설정
+
+        chart!!.invalidate() // 다시 그리기
+    }
+
+    private fun prepareChartData(data: LineData, lineChart: LineChart) {
+        lineChart.data = data // LineData 전달
+        lineChart.invalidate() // LineChart 갱신해 데이터 표시
+    }
 
 
 //    bar Chart 시도
