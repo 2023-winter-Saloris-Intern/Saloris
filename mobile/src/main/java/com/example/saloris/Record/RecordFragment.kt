@@ -7,6 +7,8 @@ import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentRecordBinding
@@ -15,6 +17,7 @@ import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.DurationUnit
@@ -92,31 +95,77 @@ class RecordFragment : Fragment() {
 //        }
 
         // clickevent로 수정 필요!
-        binding.dateChoiceBtn.setOnClickListener {
+//        binding.dateChoiceBtn.setOnClickListener {
+//
+////          val datepickerHeaderid = binding.datePicker.getChildAt(0)
+////              .resources.getIdentifier("date_picker_header", "id", "android")
+////          binding.datePicker.findViewById<View>(datepickerHeaderid).visibility = View.GONE
+//
+//            val cal = java.util.Calendar.getInstance()
+//            // 사용자가 OK버튼을 누르면 바인딩된 text가 바뀜
+//            val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
+//                binding.dateText.text = "${year}년 ${month + 1}월 ${day}일"
+//            }
+//            // 다이얼로그 생성, 다이얼로그를 띄울때 오늘 날짜를 기본 데이터로 잡아준다.
+//            //DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+//            //스피너 모드로 바꿔주기 deprecated 됐기 때문에 themes 에서 추가해줘야함
+//            val dateDialog = DatePickerDialog(
+//                requireActivity(), dateSetListener, cal.get(java.util.Calendar.YEAR), cal.get(
+//                    java.util.Calendar.MONTH
+//                ), cal.get(java.util.Calendar.DAY_OF_MONTH)
+//            )
+//                .apply {
+//                    datePicker.maxDate = System.currentTimeMillis()
+//                }
+//
+//            dateDialog.show()
+//            //dateDialog.datePicker.spinnersShown = true
+//        }
 
-//          val datepickerHeaderid = binding.datePicker.getChildAt(0)
-//              .resources.getIdentifier("date_picker_header", "id", "android")
-//          binding.datePicker.findViewById<View>(datepickerHeaderid).visibility = View.GONE
+        binding.calendarView1.setVisibility(View.GONE)
+        binding.dayChart.setVisibility(View.GONE)
 
-            val cal = java.util.Calendar.getInstance()
-            // 사용자가 OK버튼을 누르면 바인딩된 text가 바뀜
-            val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
-                binding.dateText.text = "${year}년 ${month + 1}월 ${day}일"
-            }
-            // 다이얼로그 생성, 다이얼로그를 띄울때 오늘 날짜를 기본 데이터로 잡아준다.
-            //DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
-            //스피너 모드로 바꿔주기 deprecated 됐기 때문에 themes 에서 추가해줘야함
-            val dateDialog = DatePickerDialog(
-                requireActivity(), dateSetListener, cal.get(java.util.Calendar.YEAR), cal.get(
-                    java.util.Calendar.MONTH
-                ), cal.get(java.util.Calendar.DAY_OF_MONTH)
-            )
-                .apply {
-                    datePicker.maxDate = System.currentTimeMillis()
+        binding.dateChoiceBtn.setOnClickListener{
+            var CalendarView = R.id.calendar_view1
+
+            val dateText: TextView = requireView().findViewById(R.id.date_text)
+            val calendarView: CalendarView = requireView().findViewById(R.id.calendar_view1)
+
+            calendarView.maxDate = System.currentTimeMillis()
+
+            //val dateFormat: DateFormat = SimpleDateFormat("yyyy년MM월dd일")
+
+            val date: Date = Date(calendarView.date)
+
+            //dateText.text = dateFormat.format(date)
+
+            if (selectedItems.get(prePosition))
+            {
+                selectedItems.delete(prePosition)
+                binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+                binding.calendarView1.setVisibility(View.VISIBLE)
+                binding.dateConfirmBtn.setVisibility(View.VISIBLE)
+
+                binding.dateConfirmBtn.setOnClickListener {
+                    binding.dateConfirmBtn.setVisibility(View.GONE)
+                    binding.calendarView1.setVisibility(View.GONE)
+                    binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                 }
 
-            dateDialog.show()
-            //dateDialog.datePicker.spinnersShown = true
+                calendarView.setOnDateChangeListener{ calendarView, year, month, dayOfMonth ->
+                    var day: String = "${year}년 ${month+1}월 ${dayOfMonth}일"
+
+                    dateText.text = day
+                }
+
+            } else {
+                selectedItems.delete(prePosition)
+                selectedItems.put(prePosition,true)
+                binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                binding.calendarView1.setVisibility(View.GONE);
+                binding.dateConfirmBtn.setVisibility(View.GONE);
+            }
+
         }
 
 //        chart = findFragmentById(com.example.saloris.R.id.day_chart)
