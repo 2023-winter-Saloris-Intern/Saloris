@@ -14,101 +14,68 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/default_padding"
-    tools:deviceIds="wear">
-
-<!--    <ImageView-->
-<!--        android:id="@+id/clock_icon"-->
-<!--        android:layout_width="@dimen/icon_size"-->
-<!--        android:layout_height="@dimen/icon_size"-->
-<!--        android:layout_marginEnd="@dimen/space_4dp"-->
-<!--        android:contentDescription="@null"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/elapsed_time"-->
-<!--        app:layout_constraintHorizontal_chainStyle="packed"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toLeftOf="@id/elapsed_time"-->
-<!--        app:layout_constraintTop_toTopOf="@id/elapsed_time"-->
-<!--        app:srcCompat="@drawable/ic_clock"-->
-<!--        app:tint="?colorControlActivated" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/elapsed_time"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:lines="1"-->
-<!--        android:text="@string/empty_time"-->
-<!--        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/heart_rate_text"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/clock_icon"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_chainStyle="packed" />-->
-
-
+    tools:deviceIds="wear"
+    android:scrollbars="vertical">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_v50pct"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".5" />
-
-    <!--    <TextView-->
-<!--        android:id="@+id/connect"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:gravity="center"-->
-<!--        android:scrollbars="vertical"-->
-<!--        android:text="mobile device is not connected"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="10sp"-->
-<!--        android:visibility="visible"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/guide_v50pct"-->
-<!--        app:layout_constraintHorizontal_bias="0.481"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/guide_v50pct"-->
-<!--        tools:ignore="MissingConstraints,SmallSp"-->
-<!--        tools:layout_editor_absoluteY="7dp" />-->
+        app:layout_constraintGuide_percent="0.5"
+        />
 
     <ImageView
         android:id="@+id/heart_rate_icon"
         android:layout_width="56dp"
         android:layout_height="55dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@null"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toTopOf="@id/text_heart_rate"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_heart_outline"
-        app:tint="?colorControlActivated"
-        />
+        app:tint="?colorControlActivated" />
+
     <TextView
         android:id="@+id/text_heart_rate"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="심박수"
-    android:textSize="20dp"
-    android:textColor="@color/white"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/heart_rate_bpm"
-    android:layout_marginBottom="8dp"
-    />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="심박수"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chart"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        tools:ignore="DuplicateIds,MissingConstraints"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="20dp" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/heart_rate_bpm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints"
-        app:layout_constraintBottom_toTopOf="@id/start_end_button"
         android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/start_end_button"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/heart_rate_text"
@@ -136,28 +103,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/space_2dp"
+        android:background="@drawable/button_round"
         android:padding="@dimen/space_4dp"
         android:text="@string/start"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/guide_v50pct"
-        android:background="@drawable/button_round"
-        android:textColor="@color/white"
-        />
+        app:layout_constraintRight_toLeftOf="@id/guide_v50pct" />
 
     <Button
         android:id="@+id/pause_resume_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/space_2dp"
+        android:background="@drawable/button_round"
         android:enabled="false"
         android:padding="@dimen/space_4dp"
         android:text="@string/pause"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guide_v50pct"
         app:layout_constraintRight_toRightOf="parent"
-        tools:enabled="true"
-        android:background="@drawable/button_round"
-        android:textColor="@color/white"/>
+        tools:enabled="true" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,10 +51,15 @@
         android:label="ExerciseFragment"
         tools:layout="@layout/fragment_exercise">
         <action
-            android:id="@+id/to_newExerciseConfirmation"
-            app:destination="@id/newExerciseConfirmationFragment" />
+            android:id="@+id/ChartFragment"
+            app:destination="@id/ChartFragment" />
     </fragment>
-
+    <fragment
+        android:id="@+id/ChartFragment"
+        android:name="com.example.saloris.ChartFragment"
+        android:label="ChartFragment"
+        tools:layout="@layout/fragment_chart">
+    </fragment>
     <dialog
         android:id="@+id/newExerciseConfirmationFragment"
         android:label="NewExerciseConfirmationFragment"/>

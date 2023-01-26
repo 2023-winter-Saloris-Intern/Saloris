@@ -23,6 +23,7 @@ import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.health.services.client.data.DataPointContainer
@@ -40,6 +42,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.wear.ambient.AmbientModeSupport
 import com.example.saloris.databinding.FragmentExerciseBinding
@@ -47,9 +51,6 @@ import com.example.saloris.databinding.FragmentExerciseBinding
 import com.google.android.gms.wearable.*
 //import com.google.android.gms.wearable.R
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
 import java.nio.charset.StandardCharsets
 import java.time.Duration
@@ -57,12 +58,20 @@ import java.time.Instant
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import androidx.navigation.NavController
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import kotlinx.coroutines.*
 
 /**
  * Fragment showing the exercise controls and current exercise metrics.
  */
 @AndroidEntryPoint
-class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
+class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider, CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
@@ -89,6 +98,22 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     private lateinit var ambientController: AmbientModeSupport.AmbientController
     private lateinit var ambientModeHandler: AmbientModeHandler
     private lateinit var serviceIt : Intent
+    //chart
+    private var chart: LineChart? = null
+    private var thread: Thread? = null
+    var Rate = ""
+    var newRate = ""
+    var last_time=""
+    //runOnUiThread를 fragment에서 사용하기 위해
+    // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
+    lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // 2. Context를 액티비티로 형변환해서 할당
+        mainActivity = context as MainActivity
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -102,6 +127,24 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         super.onViewCreated(view, savedInstanceState)
         serviceIt = Intent(activity, NetWorking::class.java)
         activity?.startService(serviceIt)
+        //chart
+        chart = binding.chart as LineChart
+        chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 밑으로
+        //chart!!.yAxis.axisMinimum=0f
+        //chart!!.xAxis.valueFormatter = TimeAxisValueFormat() // x축의 출력 형식을 시:분으로
+        chart!!.xAxis.setDrawLabels(true)
+        chart!!.xAxis.axisMinimum=0f // 9시부터
+        chart!!.xAxis.axisMaximum=1200f // 오전 5시까지..?
+        chart!!.axisRight.isEnabled = false // 오른쪽 y축은 없애고
+        chart!!.axisLeft.isEnabled=false
+        chart!!.xAxis.isEnabled=false
+        chart!!.axisLeft.axisMaximum=80f // y축 min,max
+        chart!!.axisLeft.axisMinimum=50f
+        chart!!.legend.textColor = Color.BLUE
+        chart!!.animateXY(10, 10)
+        chart!!.invalidate()
+        val data = LineData()
+        chart!!.data = data
         //todo : stop service ...
         activity?.let { register(it) }
         binding.startEndButton.setOnClickListener {
@@ -116,7 +159,10 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
             it.isEnabled = false
             pauseResumeExercise()
         }
-
+        binding.chart.setOnClickListener {
+            val intent = Intent(getActivity(), ChartFragment::class.java)
+            startActivity(intent)
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val capabilities =
@@ -147,6 +193,74 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         // Bind to our service. Views will only update once we are connected to it.
         ExerciseService.bindService(requireContext().applicationContext, serviceConnection)
         bindViewsToService()
+    }
+//chart
+private fun createSet(): LineDataSet {
+    //chart : 설정
+    Log.d("createSet_mainActivity","createSet")
+    val set = LineDataSet(null, "Heart Rate")
+    set.fillAlpha = 110
+
+    set.fillColor = Color.parseColor("#d7e7fa")//선 밑에 색채우기
+    set.color = Color.parseColor("#0B80C9")//선 색
+
+    set.setCircleColor(Color.parseColor("#FFA1B4DC"))
+    //set.setCircleColorHole(Color.BLUE)
+    set.valueTextColor = Color.BLUE //TODO : 글자 색 .. chart에 값 확인하기
+    set.valueTextSize=10f
+    set.setDrawValues(false)
+    set.lineWidth = 2f
+    set.circleRadius = 6f
+    set.setDrawCircleHole(false)
+    set.setDrawCircles(false)
+    set.valueTextSize = 9f
+    //set.setDrawFilled(true)
+    set.axisDependency = YAxis.AxisDependency.LEFT
+    set.highLightColor = Color.rgb(244, 117, 117)
+    return set
+}//chart
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addEntry() {
+        val data = chart!!.data
+        Log.d("addEntry_mainActivity",data.toString())
+        if (data != null) {
+            var set = data.getDataSetByIndex(0)
+            if (set == null) {
+                set = createSet()
+                data.addDataSet(set)
+            }
+            val dateAndTime : LocalDateTime = LocalDateTime.now()
+            Log.d("dateAndTime-main",dateAndTime.toString())
+            val time_hour = dateAndTime.toString().substring(11,13)
+            val time_min = dateAndTime.toString().substring(14,16)
+            Log.d("time_hour-main",time_hour)
+            Log.d("time_min-main",time_min)
+            //현재 시간을 분으로 바꿔서 Entry x축에 넣기
+            val time  = (time_hour.toInt())*60+time_min.toInt()
+            Log.d("time-main",time.toString())
+            //val rand = (Math.random() * 4).toFloat() + 60f
+            Log.d("value-main",newRate)
+            //TODO time :real time
+            val time_to = time.toFloat()-9*60
+            data.addEntry(Entry(set.entryCount.toFloat(),newRate.toFloat()), 0)
+            Log.d("time_x",time.toString())
+            data.notifyDataChanged()
+            chart!!.notifyDataSetChanged()
+            chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
+            chart!!.moveViewToX(set.entryCount.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
+            Log.d("addEntry_mainActivity",(time_to.toFloat()-10f).toString())
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun feedMultiple() {
+        if (thread != null) thread!!.interrupt()
+        val runnable = kotlinx.coroutines.Runnable { addEntry() }
+        Log.d("feedMultiple_mainActivity","feedMultiple")
+        thread = Thread {
+            mainActivity.runOnUiThread(runnable)
+        }
+        thread!!.start()
     }
 
     private fun register(ctx: Context) {
@@ -274,7 +388,9 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
                 Log.d("time_ExerciseFragment_updateMetrics",dateAndtime)
                 Log.d("putValue_ExerciseFragment_updateMetrics",heart_rate_value)
                 lastTime=dateAndtime
-
+                //todo chart
+                newRate=heart_rate_value
+                feedMultiple()
             }
         }
 
