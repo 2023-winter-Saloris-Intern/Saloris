@@ -124,8 +124,9 @@ class RecordFragment : Fragment() {
 
         binding.calendarView1.setVisibility(View.GONE)
         binding.dayChart.setVisibility(View.GONE)
+        binding.heartRateNum.setVisibility(View.GONE)
 
-        binding.dateChoiceBtn.setOnClickListener{
+        binding.dateChoiceBtn.setOnClickListener {
             var CalendarView = R.id.calendar_view1
 
             val dateText: TextView = requireView().findViewById(R.id.date_text)
@@ -139,30 +140,31 @@ class RecordFragment : Fragment() {
 
             //dateText.text = dateFormat.format(date)
 
-            if (selectedItems.get(prePosition))
-            {
+            if (selectedItems.get(prePosition)) {
                 selectedItems.delete(prePosition)
                 binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
                 binding.calendarView1.setVisibility(View.VISIBLE)
                 binding.dateConfirmBtn.setVisibility(View.VISIBLE)
                 binding.dayChart.setVisibility(View.GONE)
+                binding.heartRateNum.setVisibility(View.GONE)
 
                 binding.dateConfirmBtn.setOnClickListener {
                     binding.dateConfirmBtn.setVisibility(View.GONE)
                     binding.calendarView1.setVisibility(View.GONE)
                     binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                     binding.dayChart.setVisibility(View.VISIBLE)
+                    binding.heartRateNum.setVisibility(View.VISIBLE)
                 }
 
-                calendarView.setOnDateChangeListener{ calendarView, year, month, dayOfMonth ->
-                    var day: String = "${year}년 ${month+1}월 ${dayOfMonth}일"
+                calendarView.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
+                    var day: String = "${year}년 ${month + 1}월 ${dayOfMonth}일"
 
                     dateText.text = day
                 }
 
             } else {
                 selectedItems.delete(prePosition)
-                selectedItems.put(prePosition,true)
+                selectedItems.put(prePosition, true)
                 binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                 binding.calendarView1.setVisibility(View.GONE);
                 binding.dateConfirmBtn.setVisibility(View.GONE);
@@ -240,7 +242,7 @@ class RecordFragment : Fragment() {
     }
 
 
-//    Line Chart 시도
+    //    Line Chart 시도
     private fun initChartData() {
         //더미데이터
         chartData.add(Entry(-240f, 0f))
@@ -310,106 +312,4 @@ class RecordFragment : Fragment() {
         lineChart.data = data // LineData 전달
         lineChart.invalidate() // LineChart 갱신해 데이터 표시
     }
-
-
-//    bar Chart 시도
-//    private fun setChartView(view: View) {
-//        var chart = view.findViewById<BarChart>(R.id.day_chart)
-//        setChart(chart)
-//    }
-//
-//    private fun initBarDataSet(barDataSet: BarDataSet) {
-//        //Changing the color of the bar
-//        barDataSet.color = Color.parseColor("#304567")
-//        //Setting the size of the form in the legend
-//        barDataSet.formSize = 15f
-//        //showing the value of the bar, default true if not set
-//        barDataSet.setDrawValues(false)
-//        //setting the text size of the value of the bar
-//        barDataSet.valueTextSize = 12f
-//    }
-//
-//    private fun setChart(barChart: BarChart) {
-//        initBarChart(barChart)
-//
-//        barChart.setScaleEnabled(false) //Zoom In/Out
-//
-//        val valueList = ArrayList<Double>()
-//        val entries: ArrayList<BarEntry> = ArrayList()
-//        val title = "걸음 수"
-//
-//        //input data
-//        for (i in 0..5) {
-//            valueList.add(i * 100.1)
-//        }
-//
-//        //fit the data into a bar
-//        for (i in 0 until valueList.size) {
-//            val barEntry = BarEntry(i.toFloat(), valueList[i].toFloat())
-//            entries.add(barEntry)
-//        }
-//        val barDataSet = BarDataSet(entries, title)
-//        val data = BarData(barDataSet)
-//        barChart.data = data
-//        barChart.invalidate()
-//    }
-//
-//    private fun initBarChart(barChart: BarChart) {
-//        //hiding the grey background of the chart, default false if not set
-//        barChart.setDrawGridBackground(false)
-//        //remove the bar shadow, default false if not set
-//        barChart.setDrawBarShadow(false)
-//        //remove border of the chart, default false if not set
-//        barChart.setDrawBorders(false)
-//
-//        //remove the description label text located at the lower right corner
-//        val description = Description()
-//        description.setEnabled(false)
-//        barChart.setDescription(description)
-//
-//        //X, Y 바의 애니메이션 효과
-//        barChart.animateY(1000)
-//        barChart.animateX(1000)
-//
-//
-//        //바텀 좌표 값
-//        val xAxis: XAxis = barChart.getXAxis()
-//        //change the position of x-axis to the bottom
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        //set the horizontal distance of the grid line
-//        xAxis.granularity = 1f
-//        xAxis.textColor = Color.RED
-//        //hiding the x-axis line, default true if not set
-//        xAxis.setDrawAxisLine(false)
-//        //hiding the vertical grid lines, default true if not set
-//        xAxis.setDrawGridLines(false)
-//
-//
-//        //좌측 값 hiding the left y-axis line, default true if not set
-//        val leftAxis: YAxis = barChart.getAxisLeft()
-//        leftAxis.setDrawAxisLine(false)
-//        leftAxis.textColor = Color.RED
-//
-//
-//        //우측 값 hiding the right y-axis line, default true if not set
-//        val rightAxis: YAxis = barChart.getAxisRight()
-//        rightAxis.setDrawAxisLine(false)
-//        rightAxis.textColor = Color.RED
-//
-//
-//        //바차트의 타이틀
-//        val legend: Legend = barChart.getLegend()
-//        //setting the shape of the legend form to line, default square shape
-//        legend.form = Legend.LegendForm.LINE
-//        //setting the text size of the legend
-//        legend.textSize = 11f
-//        legend.textColor = Color.YELLOW
-//        //setting the alignment of legend toward the chart
-//        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-//        //setting the stacking direction of legend
-//        legend.orientation = Legend.LegendOrientation.HORIZONTAL
-//        //setting the location of legend outside the chart, default false if not set
-//        legend.setDrawInside(false)
-//    }
 }
