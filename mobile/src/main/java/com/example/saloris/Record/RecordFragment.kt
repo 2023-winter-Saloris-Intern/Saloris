@@ -145,11 +145,13 @@ class RecordFragment : Fragment() {
                 binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
                 binding.calendarView1.setVisibility(View.VISIBLE)
                 binding.dateConfirmBtn.setVisibility(View.VISIBLE)
+                binding.dayChart.setVisibility(View.GONE)
 
                 binding.dateConfirmBtn.setOnClickListener {
                     binding.dateConfirmBtn.setVisibility(View.GONE)
                     binding.calendarView1.setVisibility(View.GONE)
                     binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                    binding.dayChart.setVisibility(View.VISIBLE)
                 }
 
                 calendarView.setOnDateChangeListener{ calendarView, year, month, dayOfMonth ->
@@ -164,6 +166,7 @@ class RecordFragment : Fragment() {
                 binding.dateChoiceBtn.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                 binding.calendarView1.setVisibility(View.GONE);
                 binding.dateConfirmBtn.setVisibility(View.GONE);
+                //binding.dayChart.setVisibility(View.VISIBLE)
             }
 
         }
