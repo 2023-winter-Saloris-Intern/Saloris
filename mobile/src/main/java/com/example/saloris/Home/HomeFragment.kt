@@ -215,7 +215,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     //워치와 연결되지 않음
                     wearableDeviceConnected = false
                     //binding.sendmessageButton.visibility = View.GONE
-                    cardColor = ContextCompat.getColor(requireContext(),R.color.line_primary)
+                    cardColor = ContextCompat.getColor(requireContext(),R.color.grey)
                     binding.startBtn.setCardBackgroundColor(cardColor)
                     binding.explanationTv.setText("운행 시작 버튼이 회색인 경우\n워치와 연결이 안되었다는 뜻이에요")
                 }

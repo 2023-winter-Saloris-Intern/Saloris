@@ -50,7 +50,7 @@ tools:context=".Home.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center">
 
         <androidx.cardview.widget.CardView
@@ -61,11 +61,12 @@ tools:context=".Home.HomeFragment">
             android:layout_marginStart="28dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="28dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             android:padding="10dp"
             app:cardBackgroundColor="@color/purple_500"
             app:cardCornerRadius="40dp"
-            app:cardElevation="5dp"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -133,18 +134,26 @@ tools:context=".Home.HomeFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:id="@+id/button_test"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/check_connect"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="64dp"
         android:padding="10dp"
         app:cardBackgroundColor="@color/purple_700"
         app:cardCornerRadius="40dp"
-        app:cardElevation="2dp">
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -156,7 +165,7 @@ tools:context=".Home.HomeFragment">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
-                android:layout_marginLeft="32dp"
+                android:layout_marginLeft="30dp"
                 android:fontFamily="@font/notosans_kr_bold"
                 android:text="이 버튼을 눌러 연결 상태를 확인하세요"
                 android:textColor="@color/black"
@@ -172,14 +181,6 @@ tools:context=".Home.HomeFragment">
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/button_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
-
 
 </LinearLayout>
     <!--todo : 삭제해야함-->
