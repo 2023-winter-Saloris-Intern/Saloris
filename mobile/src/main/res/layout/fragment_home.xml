@@ -133,55 +133,18 @@ tools:context=".Home.HomeFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/not_connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="연결이 안되었으면 이게 보임" />
-
-    <TextView
-        android:id="@+id/is_connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="연결이 되었으면 이게 보임" />
-
-    <Button
-        android:id="@+id/check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="check connect" />
-
-    <Button
-        android:id="@+id/button_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-    <Button
-        android:id="@+id/vibrate_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="vibrate" />
-    <TextView
-        android:id="@+id/vibrate_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="진동"/>
-    <TextView
-        android:id="@+id/messagelogTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="심박수"/>
-
     <androidx.cardview.widget.CardView
+        android:id="@+id/check_connect"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="center"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
+        android:layout_marginTop="10dp"
         android:padding="10dp"
         app:cardBackgroundColor="@color/purple_700"
         app:cardCornerRadius="40dp"
-        app:cardElevation="0dp">
+        app:cardElevation="2dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -189,24 +152,34 @@ tools:context=".Home.HomeFragment">
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/explanation_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginLeft="32dp"
                 android:fontFamily="@font/notosans_kr_bold"
-                android:text="운행 시작 버튼이 파란색인 경우\n           워치가 연결되었다는 뜻이에요"
+                android:text="이 버튼을 눌러 연결 상태를 확인하세요"
                 android:textColor="@color/black"
                 android:textSize="12dp" />
 
             <ImageView
-                android:layout_width="130dp"
-                android:layout_height="90dp"
-                android:src="@drawable/connect_watch"
-                android:scaleType="centerCrop"/>
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:src="@drawable/connect_watch" />
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/button_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+
 
 </LinearLayout>
     <!--todo : 삭제해야함-->

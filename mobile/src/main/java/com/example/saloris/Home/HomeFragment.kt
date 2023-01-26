@@ -91,11 +91,11 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         super.onCreate(savedInstanceState)
         activityContext = this.context
         wearableDeviceConnected = false
-        if (!wearableDeviceConnected) {
-            val tempAct: Activity = activityContext as AppCompatActivity
-            //Couroutine
-            initialiseDevicePairing(tempAct)
-        }
+//        if (!wearableDeviceConnected) {
+//            val tempAct: Activity = activityContext as AppCompatActivity
+//            //Couroutine
+//            initialiseDevicePairing(tempAct)
+//        }
         /* User Authentication */
         auth = Firebase.auth
     }
@@ -141,64 +141,34 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             startActivity(intent)
         }
 
-//        binding.check.setOnClickListener {
-//            //wearable device가 연결되었는지 확인하는 버튼
-//            if (!wearableDeviceConnected) {
-//                val tempAct: Activity = requireActivity() as AppCompatActivity
-//                //Couroutine
-//                initialiseDevicePairing(tempAct)
-//            }
-//        }
-        //wearable device가 연결되었는지 확인
-
-        binding.vibrateBtn.setOnClickListener {
-            //워치 진동 버튼 => 누르면 워치에서 진동 발생
-            toast.makeToast(requireContext(), "vibrate")
-            sendMessage("vibrator")
+        binding.checkConnect.setOnClickListener {
+            //wearable device가 연결되었는지 확인하는 버튼
+            if (!wearableDeviceConnected) {
+                val tempAct: Activity = requireActivity() as AppCompatActivity
+                //Couroutine
+                initialiseDevicePairing(tempAct)
+            }
         }
-
+        //wearable device가 연결되었는지 확인
     }
 
     private fun sendMessage(message : String){
         toast.makeToast(requireContext(), "send message")
-        println(wearableDeviceConnected)
-        if (wearableDeviceConnected) {
-            if (binding.messagelogTextView.text!!.isNotEmpty()) {
-                toast.makeToast(requireContext(), "send message")
-                val nodeId: String = messageEvent?.sourceNodeId!!
-                // Set the data of the message to be the bytes of the Uri.
-                val payload: ByteArray =
-                    message.toByteArray()
-
-                // Send the rpc
-                // Instantiates clients without member variables, as clients are inexpensive to
-                // create. (They are cached and shared between GoogleApi instances.)
-                val sendMessageTask =
-                    Wearable.getMessageClient(activityContext!!)
-                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-
-                sendMessageTask.addOnCompleteListener {
-                    toast.makeToast(requireContext(), "addOnCompleteListener")
-                    if (it.isSuccessful) {
-                        toast.makeToast(requireContext(), "isSuccessful")
-                        val sbTemp = StringBuilder()
-                        sbTemp.append("\n")
-                        sbTemp.append(message.toString())
-                        sbTemp.append(" (Sent to Wearable)")
-                        //Log.d("receive1", " $sbTemp")
-                        binding.messagelogTextView.append(sbTemp)
-
-
-                    } else {
-                        toast.makeToast(requireContext(), "fail")
-                    }
-                }
+        val nodeId: String = messageEvent?.sourceNodeId!!
+        // Set the data of the message to be the bytes of the Uri.
+        val payload: ByteArray =
+            message.toByteArray()
+        // Send the rpc
+        // Instantiates clients without member variables, as clients are inexpensive to
+        // create. (They are cached and shared between GoogleApi instances.)
+        val sendMessageTask = Wearable.getMessageClient(activityContext!!)
+                .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+        sendMessageTask.addOnCompleteListener {
+            toast.makeToast(requireContext(), "addOnCompleteListener")
+            if (it.isSuccessful) {
+                toast.makeToast(requireContext(), "isSuccessful")
             } else {
-                Toast.makeText(
-                    activityContext,
-                    "Message content is empty. Please enter some message and proceed",
-                    Toast.LENGTH_SHORT
-                ).show()
+                toast.makeToast(requireContext(), "fail")
             }
         }
     }
@@ -226,36 +196,28 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                 if (getNodesResBool!![0]) {
                     //if message Acknowlegement Received
                     if (getNodesResBool[1]) {
-                        //binding.deviceconnectionStatusTv.text =
-                        //    "Wearable device paired and app is open."
-                        //binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                        //워치와 연결, 앱이 열려있음
                         wearableDeviceConnected = true
-                        //binding.sendmessageButton.visibility = View.VISIBLE
-                        cardColor = ContextCompat.getColor(requireContext(),R.color.teal_200)
+                        cardColor = ContextCompat.getColor(requireContext(),R.color.primary)
                         binding.startBtn.setCardBackgroundColor(cardColor)
-                        binding.notConnect.visibility = View.GONE
-                        binding.isConnect.visibility = View.VISIBLE
+                        binding.explanationTv.setText("운행 시작 버튼이 파란색인 경우\n연결이 완료 되었다는 뜻이에요")
+
                     } else {
-                        //binding.deviceconnectionStatusTv.text =
-                        //    "Wearable device paired but app isn't open."
-                        //binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                        //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
                         //binding.sendmessageButton.visibility = View.GONE
-                        cardColor = ContextCompat.getColor(requireContext(),R.color.white)
+                        cardColor = ContextCompat.getColor(requireContext(),R.color.teal_200)
                         binding.startBtn.setCardBackgroundColor(cardColor)
-                        binding.notConnect.visibility = View.GONE
-                        binding.isConnect.visibility = View.VISIBLE
+                        binding.explanationTv.setText("운행 시작 버튼이 민트색인 경우\n워치 앱이 닫혀있다는 뜻이에요")
+
                     }
                 } else {
-                    //binding.deviceconnectionStatusTv.text =
-                    //    "Wearable device not paired and connected."
-                    //binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                    //워치와 연결되지 않음
                     wearableDeviceConnected = false
                     //binding.sendmessageButton.visibility = View.GONE
                     cardColor = ContextCompat.getColor(requireContext(),R.color.line_primary)
                     binding.startBtn.setCardBackgroundColor(cardColor)
-                    binding.notConnect.visibility = View.VISIBLE
-                    binding.isConnect.visibility = View.GONE
+                    binding.explanationTv.setText("운행 시작 버튼이 회색인 경우\n워치와 연결이 안되었다는 뜻이에요")
                 }
             }
         }
@@ -374,25 +336,18 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     TAG_MESSAGE_RECEIVED,
                     "Received acknowledgement message that app is open in wear"
                 )
-                val sbTemp = StringBuilder()
-                sbTemp.append(binding.messagelogTextView.text.toString())
-                sbTemp.append("\nWearable device connected.")
-
-                binding.messagelogTextView.text = sbTemp
 
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 //워치에서 보낸 심박수를 받는다
                 try {
-                    binding.messagelogTextView.visibility = View.VISIBLE
                     val dateAndTime : LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s)//심박수
                     //sbTemp.append( "==="+dateAndTime.toString())
                     //Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView.text = sbTemp.toString()
                     newRate = s
 //                    binding.scrollviewText.requestFocus()
 //                    binding.scrollviewText.post {
