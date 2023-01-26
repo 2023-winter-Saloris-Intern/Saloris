@@ -44,12 +44,32 @@ tools:context=".Record.RecordFragment">
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:src="@drawable/ic_baseline_navigate_next_24"
+            android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
             android:background="@color/white"
             android:clickable="true"
             android:id="@+id/date_choice_btn"/>
 
     </LinearLayout>
+
+    <CalendarView
+        android:id="@+id/calendar_view1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:id="@+id/date_confirm_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:background="@drawable/blue_round_button"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/day_chart"
