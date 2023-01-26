@@ -116,4 +116,19 @@ dependencies {
     compileOnly 'com.google.android.wearable:wearable:2.9.0'
     implementation 'com.google.android.support:wearable:2.9.0'
     testImplementation 'junit:junit:4.13.2'
+
+    //chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    //card
+    // Use to implement support for wear tiles
+    implementation("androidx.wear.tiles:tiles:1.1.0")
+
+    // Use to utilize components and layouts with Material design in your tiles
+    implementation("androidx.wear.tiles:tiles-material:1.1.0")
+
+    // Use to preview wear tiles in your own app
+    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0")
+
+    // Use to fetch tiles from a tile provider in your tests
+    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0")
 }
