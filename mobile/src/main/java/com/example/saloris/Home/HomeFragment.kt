@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,17 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import com.example.saloris.MainActivity
 import com.example.saloris.R
 import com.example.saloris.data.Networking
-import com.example.saloris.data.showData
 import com.example.saloris.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -96,6 +91,11 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         super.onCreate(savedInstanceState)
         activityContext = this.context
         wearableDeviceConnected = false
+        if (!wearableDeviceConnected) {
+            val tempAct: Activity = activityContext as AppCompatActivity
+            //Couroutine
+            initialiseDevicePairing(tempAct)
+        }
         /* User Authentication */
         auth = Firebase.auth
     }
@@ -150,11 +150,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 //            }
 //        }
         //wearable device가 연결되었는지 확인
-        if (!wearableDeviceConnected) {
-            val tempAct: Activity = activityContext as AppCompatActivity
-            //Couroutine
-            initialiseDevicePairing(tempAct)
-        }
+
         binding.vibrateBtn.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             toast.makeToast(requireContext(), "vibrate")
@@ -440,6 +436,29 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 
     override fun onCapabilityChanged(p0: CapabilityInfo) {
         TODO("Not yet implemented")
+    }
+    override fun onPause() {
+        super.onPause()
+        try {
+            Wearable.getDataClient(activityContext!!).removeListener(this)
+            Wearable.getMessageClient(activityContext!!).removeListener(this)
+            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        try {
+            Wearable.getDataClient(activityContext!!).addListener(this)
+            Wearable.getMessageClient(activityContext!!).addListener(this)
+            Wearable.getCapabilityClient(activityContext!!)
+                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 }

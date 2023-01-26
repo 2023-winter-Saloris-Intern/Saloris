@@ -233,6 +233,10 @@
         android:id="@+id/driveFragment"
         android:name="com.example.saloris.DriveFragment"
         android:label="fragment_drive"
-        tools:layout="@layout/fragment_drive" />
+        tools:layout="@layout/fragment_drive" >
+        <action
+            android:id="@+id/action_driveFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
 </navigation>
