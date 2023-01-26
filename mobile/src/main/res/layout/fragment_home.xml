@@ -172,6 +172,42 @@ tools:context=".Home.HomeFragment">
         android:layout_height="wrap_content"
         android:text="심박수"/>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:padding="10dp"
+        app:cardBackgroundColor="@color/purple_700"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="32dp"
+                android:fontFamily="@font/notosans_kr_bold"
+                android:text="운행 시작 버튼이 파란색인 경우\n           워치가 연결되었다는 뜻이에요"
+                android:textColor="@color/black"
+                android:textSize="12dp" />
+
+            <ImageView
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:src="@drawable/connect_watch"
+                android:scaleType="centerCrop"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>
     <!--todo : 삭제해야함-->
 
