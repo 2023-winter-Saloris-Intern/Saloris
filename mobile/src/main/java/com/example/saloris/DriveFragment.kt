@@ -17,10 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentDriveBinding
-import com.example.saloris.databinding.FragmentHomeBinding
 import com.example.saloris.util.MakeToast
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
@@ -68,14 +68,12 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
         /* Bottom Menu */
-        val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
-        bottomMenu.visibility = View.VISIBLE
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
 
         return binding.root
     }
