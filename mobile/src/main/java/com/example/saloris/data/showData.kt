@@ -42,6 +42,12 @@ class showData : AppCompatActivity() {
 
     private var last_time = ""
     val colors = ArrayList<Int>()
+
+    var sleepArr=ArrayList<Boolean>()
+    var count = 0
+    var lastSleep =false
+    var lastRate = 0f
+    var ismidvalue=false
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +117,8 @@ class showData : AppCompatActivity() {
             colors.clear()
             Log.d("colors",colors.toString())
             last_time=""
+            sleepArr.clear()
+            count=0
             data.removeDataSet(0)
             Log.d("data",data.toString())
             Log.d("data",chart!!.data.toString())
@@ -156,16 +164,52 @@ class showData : AppCompatActivity() {
             val time  = (time_hour.toInt()-9)*60+time_min.toInt()
             Log.d("time",time.toString())
             Log.d("last_time",last_time)
-            if(last_time!="" && (last_time.toInt()+1)<time){
-                //처음 시작하는 점이 아니고, 이전 출력시간+1 보다 크면 측정하지 않은 부분이다
-                Log.d("color",last_time + time.toString())
-                //값이 없는 부분 색 삭제
-                colors.add(Color.TRANSPARENT)
-            }else if(last_time!=""){
-                //값이 있는 부분은 파란색 선으로
-                colors.add(Color.BLUE)
+            Log.d("count", count.toString())
+            if(last_time!=""){
+                if((last_time.toInt()+1)<time) {//거리가 멀어서 색 무색으로
+                    Log.d("notin", last_time + time.toString())
+                    //값이 없는 부분 색 삭제
+                    colors.add(Color.TRANSPARENT)
+                }else{
+                    Log.d("lastSleep",lastSleep.toString())
+                    Log.d("Sleep",sleepArr[count].toString())
+                    Log.d("count",count.toString())
+                    if(lastSleep==sleepArr[count]){
+                        //두개 같은 값 => 변화 없음
+                        Log.d("sleepis","same")
+                        colors.add(if(sleepArr[count]) Color.RED else Color.BLUE)
+                    }else{
+                        Log.d("sleepis","not same")
+                        data.addEntry(Entry(((time.toFloat()-0.5)).toFloat(),((newRate.toFloat()+lastRate)/2.0).toFloat()), 0)
+                        colors.add(if(lastSleep) Color.RED else Color.BLUE)
+                        colors.add(if(sleepArr[count]) Color.RED else Color.BLUE)
+                        Log.d("time",((time.toFloat()-0.5)).toString())
+                        Log.d("midrate",((newRate.toFloat()+lastRate)/2.0).toString())
+                    }
+                }
             }
+            lastSleep = sleepArr[count]
+            count++
             last_time=time.toString()
+            lastRate=newRate.toFloat()
+//            if(last_time!="" && (last_time.toInt()+1)<time){
+//                //처음 시작하는 점이 아니고, 이전 출력시간+1 보다 크면 측정하지 않은 부분이다
+//                Log.d("color",last_time + time.toString())
+//                //값이 없는 부분 색 삭제
+//                colors.add(Color.TRANSPARENT)
+//                count++
+//            }else if(last_time!=""){
+//                //값이 있는 부분은 파란색 선으로
+//                if(sleepArr[count]==true){
+//                    Log.d("color","red")
+//                    colors.add(Color.RED)
+//                }else{
+//                    colors.add(Color.BLUE)
+//                }
+//                count++
+//            }
+
+//            last_time=time.toString()
             data.addEntry(Entry(time.toFloat(),newRate.toFloat()), 0)
 //            data.notifyDataChanged()
 //            chart!!.notifyDataSetChanged()
@@ -214,23 +258,58 @@ class showData : AppCompatActivity() {
         val bucket = "HeartRate"
         val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
+        val client2 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val heartrate = ArrayList<HeartRate>()
         //query
-        val fluxQuery = ("from(bucket: \"HeartRate\")\n" +
+        val fluxQueryright = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
-                "  |> filter(fn: (r) => r[\"_field\"] == \"HeartRate\")\n" +
+                "  |> filter(fn: (r) =>r[\"_field\"] == \"isntsleep\")\n" +
                 "  |> filter(fn: (r) => r[\"Uid\"] == \"$Uid\")\n")
-        client.use {
+        client2.use {
             //val writeApi = client.getWriteKotlinApi()
-            val results = client.getQueryKotlinApi().query(fluxQuery)
+            val results = client2.getQueryKotlinApi().query(fluxQueryright)
             Log.d("show",results.toString())
             results.consumeAsFlow()
                 .catch {
                     print("catch")
                 }
                 .collect {
+                    Log.d("result",it.toString())
+                    //하나씩 값 가져와서
+                    val issleep =it.value
+                    //val issleep = it.target
+                    val  time = it.time?.atZone(zoneId)
+                    // : LocalDateTime = LocalDateTime.parse (it.time.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")).plusHours(9)
+                    Log.d("type of time", time?.javaClass.toString())
+                    Log.d("issleep",time.toString()+"\t"+issleep.toString())
+                    val h_string = "heartRate : "+time.toString()+"\t"+issleep.toString()+"\n"
+                    //chart 데이터에 저장
+                    //addEntry(time.toString(),issleep.toString())
+                    sleepArr.add(issleep as Boolean)
+                    //heartrate.add(heartRate)
+                    all_string += h_string
+                }
+        }
+        sleepArr.add(false)
+        Log.d("sleepArr",sleepArr.toString())
+        client2.close()
+        val fluxQueryleft = ("from(bucket: \"HeartRate\")\n" +
+                "  |> range(start:$start, stop: $stop)\n" +
+                "  |> filter(fn: (r) =>r[\"_field\"] == \"heart\")\n" +
+                "  |> filter(fn: (r) => r[\"Uid\"] == \"$Uid\")\n")
+        client.use {
+            //val writeApi = client.getWriteKotlinApi()
+            val results = client.getQueryKotlinApi().query(fluxQueryleft)
+            Log.d("show",results.toString())
+            results.consumeAsFlow()
+                .catch {
+                    print("catch")
+                }
+                .collect {
+                    Log.d("result",it.toString())
                     //하나씩 값 가져와서
                     val heartRate =it.value
+                    //val issleep = it.target
                     val  time = it.time?.atZone(zoneId)
                     // : LocalDateTime = LocalDateTime.parse (it.time.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")).plusHours(9)
                     Log.d("type of time", time?.javaClass.toString())
@@ -242,6 +321,7 @@ class showData : AppCompatActivity() {
                     all_string += h_string
                 }
         }
+        client.close()
         colors.add(Color.BLUE)
         Log.d("colors",colors.toString())
         //print(heartrate)
