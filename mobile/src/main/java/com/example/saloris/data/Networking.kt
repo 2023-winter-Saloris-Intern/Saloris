@@ -1,5 +1,5 @@
 package com.example.saloris.data
-import com.example.saloris.R
+//알림
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -8,31 +8,23 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.SyncStateContract.Helpers.insert
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.saloris.databinding.ActivityNetworkingBinding
-import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.*
-import kotlinx.coroutines.*
-import java.nio.charset.StandardCharsets
-import java.util.*
-//알림
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.NotificationCompat.WearableExtender
 import androidx.lifecycle.lifecycleScope
 import com.example.saloris.MyMarkerView
-import com.example.saloris.TimeAxisValueFormat
+import com.example.saloris.R
+import com.example.saloris.databinding.ActivityNetworkingBinding
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,7 +32,10 @@ import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
 import com.influxdb.client.write.Point
 import com.influxdb.exceptions.InfluxException
+import kotlinx.coroutines.*
+import java.nio.charset.StandardCharsets
 import java.time.*
+import java.util.*
 
 class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -246,7 +241,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
     }
     //DB에 heartrate를 넣는 함수
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun insertDB(rate: String):Boolean {
+    private suspend fun insertDB(rate: Int):Boolean {
 //val token = System.getenv()["INFLUX_TOKEN"]
         val user="user"
         //사용자 uid
@@ -261,10 +256,16 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
         client.use {
             val writeApi = client.getWriteKotlinApi()
             try {
+                //todo : issleep?
+                var issleep = false
+                if(rate<65){
+                    issleep=true
+                }
+                val map1 = mutableMapOf<String,Any>("heart" to rate, "isntsleep" to issleep)
                 val point = Point
                     .measurement(user)
                     .addTag("Uid", Uid)
-                    .addField("HeartRate",rate)
+                    .addFields(map1)//influxDB의 field의 type은 한번 정하면 바꿀 수 없다. field변경!
                     .time(Instant.now(), WritePrecision.NS);
                 writeApi.writePoint(point)
             } catch (ie: InfluxException) {
@@ -486,7 +487,7 @@ class Networking : AppCompatActivity(), CoroutineScope by MainScope(),
                     //DB로 데이터 전송
                     if(last_time!=dateAndTime.toString().substring(14,16))
                         lifecycleScope.launch(Dispatchers.IO) {
-                            val isInserted = async { insertDB(newRate) }
+                            val isInserted = async { insertDB(newRate.toInt()) }
                             Log.d("isInserted",newRate)
                             Log.d("time", dateAndTime.toString().substring(14,16))
                             last_time = dateAndTime.toString().substring(14,16)
