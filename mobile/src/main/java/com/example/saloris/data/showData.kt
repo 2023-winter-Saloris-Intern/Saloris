@@ -259,7 +259,30 @@ class showData : AppCompatActivity() {
         val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val client2 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
+        val client3 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val heartrate = ArrayList<HeartRate>()
+        //query
+        val fluxQueryMean = ("from(bucket: \"HeartRate\")\n" +
+                "  |> range(start:$start, stop: $stop)\n" +
+                "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
+                "  |> filter(fn: (r) => r[\"Uid\"] == \"VLJ4bmIBOBTW8d5WeUABMwEn1FG3\")\n" +
+                "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
+                "  |> mean(column: \"_value\")")
+        client3.use {
+            //val writeApi = client.getWriteKotlinApi()
+            val results = client3.getQueryKotlinApi().query(fluxQueryMean)
+            Log.d("show",results.toString())
+            results.consumeAsFlow()
+                .catch {
+                    print("catch")
+                }
+                .collect {
+                    val average = it.value
+                    Log.d("average",average.toString())
+
+                }
+        }
+        client3.close()
         //query
         val fluxQueryright = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
