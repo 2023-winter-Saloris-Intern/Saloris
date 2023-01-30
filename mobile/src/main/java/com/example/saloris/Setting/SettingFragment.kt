@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.R
@@ -30,6 +31,8 @@ class SettingFragment : Fragment() {
 
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
+
+    private var wearableDeviceConnected: Boolean = false
 
     private fun deleteAutoLoginInfo() {
         val autoLoginPref =
@@ -77,5 +80,15 @@ class SettingFragment : Fragment() {
         binding.test.setOnClickListener {
             navController.navigate(R.id.action_settingFragment_to_requiredInfoFragment)
         }
+
+        binding.disconnectBtn.setOnClickListener {
+            //wearable device가 연결되었는지 확인하는 버튼
+            if (!wearableDeviceConnected) {
+                val tempAct: Activity = requireActivity() as AppCompatActivity
+                //Couroutine
+                //initialiseDevicePairing(tempAct)
+            }
+        }
     }
+
 }

@@ -136,10 +136,10 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         binding.startBtn.setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_driveFragment)
         }
-        binding.buttonTest.setOnClickListener {
-            val intent = Intent(getActivity(), Networking::class.java)
-            startActivity(intent)
-        }
+//        binding.buttonTest.setOnClickListener {
+//            val intent = Intent(getActivity(), Networking::class.java)
+//            startActivity(intent)
+//        }
 
         binding.checkConnect.setOnClickListener {
             //wearable device가 연결되었는지 확인하는 버튼
