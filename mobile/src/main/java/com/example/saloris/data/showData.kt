@@ -36,7 +36,16 @@ import java.time.format.DateTimeFormatter
 class showData : AppCompatActivity() {
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
+/*
+import "experimental/date/boundaries"
 
+thisMonth = boundaries.month()
+from(bucket: "HeartRate")
+  |> range(start: thisMonth.start, stop: thisMonth.stop)
+  |> filter(fn: (r) => r["_measurement"] == "user")
+  |> filter(fn: (r) => r["Uid"] == "VLJ4bmIBOBTW8d5WeUABMwEn1FG3")
+  |> filter(fn: (r) => r["_field"] == "heart")
+  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false, timeSrc: "_start")*/
     private var chart: LineChart? = null
     private var thread: Thread? = null
 
@@ -243,15 +252,23 @@ class showData : AppCompatActivity() {
         val client2 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val client3 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val heartrate = ArrayList<HeartRate>()
-        //query 사용자의 평균을 출력
-        val fluxQueryMean = ("from(bucket: \"HeartRate\")\n" +
-                "  |> range(start:$start, stop: $stop)\n" +
+//        //query 사용자의 평균을 출력
+//        val fluxQueryMean = ("from(bucket: \"HeartRate\")\n" +
+//                "  |> range(start:$start, stop: $stop)\n" +
+//                "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
+//                "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
+//                "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
+//                "  |> mean(column: \"_value\")")
+        val fluxQueryMean = ("import \"experimental/date/boundaries\"\n" +
+                "thisMonth = boundaries.month()\n" +
+                "from(bucket: \"HeartRate\")\n" +
+                "  |> range(start: thisMonth.start, stop: thisMonth.stop)\n" +
                 "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
                 "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
                 "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
-                "  |> mean(column: \"_value\")")
+                "  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false, timeSrc: \"_start\")")
         client3.use {
-            //val writeApi = client.getWriteKotlinApi()
+            //val writeApi = client.getW배터리 정보 가져오기riteKotlinApi()
             val results = client3.getQueryKotlinApi().query(fluxQueryMean)
             Log.d("show",results.toString())
             results.consumeAsFlow()
@@ -259,7 +276,7 @@ class showData : AppCompatActivity() {
                     print("catch")
                 }
                 .collect {
-                    val average = it.value
+                    val average = it.time
                     Log.d("average",average.toString())
 
                 }
