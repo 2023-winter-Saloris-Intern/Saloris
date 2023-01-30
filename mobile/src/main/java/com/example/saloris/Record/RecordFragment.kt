@@ -24,7 +24,9 @@ import com.example.saloris.databinding.FragmentRecordBinding
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -38,6 +40,7 @@ import java.time.*
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.round
 
 
 ////line chart 시도
@@ -222,6 +225,22 @@ class RecordFragment : Fragment() {
         val mv = MyMarkerView(mainActivity, R.layout.custom_marker_view,"Show")
         // set the marker to the chart
         chart!!.setMarker(mv);
+
+        chart.setOnChartValueSelectedListener(object: OnChartValueSelectedListener{
+            override fun onValueSelected(e: Entry, h: Highlight){
+                val xAxisLabel = e.x.toString()
+                Log.d("x in record",xAxisLabel)
+                Log.d("sleepXArr",sleepX.toString())
+                if(xAxisLabel.toFloat() in sleepX) {
+                    Log.d("Sleep!!!!!", "the value is sleep!!")
+                    binding.sleepState.text = "졸음"
+                }else{
+                    binding.sleepState.text = "졸음 아님"
+                }
+            }
+            override fun onNothingSelected() {
+            }
+        })
         return binding.root
     }
     //chart
@@ -359,7 +378,7 @@ class RecordFragment : Fragment() {
                     if(time.toString().substring(8,10) == Dday.toString()){
                         val average = it.value
                         Log.d("average",average.toString())
-                        DayMean=average.toString()
+                        DayMean=(round((average as Double)*100)/100).toString()
                     }
                     Log.d("date",time.toString())
 
