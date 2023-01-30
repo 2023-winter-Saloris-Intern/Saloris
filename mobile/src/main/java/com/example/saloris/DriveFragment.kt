@@ -3,7 +3,9 @@ package com.example.saloris
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,18 +13,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.saloris.databinding.ActivityNetworkingBinding
 import com.example.saloris.databinding.FragmentDriveBinding
 import com.example.saloris.util.MakeToast
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.influxdb.client.domain.WritePrecision
+import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
+import com.influxdb.client.write.Point
+import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.HashSet
 
@@ -50,10 +69,29 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private var messageEvent: MessageEvent? = null
     private var wearableNodeUri: String? = null
 
+    //chart
+    private var chart: LineChart? = null
+    private var thread: Thread? = null
+
+    /* User Authentication */
+    private lateinit var auth: FirebaseAuth
+
+    // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
+    lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // 2. Context를 액티비티로 형변환해서 할당
+        mainActivity = context as MainActivity
+    }
+
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     var btnBackPressedTime: Long = 0
-    var newRate = ""
 
+    var newRate = ""
+    var Rate = ""
+    var last_time=""
     /* Toast */
     private val toast = MakeToast()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +103,10 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             //Couroutine
             initialiseDevicePairing(tempAct)
         }
+        //user auth
+        auth = Firebase.auth
+        //chart
+
     }
 
     override fun onCreateView(
@@ -94,6 +136,28 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             binding.driveState.setText("운행 종료")
             navController.navigate(R.id.action_driveFragment_to_homeFragment)
         }
+        chart = binding.chart1
+        chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 밑으로
+        //chart!!.yAxis.axisMinimum=0f
+        //chart!!.xAxis.valueFormatter = TimeAxisValueFormat() // x축의 출력 형식을 시:분으로
+        chart!!.xAxis.setDrawLabels(true)
+        chart!!.xAxis.axisMinimum=0f // 9시부터
+        chart!!.xAxis.axisMaximum=1200f // 오전 5시까지..?
+        chart!!.axisRight.isEnabled = false // 오른쪽 y축은 없애고
+        chart!!.axisLeft.axisMaximum=80f // y축 min,max
+        chart!!.axisLeft.axisMinimum=50f
+        chart!!.legend.textColor = Color.BLUE
+        chart!!.animateXY(10, 10)
+        chart!!.invalidate()
+        val data = LineData()
+        chart!!.data = data
+        val mv = MyMarkerView(mainActivity, R.layout.custom_marker_view,"Realtime") // markerview
+        // set the marker to the chart
+        chart!!.setMarker(mv);
+        //feedMultiple()
+
+        activityContext = mainActivity
+        wearableDeviceConnected = false
     }
 
     override fun onDataChanged(p0: DataEventBuffer) {
@@ -135,6 +199,112 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 ).show()
             }
         }
+    }
+    //chart
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addEntry() {
+        val data = chart!!.data
+        Log.d("addEntry_mainActivity",data.toString())
+        if (data != null) {
+            var set = data.getDataSetByIndex(0)
+            if (set == null) {
+                set = createSet()
+                data.addDataSet(set)
+            }
+            val dateAndTime : LocalDateTime = LocalDateTime.now()
+            Log.d("dateAndTime-main",dateAndTime.toString())
+            val time_hour = dateAndTime.toString().substring(11,13)
+            val time_min = dateAndTime.toString().substring(14,16)
+            Log.d("time_hour-main",time_hour)
+            Log.d("time_min-main",time_min)
+            //현재 시간을 분으로 바꿔서 Entry x축에 넣기
+            val time  = (time_hour.toInt())*60+time_min.toInt()
+            Log.d("time-main",time.toString())
+            //val rand = (Math.random() * 4).toFloat() + 60f
+            Log.d("value-main",newRate)
+            //TODO time :real time
+            val time_to = time.toFloat()-9*60
+            data.addEntry(Entry(set.entryCount.toFloat(),newRate.toFloat()), 0)
+            Log.d("time_x",time.toString())
+            data.notifyDataChanged()
+            chart!!.notifyDataSetChanged()
+            chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
+            chart!!.moveViewToX(set.entryCount.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
+            Log.d("addEntry_mainActivity",(time_to.toFloat()-10f).toString())
+        }
+    }
+
+    private fun createSet(): LineDataSet {
+        //chart : 설정
+        Log.d("createSet_mainActivity","createSet")
+        val set = LineDataSet(null, "Heart Rate")
+        set.fillAlpha = 110
+
+        set.fillColor = Color.parseColor("#d7e7fa")//선 밑에 색채우기
+        set.color = Color.parseColor("#0B80C9")//선 색
+
+        set.setCircleColor(Color.parseColor("#FFA1B4DC"))
+        //set.setCircleColorHole(Color.BLUE)
+        set.valueTextColor = Color.BLUE //TODO : 글자 색 .. chart에 값 확인하기
+        set.valueTextSize=10f
+        set.setDrawValues(false)
+        set.lineWidth = 2f
+        set.circleRadius = 6f
+        set.setDrawCircleHole(false)
+        set.setDrawCircles(false)
+        set.valueTextSize = 9f
+        set.setDrawFilled(true)
+        set.axisDependency = YAxis.AxisDependency.LEFT
+        set.highLightColor = Color.rgb(244, 117, 117)
+        return set
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun feedMultiple() {
+        if (thread != null) thread!!.interrupt()
+        val runnable = Runnable { addEntry() }
+        Log.d("feedMultiple_mainActivity","feedMultiple")
+        thread = Thread {
+            mainActivity.runOnUiThread(runnable)
+        }
+        thread!!.start()
+    }
+    //DB에 heartrate를 넣는 함수
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun insertDB(rate: Int):Boolean {
+//val token = System.getenv()["INFLUX_TOKEN"]
+        val user="user"
+        //사용자 uid
+        val Uid=auth.currentUser?.uid
+        //val Uid = "T"
+        val org = "intern"
+        val bucket = "HeartRate"
+        //influxDB token
+        val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
+        print(System.getenv())
+        val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
+        client.use {
+            val writeApi = client.getWriteKotlinApi()
+            try {
+                //todo : issleep?
+                var issleep = false
+                if(rate<65){
+                    issleep=true
+                }
+                val map1 = mutableMapOf<String,Any>("heart" to rate, "isntsleep" to issleep)
+                val point = Point
+                    .measurement(user)
+                    .addTag("Uid", Uid)
+                    .addFields(map1)//influxDB의 field의 type은 한번 정하면 바꿀 수 없다. field변경!
+                    .time(Instant.now(), WritePrecision.NS);
+                writeApi.writePoint(point)
+            } catch (ie: InfluxException) {
+                Log.e("InfluxException", "Insert: ${ie.cause}")
+                return false
+            }
+        }
+        client.close()
+        return true
     }
     //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
@@ -312,13 +482,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     newRate = s
                     Log.d("onMessageReceived_mainActivity","feedMultiple()")
                     //chart에 표시
-                    //feedMultiple()
+                    feedMultiple()
                     //DB로 데이터 전송
-//                    lifecycleScope.launch(Dispatchers.IO) {
-//                        val isInserted = async { insertDB(newRate) }
-//                        Log.d("isInserted",newRate)
-//                        Log.d("time", dateAndTime.toString())
-//                    }
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val isInserted = async { insertDB(newRate.toInt()) }
+                        Log.d("isInserted",newRate)
+                        Log.d("time", dateAndTime.toString().substring(14,16))
+                        last_time = dateAndTime.toString().substring(14,16)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
