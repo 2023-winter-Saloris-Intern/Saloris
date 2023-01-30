@@ -192,24 +192,6 @@ class showData : AppCompatActivity() {
             count++
             last_time=time.toString()
             lastRate=newRate.toFloat()
-//            if(last_time!="" && (last_time.toInt()+1)<time){
-//                //처음 시작하는 점이 아니고, 이전 출력시간+1 보다 크면 측정하지 않은 부분이다
-//                Log.d("color",last_time + time.toString())
-//                //값이 없는 부분 색 삭제
-//                colors.add(Color.TRANSPARENT)
-//                count++
-//            }else if(last_time!=""){
-//                //값이 있는 부분은 파란색 선으로
-//                if(sleepArr[count]==true){
-//                    Log.d("color","red")
-//                    colors.add(Color.RED)
-//                }else{
-//                    colors.add(Color.BLUE)
-//                }
-//                count++
-//            }
-
-//            last_time=time.toString()
             data.addEntry(Entry(time.toFloat(),newRate.toFloat()), 0)
 //            data.notifyDataChanged()
 //            chart!!.notifyDataSetChanged()
@@ -261,11 +243,11 @@ class showData : AppCompatActivity() {
         val client2 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val client3 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val heartrate = ArrayList<HeartRate>()
-        //query
+        //query 사용자의 평균을 출력
         val fluxQueryMean = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
                 "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
-                "  |> filter(fn: (r) => r[\"Uid\"] == \"VLJ4bmIBOBTW8d5WeUABMwEn1FG3\")\n" +
+                "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
                 "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
                 "  |> mean(column: \"_value\")")
         client3.use {
@@ -283,7 +265,7 @@ class showData : AppCompatActivity() {
                 }
         }
         client3.close()
-        //query
+        //query issleep 출력
         val fluxQueryright = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
                 "  |> filter(fn: (r) =>r[\"_field\"] == \"isntsleep\")\n" +
@@ -316,6 +298,7 @@ class showData : AppCompatActivity() {
         sleepArr.add(false)
         Log.d("sleepArr",sleepArr.toString())
         client2.close()
+        //query heart rate
         val fluxQueryleft = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
                 "  |> filter(fn: (r) =>r[\"_field\"] == \"heart\")\n" +
