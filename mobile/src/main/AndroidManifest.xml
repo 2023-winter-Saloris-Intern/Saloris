@@ -68,6 +68,18 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
     </application>
+    <!-- FaceMesh -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" /> <!-- Warning -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- influxDB -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Network State -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

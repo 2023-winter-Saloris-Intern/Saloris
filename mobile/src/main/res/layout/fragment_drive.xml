@@ -23,16 +23,26 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/check_connect"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginTop="92dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/blue_round_button"
-        android:textSize="14dp"
+        android:fontFamily="@font/notosans_kr_bold"
         android:text="연결 확인"
         android:textColor="@color/white"
-        android:fontFamily="@font/notosans_kr_bold"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/face_guideline"
+        android:contentDescription="@string/face_fitting_line"
+        app:layout_constraintBottom_toTopOf="@+id/heart_rate"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp" />
 
     <TextView
         android:id="@+id/heart_rate"

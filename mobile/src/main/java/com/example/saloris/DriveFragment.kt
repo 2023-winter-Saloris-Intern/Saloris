@@ -1,32 +1,49 @@
 package com.example.saloris
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.drawable.AnimationDrawable
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
+import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentDriveBinding
-import com.example.saloris.util.MakeToast
+import com.example.saloris.facemesh.FaceMeshResultGlRenderer
+import com.example.saloris.util.*
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FcmBroadcastProcessor.reset
+import com.google.mediapipe.solutioncore.CameraInput
+import com.google.mediapipe.solutioncore.SolutionGlSurfaceView
+import com.google.mediapipe.solutions.facemesh.FaceMesh
+import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
+import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
 import com.influxdb.client.write.Point
@@ -35,12 +52,24 @@ import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.time.LocalDateTime
-import java.util.HashSet
+import java.util.*
+import kotlin.concurrent.timer
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
+    // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
+    lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // 2. Context를 액티비티로 형변환해서 할당
+        mainActivity = context as MainActivity
+    }
     /* View */
     private lateinit var binding: FragmentDriveBinding
     private lateinit var navController: NavController
@@ -64,7 +93,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
 
-
+    private val cameraPermissionList = arrayOf(
+        Manifest.permission.CAMERA
+    )
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     var btnBackPressedTime: Long = 0
 
@@ -73,6 +104,537 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     var last_time=""
     /* Toast */
     private val toast = MakeToast()
+    /* FaceMesh */
+    private var isCameraOn = false
+
+    private var isFaceOn = false
+    private var isFaceGood = false
+    private var isFaceValid = false
+
+    private lateinit var prefs: SharedPreferences
+    private lateinit var faceMeshSettings: BooleanArray
+    private lateinit var faceMeshColors: ArrayList<FloatArray>
+    private var alarmState: Boolean = false
+    private var timer2 = Timer(true)
+
+    private lateinit var faceMesh: FaceMesh
+    private lateinit var guidelineAnimation: AnimationDrawable
+
+    private lateinit var cameraInput: CameraInput
+    private lateinit var glSurfaceView: SolutionGlSurfaceView<FaceMeshResult>
+
+    private var count: Int = 0          // 총 블링크 카운트
+    private var blink: Int = 0          // 현재 눈 감은상태
+    private var totalBlink: Int = 0     // 누적 눈 깜빡임
+    private var longClosedCount: Int = 0// 3초 이상 눈 감은 카운트
+    private var longClosedEye: Int = 0  // 3초 이상 눈 감은 누적 횟수
+    private var longClosedState: Boolean = false // 3초 이상 눈 감은 상태
+    //private var afterState: Boolean = false // 두 번째 3초 이상 눈감은 상태 확인
+    private var face: String = ""       // 현재 얼굴방향
+    private var leftEye: String = ""    // 왼쪽 눈 방향
+    private var rightEye: String = ""   // 오른쪽 눈 방향
+    private var ear: Float = 0.0f
+    private var mar: Float = 0.0f
+    private var moe: Float = 0.0f
+
+    private fun colorLoad(value: Int): FloatArray {
+        return when (value) {
+            1 -> WHITE_COLOR
+            2 -> ORANGE_COLOR
+            3 -> BLUE_COLOR
+            4 -> RED_COLOR
+            5 -> GREEN_COLOR
+
+            else -> BLACK_COLOR
+        }
+    }
+    private fun initFaceMesh() {
+        // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
+        // refineLandmark - 눈, 입술 주변으로 분석 추가.
+        faceMesh = FaceMesh(
+            requireContext(),
+            FaceMeshOptions.builder()
+                .setStaticImageMode(false)
+                .setRefineLandmarks(true)
+                .setRunOnGpu(true)
+                .build()
+        )
+        faceMesh.setErrorListener { message: String, _: RuntimeException? ->
+            Log.e("State", "MediaPipe Face Mesh error:$message")
+            toast.makeToast(requireContext(), "인식이 되지 않습니다.")
+        }
+    }
+
+    private var fittingLevel = 0
+    private var timerCheck = true
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initGlSurfaceView() {
+        // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
+        glSurfaceView = SolutionGlSurfaceView(mainActivity, faceMesh.glContext, faceMesh.glMajorVersion)
+        glSurfaceView.setSolutionResultRenderer(
+            FaceMeshResultGlRenderer(faceMeshSettings, faceMeshColors)
+        )
+        faceMesh.setResultListener { faceMeshResult: FaceMeshResult? ->
+            checkLandmark(faceMeshResult)
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                if (isFaceValid) {
+//                    with(binding.guideline) {
+//                        if (mainActivity::guidelineAnimation.isInitialized)
+//                            guidelineAnimation.stop()
+//                        setBackgroundResource(R.drawable.face_guideline_complete)
+//                    }
+                    //binding.faceFittingWarningText.text = getString(R.string.face_fitting_complete)
+                    // 인식 완료 1초 후 화면 변경
+                    if (timerCheck) {
+                        timer2 = timer(period = 100) {
+                            timerCheck = false
+                            fittingLevel += 1
+                            Log.d("fittingLevel", "$fittingLevel")
+                            if (fittingLevel >= MAX_FITTING_LEVEL) {
+                                lifecycleScope.launch(Dispatchers.Main) {
+//                                    binding.stateFitting.visibility = View.INVISIBLE
+//                                    binding.stateFitting2.visibility = View.VISIBLE
+//                                    binding.faceFittingWarningText.visibility = View.INVISIBLE
+//                                    binding.guideline.visibility = View.INVISIBLE
+//                                    if (isBluetoothOn) {
+//                                        binding.state.visibility = View.VISIBLE
+//                                    }
+                                }
+                                cancel()
+                            }
+                        }
+                    }
+                } else {
+                    reset()
+//                    binding.faceFitting.visibility = View.VISIBLE
+//                    binding.state.visibility = View.GONE
+//                    if (isBluetoothOn) {
+//                        binding.stateFitting.visibility = View.VISIBLE
+//                    }
+                    with(binding.guideline) {
+                        setBackgroundResource(R.drawable.face_guideline)
+                        guidelineAnimation = background as AnimationDrawable
+                        guidelineAnimation.start()
+                    }
+//                    if (!isFaceOn) {
+//                        binding.faceFittingWarningText.text = getString(R.string.face_fitting_init)
+//                    }
+//                    if (!isFaceGood) {
+//                        binding.faceFittingWarningText.text = getString(R.string.face_fitting_warn)
+//                    }
+                }
+            }
+
+            glSurfaceView.setRenderData(faceMeshResult, true)
+            glSurfaceView.requestRender()
+        }
+    }
+
+    private fun postGlSurfaceView() {
+        cameraInput = CameraInput(mainActivity)
+        cameraInput.setNewFrameListener { faceMesh.send(it) }
+
+        glSurfaceView.post { startCamera() }
+        glSurfaceView.visibility = View.VISIBLE
+    }
+
+    private fun startCamera() {
+        cameraInput.start(mainActivity, faceMesh.glContext, CameraInput.CameraFacing.FRONT, 480, 640)
+    }
+    /* date 시간 구하기 */
+    private var startTime: Long = 0
+    private var beforeTime: Long = 0
+    private var startCheck: Boolean = true
+    private var beforeCheck: Boolean = true
+
+    private fun getTime(): Long {
+        var now = System.currentTimeMillis()
+        //var date = Date(now)
+
+        //var dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        //var getTime = dateFormat.format(date)
+
+        return now
+    }
+
+    //시간 차 구하기
+    private fun betweenTime(before: Long): Long {
+        //var nowFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(getTime())
+        //var beforeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(before)
+        var now = System.currentTimeMillis()
+        var diffSec = (now - before) / 1000
+
+        return diffSec
+    }
+    // landmark 분석
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun checkLandmark(result: FaceMeshResult?) {
+        if (result == null || result.multiFaceLandmarks().isEmpty()) {
+            isFaceOn = false
+            isFaceGood = true
+            isFaceValid = false
+
+            return
+        }
+
+        with(result.multiFaceLandmarks()[0].landmarkList) {
+            val mouth = MOUTH_INDEX.map { get(it) }
+            val lEye = LEFT_EYE_INDEX.map { get(it) }
+            val rEye = RIGHT_EYE_INDEX.map { get(it) }
+            val base = BASE_INDEX.map { get(it) }
+            val pitching = FACE_PITCHING.map { get(it) }
+
+            // 얼굴이 가이드라인 안에 있는지 0.10 0.95 0.26 0.86
+            isFaceOn =
+                !(pitching[0].y < 0.08 || pitching[1].y > 0.97 || pitching[2].x < 0.24 || pitching[3].x > 0.88)
+
+            val nose = result.multiFaceLandmarks()[0].getLandmark(4).z
+            isFaceGood = -0.14 < nose && nose < -0.04
+
+            isFaceValid = isFaceOn && isFaceGood
+            if (!isFaceValid) return
+
+            val leftEAR = ((distance(lEye[1].x, lEye[5].x, lEye[1].y, lEye[5].y))
+                    + (distance(lEye[2].x, lEye[4].x, lEye[2].y, lEye[4].y))) /
+                    (2 * (distance(lEye[0].x, lEye[3].x, lEye[0].y, lEye[3].y)))
+            val rightEAR = ((distance(rEye[1].x, rEye[5].x, rEye[1].y, rEye[5].y))
+                    + (distance(rEye[2].x, rEye[4].x, rEye[2].y, rEye[4].y))) /
+                    (2 * (distance(rEye[0].x, rEye[3].x, rEye[0].y, rEye[3].y)))
+
+            ear = (leftEAR + rightEAR) / 2
+            mar = ((distance(mouth[1].x, mouth[7].x, mouth[1].y, mouth[7].y))
+                    + (distance(mouth[2].x, mouth[6].x, mouth[2].y, mouth[6].y))
+                    + (distance(mouth[3].x, mouth[5].x, mouth[3].y, mouth[5].y))) /
+                    (2 * (distance(mouth[0].x, mouth[4].x, mouth[0].y, mouth[4].y)))
+            moe = mar / ear
+
+            // 좌, 우 눈 길이
+            val leftEyeDistance = distance(lEye[6].x, base[1].x, lEye[6].y, base[1].y).pow(2)
+            val rightEyeDistance = distance(rEye[6].x, base[1].x, rEye[6].y, base[1].y).pow(2)
+
+            // 얼굴 방향 측정
+            face = faceDirection(mouth[8].z, mouth[9].z, lEye[0].z, rEye[3].z, base[0].z, base[2].z)
+
+            // 한 눈을 감았을 떄 EAR 평균 0.14
+            if (ear < 0.09) {
+                if (!longClosedState) {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d("blink", "blink")
+//                        with(binding.blink) {
+//                            text = getString(R.string.blink)
+//                            setTextColor(ContextCompat.getColor(mainActivity, R.color.drowsy))
+//                            visibility = View.INVISIBLE
+//                        }
+                    }
+                }
+                count++
+                blink = 0
+                leftEye = getString(R.string.blink)
+                rightEye = getString(R.string.blink)
+                if (beforeCheck) {
+                    beforeTime = getTime()
+                    beforeCheck = false
+                }
+                if (startCheck) {
+                    startTime = getTime()
+                    startCheck = false
+                }
+                if (longClosedCount == 1 && (betweenTime(startTime) % 1) == 0L) {
+                    lifecycleScope.launch(Dispatchers.Main) {
+//                        with(binding.timerFitting) {
+//                            text = (15 - betweenTime(startTime)).toString()
+//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                            visibility = View.VISIBLE
+//                        }
+//                        with(binding.longClosedFitting) {
+//                            text = longClosedCount.toString()
+//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                            visibility = View.VISIBLE
+//                        }
+                    }
+                    if (betweenTime(startTime) <= 0) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+//                            with(binding.timerFitting) {
+//                                text = 0.toString()
+//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+//                            with(binding.longClosedFitting) {
+//                                text = 0.toString()
+//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+                        }
+                    }
+                }
+                if (!longClosedState) {
+                    if ((betweenTime(beforeTime) % 1) == 0L && betweenTime(beforeTime) != 0L) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+//                            with(binding.blink) {
+//                                text = betweenTime(beforeTime).toString()
+//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.drowsy))
+//                                visibility = View.INVISIBLE
+//                            }
+//                            with(binding.longClosedFitting) {
+//                                text = longClosedCount.toString()
+//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+                        }
+                    }
+                }
+                if (betweenTime(beforeTime) >= 3) {
+                    longClosedCount++
+                    longClosedEye++
+                    longClosedState = true
+                    beforeCheck = true
+                    lifecycleScope.launch(Dispatchers.Main) {
+//                        with(binding.blink) {
+//                            text = getString(R.string.long_closed_eye)
+//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//                            visibility = View.INVISIBLE
+//                        }
+//                        with(binding.longClosedFitting) {
+//                            text = longClosedCount.toString()
+//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                            visibility = View.VISIBLE
+                        }
+                    }
+                    if (longClosedCount == 0) {
+                        startTime = getTime()
+                    }
+                    if (betweenTime(startTime) > 15) {
+                        longClosedCount = 1
+                        //afterState = false
+                        startTime = getTime()
+                    }
+                    else if (longClosedCount >= 2 && betweenTime(startTime) <= 15) {
+                        if(alarmState) {
+                            startWarningOn()
+                        }
+                        else {
+                            startWarningOff()
+                        }
+                        longClosedCount = 1
+                        //afterState = false
+                        startTime = getTime()
+                    }
+                } else {
+                if (count > 2 || ear > 0.09) {
+                    lifecycleScope.launch(Dispatchers.Main) {
+//                        with(binding.blink) {
+//                            text = getString(R.string.blink)
+//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.drowsy))
+//                            visibility = View.GONE
+//                        }
+                    }
+                    if (longClosedCount == 1 && (betweenTime(startTime) % 1) == 0L) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+//                            with(binding.timerFitting) {
+//                                text = (15 - betweenTime(startTime)).toString()
+//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+//                            with(binding.longClosedFitting) {
+//                                text = longClosedCount.toString()
+//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+                        }
+                    }
+                    count = 0
+                    blink = 1
+                    totalBlink++
+                    beforeCheck = true
+                    //startCheck = false
+//                    if(longClosedCount == 0 || afterState == true) {
+//                        startCheck = true
+
+//                    }
+                    longClosedState = false
+                    stopWarning()
+                }
+                if (leftEAR < 0.22) {
+                    leftEye = getString(R.string.blink)
+                    rightEye = eyeDirection(leftEyeDistance, rightEyeDistance)
+                } else if (rightEAR < 0.22) {
+                    leftEye = eyeDirection(leftEyeDistance, rightEyeDistance)
+                    rightEye = getString(R.string.blink)
+                } else {
+                    leftEye = eyeDirection(leftEyeDistance, rightEyeDistance)
+                    rightEye = eyeDirection(leftEyeDistance, rightEyeDistance)
+                }
+            }
+        }
+    }
+
+    private fun distance(rx: Float, lx: Float, ry: Float, ly: Float): Float {
+        return sqrt((rx - lx).pow(2) + (ry - ly).pow(2))
+    }
+
+    private fun eyeDirection(ld: Float, rd: Float): String {
+        return if ((ld - rd) > 0.004)
+            getString(R.string.left)
+        else if ((ld - rd) < -0.0035)
+            getString(R.string.right)
+        else
+            getString(R.string.front)
+
+    }
+
+    private fun faceDirection(
+        lez: Float, rez: Float, lmz: Float, rmz: Float, hp: Float, cp: Float
+    ): String {
+        val fdRatio = (lez + lmz) - (rez + rmz)
+
+        return if (hp - cp < -0.05)
+            getString(R.string.down)
+        else {
+            if (fdRatio > 0.15)
+                getString(R.string.left)
+            else if (fdRatio < -0.15)
+                getString(R.string.right)
+            else
+                getString(R.string.front)
+        }
+    }
+
+    /* Warn */
+    private val toneGenerator1 = ToneGenerator(AudioManager.STREAM_MUSIC, 200)
+    private val toneGenerator2 = ToneGenerator(AudioManager.STREAM_MUSIC, 500)
+
+    private var warningLevel = 0
+    private var standard = 100
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startWarningOn() {
+//        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            val vibratorManager =
+//                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+//            vibratorManager.defaultVibrator
+//        } else {
+//            @Suppress("DEPRECATION")
+//            getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
+//        }
+        //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        toneGenerator1.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
+
+        lifecycleScope.launch(Dispatchers.Main) {
+//            with(binding.drowsiness) {
+//                text = getString(R.string.drowsy)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//            }
+//            with(binding.drowsinessFitting) {
+//                text = getString(R.string.drowsy)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//            }
+//            with(binding.warningFilter) {
+//                visibility = View.VISIBLE
+//                (drawable as AnimationDrawable).start()
+//            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startWarningOff() {
+//        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            val vibratorManager =
+//                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+//            vibratorManager.defaultVibrator
+//        } else {
+//            @Suppress("DEPRECATION")
+//            getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
+//        }
+        //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        //toneGenerator1.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
+
+        lifecycleScope.launch(Dispatchers.Main) {
+//            with(binding.drowsiness) {
+//                text = getString(R.string.drowsy)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//            }
+//            with(binding.drowsinessFitting) {
+//                text = getString(R.string.drowsy)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//            }
+//            with(binding.warningFilter) {
+//                visibility = View.VISIBLE
+//                (drawable as AnimationDrawable).start()
+//            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun continueWarning() {
+//        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            val vibratorManager =
+//                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+//            vibratorManager.defaultVibrator
+//        } else {
+//            @Suppress("DEPRECATION")
+//            getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
+//        }
+//        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        toneGenerator2.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
+
+        lifecycleScope.launch(Dispatchers.Main) {
+//            with(binding.drowsiness) {
+//                text = getString(R.string.sleep)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//            }
+//            with(binding.drowsinessFitting) {
+//                text = getString(R.string.sleep)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
+//            }
+//            with(binding.warningFilter) {
+//                visibility = View.VISIBLE
+//                (drawable as AnimationDrawable).start()
+//            }
+        }
+    }
+
+    private fun stopWarning() {
+//        toneGenerator1.stopTone()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+//            with(binding.drowsiness) {
+//                text = getString(R.string.normal)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//            }
+//            with(binding.drowsinessFitting) {
+//                text = getString(R.string.normal)
+//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
+//            }
+//            with(binding.warningFilter) {
+//                visibility = View.GONE
+//                (drawable as AnimationDrawable).stop()
+//            }
+        }
+    }
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            val deniedList = result.filter { !it.value }.map { it.key }
+            Log.d("State", "$deniedList")
+            if (deniedList.isNotEmpty()) {
+                if (deniedList.any { it == Manifest.permission.CAMERA }) {
+                    println("any1: $isCameraOn")
+                    isCameraOn = false
+                    println("any2: $isCameraOn")
+                }
+
+//                AlertDialog.Builder(mainActivity)
+//                    .setTitle("알림")
+//                    .setMessage("권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
+//                    .setPositiveButton("설정") { _, _ -> openAndroidSetting() }
+//                    .setNegativeButton("취소", null)
+//                    .create()
+//                    .show()
+            } else {
+                isCameraOn = true
+            }
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityContext = this.context
@@ -85,7 +647,52 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         //user auth
         auth = Firebase.auth
         //chart
+        // 화면 항상 켜짐
+        /* Permission - Camera */
+        if (ActivityCompat.checkSelfPermission(
+                mainActivity, Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(cameraPermissionList)
+        }
 
+        /* FaceMesh */
+
+        prefs = activityContext!!.getSharedPreferences("faceSetting", Context.MODE_PRIVATE)
+        faceMeshSettings = booleanArrayOf(
+            prefs.getBoolean("eye", false),
+            prefs.getBoolean("eyeBrow", false),
+            prefs.getBoolean("eyePupil", false),
+            prefs.getBoolean("lib", false),
+            prefs.getBoolean("faceMesh", false),
+            prefs.getBoolean("faceLine", true)
+        )
+        faceMeshColors = arrayListOf(
+            colorLoad(prefs.getInt("eyeColor", 5)),
+            colorLoad(prefs.getInt("eyeBrowColor", 4)),
+            colorLoad(prefs.getInt("eyePupilColor", 1)),
+            colorLoad(prefs.getInt("libColor", 3)),
+            colorLoad(prefs.getInt("faceMeshColor", 1)),
+            colorLoad(prefs.getInt("faceLineColor", 1))
+        )
+        prefs = activityContext!!.getSharedPreferences("alarm", Context.MODE_PRIVATE)
+        alarmState = prefs.getBoolean("alarmState", false)
+
+        initFaceMesh()
+        initGlSurfaceView()
+        postGlSurfaceView()
+//        with(binding.preview) {
+//            removeAllViewsInLayout()
+//            addView(glSurfaceView)
+//            requestLayout()
+//        }
+
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            while (true) {
+//                saveAndWarn()
+//                delay(1000)
+//            }
+//        }
     }
 
     override fun onCreateView(

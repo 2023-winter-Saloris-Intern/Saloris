@@ -51,6 +51,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'com.google.mlkit:face-mesh-detection:+'
     //implementation 'com.github.prolificinteractive:material-calendarview:2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
@@ -107,4 +108,6 @@ dependencies {
 
     //chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    // MediaPipe
+    implementation 'com.google.mediapipe:facemesh:latest.release'
 }
