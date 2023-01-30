@@ -134,14 +134,6 @@ tools:context=".Home.HomeFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/button_test"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/check_connect"
         android:layout_width="match_parent"
@@ -149,7 +141,7 @@ tools:context=".Home.HomeFragment">
         android:layout_gravity="center"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="120dp"
         android:padding="10dp"
         app:cardBackgroundColor="@color/purple_700"
         app:cardCornerRadius="40dp"
