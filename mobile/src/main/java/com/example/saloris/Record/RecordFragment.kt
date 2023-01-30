@@ -10,12 +10,16 @@ import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.saloris.R
+import com.example.saloris.data.InfluxDB
 import com.example.saloris.databinding.FragmentRecordBinding
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -121,6 +125,12 @@ class RecordFragment : Fragment() {
 //            dateDialog.show()
 //            //dateDialog.datePicker.spinnersShown = true
 //        }
+
+        chart =  binding.dayChart
+
+        prepareChartData(lineData, chart)
+        initChartData()
+        initChart()
 
         binding.calendarView1.setVisibility(View.GONE)
         binding.dayChart.setVisibility(View.GONE)
@@ -241,8 +251,7 @@ class RecordFragment : Fragment() {
         return binding.root
     }
 
-
-    //    Line Chart 시도
+//    //    Line Chart 시도
     private fun initChartData() {
         //더미데이터
         chartData.add(Entry(-240f, 0f))
@@ -287,7 +296,7 @@ class RecordFragment : Fragment() {
         yLAxis.axisMinimum = -0.5f // y축 최소값
 
         // 왼쪽 y축 도메인 변경
-        val yAxisVals = ArrayList<String>(Arrays.asList("20", "50", "80", "110", "140"))
+        val yAxisVals = ArrayList<String>(Arrays.asList("50", "60", "70", "80", "90", "100"))
         yLAxis.valueFormatter = IndexAxisValueFormatter(yAxisVals)
         yLAxis.granularity = 1f
 
@@ -298,9 +307,9 @@ class RecordFragment : Fragment() {
         yRAxix.setDrawGridLines(false)
 
         // 마커 설정
-        val marker = MarkerView(requireContext(), com.example.saloris.R.drawable.graph_marker)
-        marker.chartView = chart
-        chart.marker = marker
+//        val marker = MarkerView(requireContext(), com.example.saloris.R.drawable.graph_marker)
+//        marker.chartView = chart
+//        chart.marker = marker
 
         chart!!.description.isEnabled = false // 설명
         chart!!.data = lineData // 데이터 설정
