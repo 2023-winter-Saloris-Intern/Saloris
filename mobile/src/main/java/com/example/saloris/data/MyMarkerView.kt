@@ -25,6 +25,7 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
     override fun refreshContent(e: Entry, highlight: Highlight) {
         //선택한 것의 x축의 값 =시간을 분으로 표현한 것
         Log.d("x",e.x.toString())
+
         val time_min = Utils.formatNumber(e.x.toInt().toFloat(), 0, true).toInt()
         val minute = (time_min%60).toString()
         var hour =""

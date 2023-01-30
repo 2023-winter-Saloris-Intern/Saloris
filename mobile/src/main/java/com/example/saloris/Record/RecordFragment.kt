@@ -1,7 +1,6 @@
 package com.example.saloris.Record
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
@@ -15,21 +14,16 @@ import android.widget.CalendarView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.saloris.MainActivity
 import com.example.saloris.MyMarkerView
 import com.example.saloris.R
 import com.example.saloris.TimeAxisValueFormat
 import com.example.saloris.data.HeartRate
-import com.example.saloris.data.InfluxDB
 import com.example.saloris.databinding.FragmentRecordBinding
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -40,13 +34,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.*
 import java.util.*
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.toTimeUnit
+import kotlin.math.max
+import kotlin.math.min
+
 
 ////line chart 시도
 //class TimeAxisValueFormat : IndexAxisValueFormatter() {
@@ -79,6 +71,13 @@ class RecordFragment : Fragment() {
     var lastSleep =false
     var lastRate = 0f
     var ismidvalue=false
+    var Dyear = 0
+    var Dmonth =0
+    var Dday = 0
+    var DayMean = "0"
+    var Dayhighest : Int=0
+    var Daylowest : Int = 500
+    var sleepX = ArrayList<Float>()
     private lateinit var auth: FirebaseAuth
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
     lateinit var mainActivity: MainActivity
@@ -97,7 +96,7 @@ class RecordFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentRecordBinding.inflate(inflater, container, false)
@@ -123,9 +122,6 @@ class RecordFragment : Fragment() {
             //val dateFormat: DateFormat = SimpleDateFormat("yyyy년MM월dd일")
 
             val date: Date = Date(calendarView.date)
-            var Dyear = 0
-            var Dmonth =0
-            var Dday = 0
 
             //dateText.text = dateFormat.format(date)
 
@@ -167,12 +163,22 @@ class RecordFragment : Fragment() {
                                 show(Uid,date)
                             }
                         }
+                        if(show_Data.await()!=null){
+                            mainActivity.runOnUiThread(Runnable { // 메시지 큐에 저장될 메시지의 내용
+                                binding.average.text=DayMean;
+                                binding.highest.text= Dayhighest.toString();
+                                binding.lowest.text = Daylowest.toString();
+                            });
+                        }
+
+
                         //text.text= show_Data.await().toString()
                         if (Uid != null) {
                             Log.d("did",Uid)
                         }
                         Log.d("DB end",LocalDateTime.now().toString())
                     }
+
                 }
 
                 calendarView.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
@@ -262,6 +268,13 @@ class RecordFragment : Fragment() {
                     }
                 }
             }
+            if(sleepArr[count]==true){
+                sleepX.add(time.toFloat())
+                Log.d("sleepX ",time.toString())
+            }
+            Daylowest= min(newRate.toInt(),Daylowest)
+            Dayhighest=max(newRate.toInt(),Dayhighest)
+            Log.d("min max",Daylowest.toString()+Dayhighest.toString())
             lastSleep = sleepArr[count]
             count++
             last_time=time.toString()
@@ -341,8 +354,14 @@ class RecordFragment : Fragment() {
                     print("catch")
                 }
                 .collect {
-                    val average = it.time
-                    Log.d("average",average.toString())
+                    val time = it.time
+                    Log.d("is same?",time.toString().substring(8,10)+" == "+ Dday.toString())
+                    if(time.toString().substring(8,10) == Dday.toString()){
+                        val average = it.value
+                        Log.d("average",average.toString())
+                        DayMean=average.toString()
+                    }
+                    Log.d("date",time.toString())
 
                 }
         }
