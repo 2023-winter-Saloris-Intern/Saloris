@@ -16,6 +16,8 @@
 
 package com.example.saloris
 
+//import com.example.saloris.databinding.FragmentExerciseBinding
+//import com.google.android.gms.wearable.R
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,13 +25,13 @@ import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -42,30 +44,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.wear.ambient.AmbientModeSupport
 import com.example.saloris.databinding.FragmentExerciseBinding
-//import com.example.saloris.databinding.FragmentExerciseBinding
-import com.google.android.gms.wearable.*
-//import com.google.android.gms.wearable.R
-import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Thread.sleep
-import java.nio.charset.StandardCharsets
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDateTime
-import javax.inject.Inject
-import kotlin.math.roundToInt
-import androidx.navigation.NavController
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.gms.wearable.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import java.nio.charset.StandardCharsets
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDateTime
+import javax.inject.Inject
+import kotlin.math.roundToInt
+
 
 /**
  * Fragment showing the exercise controls and current exercise metrics.
@@ -117,7 +113,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentExerciseBinding.inflate(inflater, container, false)
         return binding.root
@@ -391,9 +387,19 @@ private fun createSet(): LineDataSet {
                 //todo chart
                 newRate=heart_rate_value
                 feedMultiple()
+                var battery = getBatteryRemain(mainActivity)
+                Log.d("Battery!!",battery.toString())
             }
         }
 
+    }
+    fun getBatteryRemain(context: Context): Int {
+        val intentBattery =
+            context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val level = intentBattery!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+        val scale = intentBattery.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+        val batteryPct = level / scale.toFloat()
+        return (batteryPct * 100).toInt()
     }
     fun sendmessagetophone(num : String){
         if (mobileDeviceConnected) {
