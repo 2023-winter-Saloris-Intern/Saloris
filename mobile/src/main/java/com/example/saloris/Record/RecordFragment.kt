@@ -140,12 +140,14 @@ class RecordFragment : Fragment() {
 //                .setMinimumDate(CalendarDay.from(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH))
 
             calendarView.maxDate = System.currentTimeMillis()
-
+            DayArr.clear()
+            averageArr.clear()
             lifecycleScope.launch(Dispatchers.IO) {
                 val Uid = auth.currentUser?.uid
                 val a = async {
                     if (Uid != null) {
                         datefromDB(Uid)
+                        Log.d("date from db",DayArr.toString())
                     }
                 }
                 if(a.await()!=null){
