@@ -153,7 +153,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
-        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.ligt_blue_round_btn)
         var textColor = ContextCompat.getColor(requireContext(),R.color.black)
 
         //Coroutine
@@ -177,7 +177,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                     if (getNodesResBool[1]) {
                         //워치와 연결, 앱이 열려있음
                         wearableDeviceConnected = true
-                        cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.ligt_blue_round_btn)
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
@@ -185,7 +184,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                     } else {
                         //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
-                        cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.ligt_blue_round_btn)
                         //binding.sendmessageButton.visibility = View.GONE
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)

@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.saloris.MainActivity
@@ -134,6 +136,9 @@ class RecordFragment : Fragment() {
 
             val date: Date = Date(calendarView.date)
 
+//            calendarView.state().edit()
+//                .setMinimumDate(CalendarDay.from(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH))
+
             calendarView.maxDate = System.currentTimeMillis()
 
             lifecycleScope.launch(Dispatchers.IO) {
@@ -251,15 +256,24 @@ class RecordFragment : Fragment() {
         chart!!.setMarker(mv);
 
         chart.setOnChartValueSelectedListener(object: OnChartValueSelectedListener{
+            var sleepCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.sleep_state_btn)
+            var nonSleepCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.nonsleep_state_btn)
+            var sleepTextColor = ContextCompat.getColor(requireContext(),R.color.heart_rate)
+            var nonSleepTextColor = ContextCompat.getColor(requireContext(),R.color.black)
+
             override fun onValueSelected(e: Entry, h: Highlight){
                 val xAxisLabel = e.x.toString()
                 Log.d("x in record",xAxisLabel)
                 Log.d("sleepXArr",sleepX.toString())
                 if(xAxisLabel.toFloat() in sleepX) {
                     Log.d("Sleep!!!!!", "the value is sleep!!")
-                    binding.sleepState.text = "졸음"
+                    binding.sleepState.text = "혹시 졸았나요?"
+                    binding.sleepState.setBackgroundDrawable(sleepCardColor)
+                    binding.sleepState.setTextColor(sleepTextColor)
                 }else{
-                    binding.sleepState.text = "졸음 아님"
+                    binding.sleepState.text = " - "
+                    binding.sleepState.setBackgroundDrawable(nonSleepCardColor)
+                    binding.sleepState.setTextColor(nonSleepTextColor)
                 }
             }
             override fun onNothingSelected() {
