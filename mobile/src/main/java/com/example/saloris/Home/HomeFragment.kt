@@ -206,9 +206,9 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                         //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
                         //binding.sendmessageButton.visibility = View.GONE
-                        cardColor = ContextCompat.getColor(requireContext(),R.color.teal_200)
+                        cardColor = ContextCompat.getColor(requireContext(),R.color.purple_700)
                         binding.startBtn.setCardBackgroundColor(cardColor)
-                        binding.explanationTv.setText("운행 시작 버튼이 민트색인 경우\n워치 앱이 닫혀있다는 뜻이에요")
+                        binding.explanationTv.setText("운행 시작 버튼이 하늘색인 경우\n워치 앱이 닫혀있다는 뜻이에요")
 
                     }
                 } else {
