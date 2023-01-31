@@ -80,6 +80,8 @@ class RecordFragment : Fragment() {
     var DayMean = "0"
     var Dayhighest : Int=0
     var Daylowest : Int = 500
+    var averageArr = ArrayList<Double>()
+    var DayArr = ArrayList<String>()
     var sleepX = ArrayList<Float>()
     private lateinit var auth: FirebaseAuth
     // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
@@ -113,7 +115,7 @@ class RecordFragment : Fragment() {
         binding.calendarView1.setVisibility(View.GONE)
         binding.dayChart.setVisibility(View.GONE)
         binding.heartRateNum.setVisibility(View.GONE)
-
+        auth = Firebase.auth
         binding.dateChoiceBtn.setOnClickListener {
             var CalendarView = R.id.calendar_view1
 
@@ -126,6 +128,20 @@ class RecordFragment : Fragment() {
 
             val date: Date = Date(calendarView.date)
 
+            lifecycleScope.launch(Dispatchers.IO) {
+                val Uid = auth.currentUser?.uid
+                val a = async {
+                    if (Uid != null) {
+                        datefromDB(Uid)
+                    }
+                }
+                if(a.await()!=null){
+                    mainActivity.runOnUiThread(Runnable {
+                        //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
+                        //잘 돌아갈지는 모르겠다..
+                    });
+                }
+            }
             //dateText.text = dateFormat.format(date)
 
             if (selectedItems.get(prePosition)) {
@@ -202,7 +218,6 @@ class RecordFragment : Fragment() {
             }
 
         }
-        auth = Firebase.auth
         val TAG = this.javaClass.simpleName
         val heartRateArr = java.util.ArrayList<HeartRate>()
         //chart
@@ -243,6 +258,7 @@ class RecordFragment : Fragment() {
         })
         return binding.root
     }
+
     //chart
     @RequiresApi(Build.VERSION_CODES.O)
     private fun addEntry(time:String,newRate:String) {
@@ -326,7 +342,46 @@ class RecordFragment : Fragment() {
         set.colors = colors
         return set
     }
-
+    @SuppressLint("SuspiciousIndentation")
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun datefromDB(Uid:String): String{
+        val org = "intern"
+        val bucket = "HeartRate"
+        val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
+        val client3 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
+        val fluxQueryMean = ("import \"experimental/date/boundaries\"\n" +
+                "thisMonth = boundaries.month()\n" +
+                "from(bucket: \"HeartRate\")\n" +
+                "  |> range(start: thisMonth.start, stop: thisMonth.stop)\n" +
+                "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
+                "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
+                "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
+                "  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false, timeSrc: \"_start\")")
+        client3.use {
+            //val writeApi = client.getW배터리 정보 가져오기riteKotlinApi()
+            val results = client3.getQueryKotlinApi().query(fluxQueryMean)
+            Log.d("show",results.toString())
+            results.consumeAsFlow()
+                .catch {
+                    print("catch")
+                }
+                .collect {
+                    val time = it.time.toString().substring(8,10)
+                    val average = it.value
+                    averageArr.add(average as Double)
+                    DayArr.add(time)
+//                    Log.d("is same?",time.toString().substring(8,10)+" == "+ Dday.toString())
+//                    if(time.toString().substring(8,10) == Dday.toString()){
+//                        val average = it.value
+//                        Log.d("average",average.toString())
+//                        DayMean=(round((average as Double)*100)/100).toString()
+//                    }
+                    Log.d("average and time ",time+average.toString())
+                }
+        }
+        client3.close()
+        return ""
+    }
     @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun show(Uid:String,date: LocalDate): String {
