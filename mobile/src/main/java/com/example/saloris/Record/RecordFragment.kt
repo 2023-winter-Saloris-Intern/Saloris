@@ -31,11 +31,18 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.DayViewDecorator
+import com.prolificinteractive.materialcalendarview.DayViewFacade
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.*
 import java.util.*
 import kotlin.math.max
@@ -61,9 +68,10 @@ class RecordFragment : Fragment() {
     private var _binding: FragmentRecordBinding? = null
     private val binding get() = _binding!!
 
-    private var chartData = ArrayList<Entry>() // 데이터배열
-    private var lineDataSet = ArrayList<ILineDataSet>() // 데이터배열 -> 데이터 셋
-    private var lineData: LineData = LineData()
+//    private var chartData = ArrayList<Entry>() // 데이터배열
+//    private var lineDataSet = ArrayList<ILineDataSet>() // 데이터배열 -> 데이터 셋
+//    private var lineData: LineData = LineData()
+
     lateinit var chart: LineChart
 
     private var last_time = ""
@@ -122,11 +130,11 @@ class RecordFragment : Fragment() {
             val dateText: TextView = requireView().findViewById(R.id.date_text)
             val calendarView: CalendarView = requireView().findViewById(R.id.calendar_view1)
 
-            calendarView.maxDate = System.currentTimeMillis()
-
-            //val dateFormat: DateFormat = SimpleDateFormat("yyyy년MM월dd일")
+            val dateFormat: DateFormat = SimpleDateFormat("yyyy년MM월dd일")
 
             val date: Date = Date(calendarView.date)
+
+            calendarView.maxDate = System.currentTimeMillis()
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val Uid = auth.currentUser?.uid
@@ -139,6 +147,7 @@ class RecordFragment : Fragment() {
                     mainActivity.runOnUiThread(Runnable {
                         //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
                         //잘 돌아갈지는 모르겠다..
+
                     });
                 }
             }
@@ -579,4 +588,23 @@ class RecordFragment : Fragment() {
 //        lineChart.data = data // LineData 전달
 //        lineChart.invalidate() // LineChart 갱신해 데이터 표시
 //    }
+}
+
+class EventDecorator() : DayViewDecorator {
+
+    private var color = 0
+    private lateinit var dates : HashSet<CalendarDay>
+
+    constructor(color: Int, dates: Collection<CalendarDay>) : this() {
+        this.color=color
+        this.dates=HashSet(dates)
+    }
+
+    override fun shouldDecorate(day: CalendarDay?): Boolean {
+        return dates.contains(day)
+    }
+
+    override fun decorate(view: DayViewFacade?) {
+        view?.addSpan(DotSpan(10F, color))
+    }
 }
