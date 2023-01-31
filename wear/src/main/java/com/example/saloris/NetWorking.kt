@@ -188,8 +188,6 @@ class NetWorking : WearableListenerService(),
             }//emd of if
             else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 try {
-                    //todo : intent
-                    //TODO : git add
                     Log.d("wear_netwroking","intent")
                     serviceIt = Intent("test")
                     val sbTemp = StringBuilder()
@@ -200,19 +198,13 @@ class NetWorking : WearableListenerService(),
                     Log.d("in networiking",s1)
                     if(s1 == "vibrator"){
                         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                        vibrator.vibrate(500)
+                        vibrator.vibrate(1000)
                         Log.d("wear_netwroking",s1)
                     }else if (s1 == "stop"){
-                        //TODO : stop wearOS
+                        //stop wearOS
                         serviceIt.putExtra("stop","stop")
-                        Log.d("wear_netwroking",s1)
-//                        startActivity(serviceIt)
                         LocalBroadcastManager.getInstance(this).sendBroadcast(serviceIt)
                     }
-
-                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    vibrator.vibrate(1000)
-
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

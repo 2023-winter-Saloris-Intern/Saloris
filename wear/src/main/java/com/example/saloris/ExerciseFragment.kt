@@ -16,8 +16,6 @@
 
 package com.example.saloris
 
-//import com.example.saloris.databinding.FragmentExerciseBinding
-//import com.google.android.gms.wearable.R
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -26,14 +24,11 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import android.os.BatteryManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.health.services.client.data.DataPointContainer
@@ -60,6 +55,8 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 
@@ -71,8 +68,6 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
-    //message
-
 
     @Inject
     lateinit var healthServicesManager: HealthServicesManager
@@ -87,9 +82,9 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     private var cachedExerciseState = ExerciseState.ENDED
     private var activeDurationCheckpoint =
         ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO)
-    //private var chronoTickJob: Job? = null
+
     private var uiBindingJob: Job? = null
-    //TODO : 2min
+
     private var lastTime = ""
     private lateinit var ambientController: AmbientModeSupport.AmbientController
     private lateinit var ambientModeHandler: AmbientModeHandler
@@ -97,19 +92,25 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     //chart
     private var chart: LineChart? = null
     private var thread: Thread? = null
-    var Rate = ""
-    var newRate = ""
-    var last_time=""
-    //runOnUiThread를 fragment에서 사용하기 위해
-    // 1. Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
-    lateinit var mainActivity: MainActivity
+    //heart rate
+    private var newRate = ""
 
+    //min, mean, max
+    private var min_heart = 150
+    private var mean_heart = 0
+    private var max_heart = 0
+    private var count=0
+    private var sum = 0
+
+    //runOnUiThread를 fragment에서 사용하기 위해
+    //Context를 할당할 변수를 프로퍼티로 선언(어디서든 사용할 수 있게)
+    private lateinit var mainActivity: MainActivity
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -121,27 +122,27 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //message to mobile
         serviceIt = Intent(activity, NetWorking::class.java)
         activity?.startService(serviceIt)
+
         //chart
-        chart = binding.chart as LineChart
+        chart = binding.chart
         chart!!.xAxis.position = XAxis.XAxisPosition.BOTTOM // x축 밑으로
-        //chart!!.yAxis.axisMinimum=0f
-        //chart!!.xAxis.valueFormatter = TimeAxisValueFormat() // x축의 출력 형식을 시:분으로
         chart!!.xAxis.setDrawLabels(true)
         chart!!.xAxis.axisMinimum=0f // 9시부터
-        chart!!.xAxis.axisMaximum=1200f // 오전 5시까지..?
+        chart!!.xAxis.axisMaximum=1200f // 오전 5시까지
         chart!!.axisRight.isEnabled = false // 오른쪽 y축은 없애고
         chart!!.axisLeft.isEnabled=false
         chart!!.xAxis.isEnabled=false
-        chart!!.axisLeft.axisMaximum=80f // y축 min,max
+        chart!!.axisLeft.axisMaximum=100f // y축 min,max
         chart!!.axisLeft.axisMinimum=50f
         chart!!.legend.textColor = Color.BLUE
         chart!!.animateXY(10, 10)
         chart!!.invalidate()
         val data = LineData()
         chart!!.data = data
-        //todo : stop service ...
+
         activity?.let { register(it) }
         binding.startEndButton.setOnClickListener {
             // App could take a perceptible amount of time to transition between states; put button into
@@ -155,10 +156,7 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
             it.isEnabled = false
             pauseResumeExercise()
         }
-        binding.chart.setOnClickListener {
-            val intent = Intent(getActivity(), ChartFragment::class.java)
-            startActivity(intent)
-        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val capabilities =
@@ -190,65 +188,46 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         ExerciseService.bindService(requireContext().applicationContext, serviceConnection)
         bindViewsToService()
     }
-//chart
-private fun createSet(): LineDataSet {
-    //chart : 설정
-    Log.d("createSet_mainActivity","createSet")
-    val set = LineDataSet(null, "Heart Rate")
-    set.fillAlpha = 110
 
-    set.fillColor = Color.parseColor("#d7e7fa")//선 밑에 색채우기
-    set.color = Color.parseColor("#0B80C9")//선 색
+    //chart
+    private fun createSet(): LineDataSet {
+        //chart : 설정
+        val set = LineDataSet(null, "Heart Rate")
+        set.fillAlpha = 110
+        set.fillColor = Color.parseColor("#d7e7fa")//선 밑에 색채우기
+        set.color = Color.parseColor("#0B80C9")//선 색
 
-    set.setCircleColor(Color.parseColor("#FFA1B4DC"))
-    //set.setCircleColorHole(Color.BLUE)
-    set.valueTextColor = Color.BLUE //TODO : 글자 색 .. chart에 값 확인하기
-    set.valueTextSize=10f
-    set.setDrawValues(false)
-    set.lineWidth = 2f
-    set.circleRadius = 6f
-    set.setDrawCircleHole(false)
-    set.setDrawCircles(false)
-    set.valueTextSize = 9f
-    //set.setDrawFilled(true)
-    set.axisDependency = YAxis.AxisDependency.LEFT
-    set.highLightColor = Color.rgb(244, 117, 117)
-    return set
-}//chart
-    @RequiresApi(Build.VERSION_CODES.O)
+        set.setCircleColor(Color.parseColor("#FFA1B4DC"))
+        set.valueTextColor = Color.BLUE
+        set.valueTextSize=10f
+        set.setDrawValues(false)
+        set.lineWidth = 2f
+        set.circleRadius = 6f
+        set.setDrawCircleHole(false)
+        set.setDrawCircles(false)
+        set.valueTextSize = 9f
+        set.axisDependency = YAxis.AxisDependency.LEFT
+        set.highLightColor = Color.rgb(244, 117, 117)
+        return set
+    }
+    //chart
     private fun addEntry() {
         val data = chart!!.data
-        Log.d("addEntry_mainActivity",data.toString())
         if (data != null) {
             var set = data.getDataSetByIndex(0)
             if (set == null) {
                 set = createSet()
                 data.addDataSet(set)
             }
-            val dateAndTime : LocalDateTime = LocalDateTime.now()
-            Log.d("dateAndTime-main",dateAndTime.toString())
-            val time_hour = dateAndTime.toString().substring(11,13)
-            val time_min = dateAndTime.toString().substring(14,16)
-            Log.d("time_hour-main",time_hour)
-            Log.d("time_min-main",time_min)
-            //현재 시간을 분으로 바꿔서 Entry x축에 넣기
-            val time  = (time_hour.toInt())*60+time_min.toInt()
-            Log.d("time-main",time.toString())
-            //val rand = (Math.random() * 4).toFloat() + 60f
-            Log.d("value-main",newRate)
-            //TODO time :real time
-            val time_to = time.toFloat()-9*60
+            //time :real time
             data.addEntry(Entry(set.entryCount.toFloat(),newRate.toFloat()), 0)
-            Log.d("time_x",time.toString())
             data.notifyDataChanged()
             chart!!.notifyDataSetChanged()
             chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
             chart!!.moveViewToX(set.entryCount.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
-            Log.d("addEntry_mainActivity",(time_to.toFloat()-10f).toString())
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun feedMultiple() {
         if (thread != null) thread!!.interrupt()
         val runnable = kotlinx.coroutines.Runnable { addEntry() }
@@ -267,8 +246,6 @@ private fun createSet(): LineDataSet {
     private val testReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val stop = intent.getStringExtra("stop")
-            Log.d("stop in Exercise","stop!!")
-            //binding.startEndButton.isEnabled = false
             startEndExercise()
         }
     }
@@ -306,6 +283,7 @@ private fun createSet(): LineDataSet {
         val service = checkNotNull(serviceConnection.exerciseService) {
             "Failed to achieve ExerciseService instance"
         }
+        System.exit(0)
         if (cachedExerciseState.isPaused) {
             service.resumeExercise()
         } else {
@@ -364,10 +342,10 @@ private fun createSet(): LineDataSet {
     }
 
     private fun updateButtons(state: ExerciseState) {
-        binding.startEndButton.setText(if (state.isEnded) "시작" else "종료")
+        binding.startEndButton.setText(if (state.isEnded) "다시시작" else "일시중지")
         binding.startEndButton.isEnabled = true
-        binding.pauseResumeButton.setText(if (state.isPaused) "일시중지" else "다시시작")
-        binding.pauseResumeButton.isEnabled = !state.isEnded
+        binding.pauseResumeButton.setText(if (state.isPaused) "시작" else "종료")
+        binding.pauseResumeButton.isEnabled = true
     }
 
     private fun updateMetrics(latestMetrics: DataPointContainer) {
@@ -377,6 +355,17 @@ private fun createSet(): LineDataSet {
                 Log.d("Heart Rate_ExerciseFragment_updateMetrics", it.last().value.roundToInt().toString())
 
                 val heart_rate_value = it.last().value.roundToInt().toString()
+
+                if(heart_rate_value!="0") {
+                    min_heart = min(min_heart, heart_rate_value.toInt())
+                    max_heart = max(max_heart, heart_rate_value.toInt())
+                    sum += heart_rate_value.toInt()
+                    count += 1
+                    mean_heart = sum / count
+                    binding.minHeart.text = min_heart.toString()
+                    binding.meanHeart.text = mean_heart.toString()
+                    binding.maxHeart.text = max_heart.toString()
+                }
                 //TODO : send to mobile 1s
                 val dateAndtime: String = LocalDateTime.now().toString().substring(14,16)
                 serviceIt.putExtra("heartRate",heart_rate_value)
@@ -386,14 +375,16 @@ private fun createSet(): LineDataSet {
                 lastTime=dateAndtime
                 //todo chart
                 newRate=heart_rate_value
-                feedMultiple()
+                if(newRate!="0") {
+                    feedMultiple()
+                }
                 var battery = getBatteryRemain(mainActivity)
                 Log.d("Battery!!",battery.toString())
             }
         }
 
     }
-    fun getBatteryRemain(context: Context): Int {
+    private fun getBatteryRemain(context: Context): Int {
         val intentBattery =
             context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         val level = intentBattery!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
@@ -401,75 +392,6 @@ private fun createSet(): LineDataSet {
         val batteryPct = level / scale.toFloat()
         return (batteryPct * 100).toInt()
     }
-    fun sendmessagetophone(num : String){
-        if (mobileDeviceConnected) {
-            if (binding.heartRateText.text!!.isNotEmpty()) {
-
-                val nodeId: String = messageEvent?.sourceNodeId!!
-                // Set the data of the message to be the bytes of the Uri.
-                val payload: ByteArray =
-                    binding.heartRateText.text.toString().toByteArray()
-
-                // Send the rpc
-                // Instantiates clients without member variables, as clients are inexpensive to
-                // create. (They are cached and shared between GoogleApi instances.)
-                val sendMessageTask =
-                    Wearable.getMessageClient(activityContext!!)
-                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-
-                //binding.connect.visibility = View.GONE
-
-                sendMessageTask.addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.d("send1", "Message sent successfully")
-                        val sbTemp = StringBuilder()
-                        sbTemp.append("\n")
-                        sbTemp.append(binding.heartRateText.text.toString())
-                        sbTemp.append(" (Sent to mobile)")
-                        Log.d("receive1", " $sbTemp")
-                        //binding.messagelogTextView.append(sbTemp)
-
-//                        binding.scrollviewTextMessageLog.requestFocus()
-//                        binding.scrollviewTextMessageLog.post {
-//                            binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
-//                        }
-                    } else {
-                        Log.d("send1", "Message failed.")
-                    }
-                }
-            } else {
-                Toast.makeText(
-                    activityContext,
-                    "Message content is empty. Please enter some message and proceed",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
-//    private fun startChronometer() {
-//        if (chronoTickJob == null) {
-//            chronoTickJob = viewLifecycleOwner.lifecycleScope.launch {
-//                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                    while (true) {
-//                        delay(CHRONO_TICK_MS)
-//                        updateChronometer()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun stopChronometer() {
-//        chronoTickJob?.cancel()
-//        chronoTickJob = null
-//    }
-
-    private fun updateChronometer() {
-        val duration = activeDurationCheckpoint.displayDuration(Instant.now(), cachedExerciseState)
-        //binding.elapsedTime.text = formatElapsedTime(duration, !ambientController.isAmbient)
-    }
-
     private fun resetDisplayedFields() {
         getString(R.string.empty_metric).let {
             binding.heartRateText.text = it
@@ -538,10 +460,6 @@ private fun createSet(): LineDataSet {
         }
     }
 
-//    private companion object {
-//        const val CHRONO_TICK_MS = 200L
-//    }
-
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback = MyAmbientCallback()
 
     private inner class MyAmbientCallback : AmbientModeSupport.AmbientCallback() {
@@ -595,7 +513,7 @@ private fun createSet(): LineDataSet {
                 try {
                     // Get the node id of the node that created the data item from the host portion of
                     // the uri.
-                    val nodeId: String = p0.sourceNodeId.toString()
+                    val nodeId: String = p0.sourceNodeId
                     // Set the data of the message to be the bytes of the Uri.
                     val returnPayloadAck = wearableAppCheckPayloadReturnACK
                     val payload: ByteArray = returnPayloadAck.toByteArray()
@@ -619,19 +537,12 @@ private fun createSet(): LineDataSet {
                         Log.d("message","send to mobile")
                         if (it.isSuccessful) {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message sent successfully")
-                            //binding.messagelogTextView.visibility = View.VISIBLE
 
                             val sbTemp = StringBuilder()
                             sbTemp.append("\nMobile device connected.")
                             Log.d("receive1", " $sbTemp")
-                            //binding.messagelogTextView.append(sbTemp)
 
                             mobileDeviceConnected = true
-
-                            //binding.textInputLayout.visibility = View.VISIBLE
-                            //binding.add.visibility = View.VISIBLE
-                           // binding.connect.visibility = View.VISIBLE
-                            //binding.connect.text = "Mobile device is connected"
                         } else {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message failed.")
                         }
@@ -646,23 +557,12 @@ private fun createSet(): LineDataSet {
             }//emd of if
             else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 try {
-                    //.messagelogTextView.visibility = View.VISIBLE
-                    //binding.textInputLayout.visibility = View.VISIBLE
-                    //binding.add.visibility = View.VISIBLE
-                    //binding.connect.visibility = View.GONE
 
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s1)
                     sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
-//                    binding.messagelogTextView.append(sbTemp)
-//
-//
-//                    binding.scrollviewTextMessageLog.requestFocus()
-//                    binding.scrollviewTextMessageLog.post {
-//                        binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
-//                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
