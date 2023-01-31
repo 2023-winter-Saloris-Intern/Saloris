@@ -2,7 +2,9 @@ package com.example.saloris.Setting
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -130,17 +132,20 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = requireActivity() as AppCompatActivity
                 //Couroutine
-                //initialiseDevicePairing(tempAct)
-            }
-        }
-
-        binding.disconnectBtn.setOnClickListener {
-            //wearable device가 연결되었는지 확인하는 버튼
-            if (!wearableDeviceConnected) {
-                val tempAct: Activity = requireActivity() as AppCompatActivity
-                //Couroutine
                 initialiseDevicePairing(tempAct)
             }
+//            val builder = AlertDialog.Builder(requireContext())
+//            builder.setTitle("연결 해제")
+//                .setMessage("워치 연결을 정말로 해제하시겠습니까?")
+//                .setPositiveButton("네",
+//                    DialogInterface.OnClickListener { dialog, id ->
+//
+//                    })
+//                .setNegativeButton("아니오",
+//                    DialogInterface.OnClickListener { dialog, id ->
+//
+//                    })
+//            builder.show()
         }
         //wearable device가 연결되었는지 확인
     }
@@ -175,6 +180,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.ligt_blue_round_btn)
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
+                        binding.disconnectBtn.setText("워치 연결 정보 있음")
                         //binding.watchInfo.setText()
                     } else {
                         //워치와 연결, 앱이 닫혀있음
@@ -183,6 +189,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         //binding.sendmessageButton.visibility = View.GONE
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
+                        binding.disconnectBtn.setText("워치 연결 정보 있음")
 
                     }
                 } else {
@@ -192,6 +199,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    cardColor = ContextCompat.getColor(requireContext(),R.color.grey)
 //                    binding.startBtn.setCardBackgroundColor(cardColor)
 //                    binding.explanationTv.setText("운행 시작 버튼이 회색인 경우\n워치와 연결이 안되었다는 뜻이에요")
+                    binding.disconnectBtn.setText("워치 연결 정보 없음")
                 }
             }
         }

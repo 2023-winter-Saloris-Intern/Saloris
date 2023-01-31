@@ -127,7 +127,7 @@
         android:background="@drawable/light_grey_btn"
         android:fontFamily="@font/notosans_kr_bold"
         android:elevation="0dp"
-        android:text="연결 해제하기"
+        android:text="-"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:textColor="#B5B5B5"
         android:textSize="16dp"
