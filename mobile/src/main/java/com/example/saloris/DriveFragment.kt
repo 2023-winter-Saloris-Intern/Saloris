@@ -233,6 +233,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     private fun postGlSurfaceView() {
+        println("postGlSurfaceView!!!!!!!!!!!!!!!!!!!!!!!")
+
         cameraInput = CameraInput(mainActivity)
         cameraInput.setNewFrameListener { faceMesh.send(it) }
 
@@ -241,6 +243,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     private fun startCamera() {
+        println("startCamera!!!!!!!!!!!!!!!!!!!!!!!")
         cameraInput.start(mainActivity, faceMesh.glContext, CameraInput.CameraFacing.FRONT, 480, 640)
     }
     /* date 시간 구하기 */
@@ -656,36 +659,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             requestPermissionLauncher.launch(cameraPermissionList)
         }
 
-        /* FaceMesh */
 
-        prefs = activityContext!!.getSharedPreferences("faceSetting", Context.MODE_PRIVATE)
-        faceMeshSettings = booleanArrayOf(
-            prefs.getBoolean("eye", false),
-            prefs.getBoolean("eyeBrow", false),
-            prefs.getBoolean("eyePupil", false),
-            prefs.getBoolean("lib", false),
-            prefs.getBoolean("faceMesh", false),
-            prefs.getBoolean("faceLine", true)
-        )
-        faceMeshColors = arrayListOf(
-            colorLoad(prefs.getInt("eyeColor", 5)),
-            colorLoad(prefs.getInt("eyeBrowColor", 4)),
-            colorLoad(prefs.getInt("eyePupilColor", 1)),
-            colorLoad(prefs.getInt("libColor", 3)),
-            colorLoad(prefs.getInt("faceMeshColor", 1)),
-            colorLoad(prefs.getInt("faceLineColor", 1))
-        )
-        prefs = activityContext!!.getSharedPreferences("alarm", Context.MODE_PRIVATE)
-        alarmState = prefs.getBoolean("alarmState", false)
-
-        initFaceMesh()
-        initGlSurfaceView()
-        postGlSurfaceView()
-//        with(binding.preview) {
-//            removeAllViewsInLayout()
-//            addView(glSurfaceView)
-//            requestLayout()
-//        }
 
 //        lifecycleScope.launch(Dispatchers.IO) {
 //            while (true) {
@@ -712,7 +686,36 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
         navController = Navigation.findNavController(view)
         activityContext = this.context
+        /* FaceMesh */
 
+        prefs = activityContext!!.getSharedPreferences("faceSetting", Context.MODE_PRIVATE)
+        faceMeshSettings = booleanArrayOf(
+            prefs.getBoolean("eye", false),
+            prefs.getBoolean("eyeBrow", false),
+            prefs.getBoolean("eyePupil", false),
+            prefs.getBoolean("lib", false),
+            prefs.getBoolean("faceMesh", false),
+            prefs.getBoolean("faceLine", true)
+        )
+        faceMeshColors = arrayListOf(
+            colorLoad(prefs.getInt("eyeColor", 5)),
+            colorLoad(prefs.getInt("eyeBrowColor", 4)),
+            colorLoad(prefs.getInt("eyePupilColor", 1)),
+            colorLoad(prefs.getInt("libColor", 3)),
+            colorLoad(prefs.getInt("faceMeshColor", 1)),
+            colorLoad(prefs.getInt("faceLineColor", 1))
+        )
+        prefs = activityContext!!.getSharedPreferences("alarm", Context.MODE_PRIVATE)
+        alarmState = prefs.getBoolean("alarmState", false)
+
+        initFaceMesh()
+        initGlSurfaceView()
+        postGlSurfaceView()
+        with(binding.preview) {
+            removeAllViewsInLayout()
+            addView(glSurfaceView)
+            requestLayout()
+        }
         binding.checkConnect.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             toast.makeToast(requireContext(), "vibrate")
