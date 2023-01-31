@@ -174,6 +174,8 @@ class RecordFragment : Fragment() {
                     binding.graphBtn.setVisibility(View.VISIBLE)
                     binding.dayChart.setVisibility(View.VISIBLE)
                     binding.heartRateNum.setVisibility(View.VISIBLE)
+                    Dayhighest=0
+                    Daylowest=500
                     //colors 초기화
                     colors.clear()
                     Log.d("colors",colors.toString())
@@ -198,12 +200,17 @@ class RecordFragment : Fragment() {
                         }
                         if(show_Data.await()!=null){
                             mainActivity.runOnUiThread(Runnable { // 메시지 큐에 저장될 메시지의 내용
-                                binding.average.text=DayMean;
-                                binding.highest.text= Dayhighest.toString();
-                                binding.lowest.text = Daylowest.toString();
+                                if(Dayhighest!=0) {
+                                    binding.average.text = DayMean;
+                                    binding.highest.text = Dayhighest.toString();
+                                    binding.lowest.text = Daylowest.toString();
+                                }else{
+                                    binding.average.text = "-";
+                                    binding.highest.text ="-";
+                                    binding.lowest.text = "-";
+                                }
                             });
                         }
-
 
                         //text.text= show_Data.await().toString()
                         if (Uid != null) {
