@@ -3,6 +3,7 @@ package com.example.saloris
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -66,6 +67,18 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             requireContext().getSharedPreferences("autoLogin", Activity.MODE_PRIVATE)
         return autoLoginPref.contains("username")
     }
+
+    private fun isOnBoardingFinished(): Boolean {
+        val prefs = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+        return prefs.getBoolean("finished", false)
+    }
+
+    private fun isLoginFinished(): Boolean {
+        val autoLoginPref =
+            requireActivity().getSharedPreferences("autoLogin", Activity.MODE_PRIVATE)
+        return autoLoginPref.getBoolean("finished", true)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -119,6 +132,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         if (auth.currentUser == null) {
             if (isAutoLogined()) {
                 context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
+                navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
             }
             navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
         } else {
