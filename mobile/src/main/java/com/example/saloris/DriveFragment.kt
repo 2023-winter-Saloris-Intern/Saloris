@@ -133,7 +133,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private var longClosedEye: Int = 0  // 3초 이상 눈 감은 누적 횟수
     private var longClosedState: Boolean = false // 3초 이상 눈 감은 상태
 
-    //private var afterState: Boolean = false // 두 번째 3초 이상 눈감은 상태 확인
+    private var afterState: Boolean = false // 두 번째 3초 이상 눈감은 상태 확인
     private var face: String = ""       // 현재 얼굴방향
     private var leftEye: String = ""    // 왼쪽 눈 방향
     private var rightEye: String = ""   // 오른쪽 눈 방향
@@ -419,16 +419,16 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     }
                     if (betweenTime(startTime) > 15) {
                         longClosedCount = 1
-                        //afterState = false
+                        afterState = false
                         startTime = getTime()
                     } else if (longClosedCount >= 2 && betweenTime(startTime) <= 15) {
                         if (alarmState) {
-                            //startWarningOn()
+                            startWarningOn()
                         } else {
-                            //startWarningOff()
+                            startWarningOff()
                         }
                         longClosedCount = 1
-                        //afterState = false
+                        afterState = false
                         startTime = getTime()
                     }
                 }
@@ -459,12 +459,12 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     blink = 1
                     totalBlink++
                     beforeCheck = true
-                    //startCheck = false
-//                    if(longClosedCount == 0 || afterState == true) {
-//                        startCheck = true
-//                    }
+                    startCheck = false
+                    if(longClosedCount == 0 || afterState == true) {
+                        startCheck = true
+                    }
                     longClosedState = false
-                    //stopWarning()
+                    stopWarning()
                 }
                 if (leftEAR < 0.22) {
                     leftEye = getString(R.string.blink)
@@ -605,21 +605,21 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     private fun stopWarning() {
-//        toneGenerator1.stopTone()
+        toneGenerator1.stopTone()
 
         lifecycleScope.launch(Dispatchers.Main) {
-//            with(binding.drowsiness) {
-//                text = getString(R.string.normal)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//            }
+            with(binding.drowsiness) {
+                text = getString(R.string.normal)
+                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+            }
 //            with(binding.drowsinessFitting) {
 //                text = getString(R.string.normal)
 //                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
 //            }
-//            with(binding.warningFilter) {
-//                visibility = View.GONE
-//                (drawable as AnimationDrawable).stop()
-//            }
+            with(binding.warningFilter) {
+                visibility = View.GONE
+                (drawable as AnimationDrawable).stop()
+            }
         }
     }
 
