@@ -37,7 +37,7 @@
     <LinearLayout
         android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="460dp"
+        android:layout_height="550dp"
         android:orientation="vertical"
         android:layout_marginBottom="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -192,36 +192,6 @@
             app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/heart_rate_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:minWidth="70dp"
-            android:textAlignment="textEnd"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_emphasized"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/heart_rate_unit"
-            app:layout_constraintEnd_toStartOf="@+id/heart_rate_unit"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/drowsiness" />
-
-        <TextView
-            android:id="@+id/heart_rate_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:text="@string/bpm"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_large"
-            app:layout_constraintBaseline_toBaselineOf="@id/heart_rate_temp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/drowsiness"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -264,7 +234,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/bg_button_default"
         android:fontFamily="@font/notosans_kr_bold"
         android:text="운행 종료"
