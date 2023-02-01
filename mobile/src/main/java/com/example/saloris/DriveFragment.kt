@@ -70,6 +70,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         // 2. Context를 액티비티로 형변환해서 할당
         mainActivity = context as MainActivity
     }
+
     /* View */
     private lateinit var binding: FragmentDriveBinding
     private lateinit var navController: NavController
@@ -101,9 +102,11 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     var newRate = ""
     var Rate = ""
-    var last_time=""
+    var last_time = ""
+
     /* Toast */
     private val toast = MakeToast()
+
     /* FaceMesh */
     private var isCameraOn = false
 
@@ -129,6 +132,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private var longClosedCount: Int = 0// 3초 이상 눈 감은 카운트
     private var longClosedEye: Int = 0  // 3초 이상 눈 감은 누적 횟수
     private var longClosedState: Boolean = false // 3초 이상 눈 감은 상태
+
     //private var afterState: Boolean = false // 두 번째 3초 이상 눈감은 상태 확인
     private var face: String = ""       // 현재 얼굴방향
     private var leftEye: String = ""    // 왼쪽 눈 방향
@@ -148,6 +152,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             else -> BLACK_COLOR
         }
     }
+
     private fun initFaceMesh() {
         // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
         // refineLandmark - 눈, 입술 주변으로 분석 추가.
@@ -171,7 +176,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initGlSurfaceView() {
         // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
-        glSurfaceView = SolutionGlSurfaceView(mainActivity, faceMesh.glContext, faceMesh.glMajorVersion)
+        glSurfaceView =
+            SolutionGlSurfaceView(activityContext, faceMesh.glContext, faceMesh.glMajorVersion)
         glSurfaceView.setSolutionResultRenderer(
             FaceMeshResultGlRenderer(faceMeshSettings, faceMeshColors)
         )
@@ -185,7 +191,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //                            guidelineAnimation.stop()
 //                        setBackgroundResource(R.drawable.face_guideline_complete)
 //                    }
-                    //binding.faceFittingWarningText.text = getString(R.string.face_fitting_complete)
+//                    binding.faceFittingWarningText.text = getString(R.string.face_fitting_complete)
                     // 인식 완료 1초 후 화면 변경
                     if (timerCheck) {
                         timer2 = timer(period = 100) {
@@ -195,9 +201,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                             if (fittingLevel >= MAX_FITTING_LEVEL) {
                                 lifecycleScope.launch(Dispatchers.Main) {
 //                                    binding.stateFitting.visibility = View.INVISIBLE
-//                                    binding.stateFitting2.visibility = View.VISIBLE
+                                    binding.stateFitting2.visibility = View.VISIBLE
 //                                    binding.faceFittingWarningText.visibility = View.INVISIBLE
-//                                    binding.guideline.visibility = View.INVISIBLE
+                                    binding.guideline.visibility = View.INVISIBLE
 //                                    if (isBluetoothOn) {
 //                                        binding.state.visibility = View.VISIBLE
 //                                    }
@@ -208,7 +214,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     }
                 } else {
                     reset()
-//                    binding.faceFitting.visibility = View.VISIBLE
+                    binding.faceFitting.visibility = View.VISIBLE
 //                    binding.state.visibility = View.GONE
 //                    if (isBluetoothOn) {
 //                        binding.stateFitting.visibility = View.VISIBLE
@@ -233,8 +239,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     private fun postGlSurfaceView() {
-        println("postGlSurfaceView!!!!!!!!!!!!!!!!!!!!!!!")
-
         cameraInput = CameraInput(mainActivity)
         cameraInput.setNewFrameListener { faceMesh.send(it) }
 
@@ -243,9 +247,13 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     private fun startCamera() {
-        println("startCamera!!!!!!!!!!!!!!!!!!!!!!!")
-        cameraInput.start(mainActivity, faceMesh.glContext, CameraInput.CameraFacing.FRONT, 480, 640)
+        cameraInput.start(mainActivity,
+            faceMesh.glContext,
+            CameraInput.CameraFacing.FRONT,
+            480,
+            640)
     }
+
     /* date 시간 구하기 */
     private var startTime: Long = 0
     private var beforeTime: Long = 0
@@ -271,6 +279,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
         return diffSec
     }
+
     // landmark 분석
     @RequiresApi(Build.VERSION_CODES.O)
     private fun checkLandmark(result: FaceMeshResult?) {
@@ -325,11 +334,11 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 if (!longClosedState) {
                     lifecycleScope.launch(Dispatchers.Main) {
                         Log.d("blink", "blink")
-//                        with(binding.blink) {
-//                            text = getString(R.string.blink)
-//                            setTextColor(ContextCompat.getColor(mainActivity, R.color.drowsy))
-//                            visibility = View.INVISIBLE
-//                        }
+                        with(binding.blink) {
+                            text = getString(R.string.blink)
+                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.drowsy))
+                            visibility = View.INVISIBLE
+                        }
                     }
                 }
                 count++
@@ -346,45 +355,45 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 }
                 if (longClosedCount == 1 && (betweenTime(startTime) % 1) == 0L) {
                     lifecycleScope.launch(Dispatchers.Main) {
-//                        with(binding.timerFitting) {
-//                            text = (15 - betweenTime(startTime)).toString()
-//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                            visibility = View.VISIBLE
-//                        }
-//                        with(binding.longClosedFitting) {
-//                            text = longClosedCount.toString()
-//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                            visibility = View.VISIBLE
-//                        }
+                        with(binding.timerFitting) {
+                            text = (15 - betweenTime(startTime)).toString()
+                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                            visibility = View.VISIBLE
+                        }
+                        with(binding.longClosedFitting) {
+                            text = longClosedCount.toString()
+                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                            visibility = View.VISIBLE
+                        }
                     }
                     if (betweenTime(startTime) <= 0) {
                         lifecycleScope.launch(Dispatchers.Main) {
-//                            with(binding.timerFitting) {
-//                                text = 0.toString()
-//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                                visibility = View.VISIBLE
-//                            }
-//                            with(binding.longClosedFitting) {
-//                                text = 0.toString()
-//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                                visibility = View.VISIBLE
-//                            }
+                            with(binding.timerFitting) {
+                                text = 0.toString()
+                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                visibility = View.VISIBLE
+                            }
+                            with(binding.longClosedFitting) {
+                                text = 0.toString()
+                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                visibility = View.VISIBLE
+                            }
                         }
                     }
                 }
                 if (!longClosedState) {
                     if ((betweenTime(beforeTime) % 1) == 0L && betweenTime(beforeTime) != 0L) {
                         lifecycleScope.launch(Dispatchers.Main) {
-//                            with(binding.blink) {
-//                                text = betweenTime(beforeTime).toString()
-//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.drowsy))
-//                                visibility = View.INVISIBLE
-//                            }
-//                            with(binding.longClosedFitting) {
-//                                text = longClosedCount.toString()
-//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                                visibility = View.VISIBLE
-//                            }
+                            with(binding.blink) {
+                                text = betweenTime(beforeTime).toString()
+                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.drowsy))
+                                visibility = View.INVISIBLE
+                            }
+                            with(binding.longClosedFitting) {
+                                text = longClosedCount.toString()
+                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                visibility = View.VISIBLE
+                            }
                         }
                     }
                 }
@@ -394,15 +403,15 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     longClosedState = true
                     beforeCheck = true
                     lifecycleScope.launch(Dispatchers.Main) {
-//                        with(binding.blink) {
-//                            text = getString(R.string.long_closed_eye)
-//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//                            visibility = View.INVISIBLE
-//                        }
-//                        with(binding.longClosedFitting) {
-//                            text = longClosedCount.toString()
-//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                            visibility = View.VISIBLE
+                        with(binding.blink) {
+                            text = getString(R.string.long_closed_eye)
+                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.red))
+                            visibility = View.INVISIBLE
+                        }
+                        with(binding.longClosedFitting) {
+                            text = longClosedCount.toString()
+                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                            visibility = View.VISIBLE
                         }
                     }
                     if (longClosedCount == 0) {
@@ -412,39 +421,38 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         longClosedCount = 1
                         //afterState = false
                         startTime = getTime()
-                    }
-                    else if (longClosedCount >= 2 && betweenTime(startTime) <= 15) {
-                        if(alarmState) {
-                            startWarningOn()
-                        }
-                        else {
-                            startWarningOff()
+                    } else if (longClosedCount >= 2 && betweenTime(startTime) <= 15) {
+                        if (alarmState) {
+                            //startWarningOn()
+                        } else {
+                            //startWarningOff()
                         }
                         longClosedCount = 1
                         //afterState = false
                         startTime = getTime()
                     }
-                } else {
+                }
+            } else {
                 if (count > 2 || ear > 0.09) {
                     lifecycleScope.launch(Dispatchers.Main) {
-//                        with(binding.blink) {
-//                            text = getString(R.string.blink)
-//                            setTextColor(ContextCompat.getColor(this@StateActivity, R.color.drowsy))
-//                            visibility = View.GONE
-//                        }
+                        with(binding.blink) {
+                            text = getString(R.string.blink)
+                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.drowsy))
+                            visibility = View.GONE
+                        }
                     }
                     if (longClosedCount == 1 && (betweenTime(startTime) % 1) == 0L) {
                         lifecycleScope.launch(Dispatchers.Main) {
-//                            with(binding.timerFitting) {
-//                                text = (15 - betweenTime(startTime)).toString()
-//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                                visibility = View.VISIBLE
-//                            }
-//                            with(binding.longClosedFitting) {
-//                                text = longClosedCount.toString()
-//                                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//                                visibility = View.VISIBLE
-//                            }
+                            with(binding.timerFitting) {
+                                text = (15 - betweenTime(startTime)).toString()
+                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                visibility = View.VISIBLE
+                            }
+                            with(binding.longClosedFitting) {
+                                text = longClosedCount.toString()
+                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                visibility = View.VISIBLE
+                            }
                         }
                     }
                     count = 0
@@ -454,10 +462,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     //startCheck = false
 //                    if(longClosedCount == 0 || afterState == true) {
 //                        startCheck = true
-
 //                    }
                     longClosedState = false
-                    stopWarning()
+                    //stopWarning()
                 }
                 if (leftEAR < 0.22) {
                     leftEye = getString(R.string.blink)
@@ -484,11 +491,10 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             getString(R.string.right)
         else
             getString(R.string.front)
-
     }
 
     private fun faceDirection(
-        lez: Float, rez: Float, lmz: Float, rmz: Float, hp: Float, cp: Float
+        lez: Float, rez: Float, lmz: Float, rmz: Float, hp: Float, cp: Float,
     ): String {
         val fdRatio = (lez + lmz) - (rez + rmz)
 
@@ -525,18 +531,18 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         toneGenerator1.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
 
         lifecycleScope.launch(Dispatchers.Main) {
-//            with(binding.drowsiness) {
-//                text = getString(R.string.drowsy)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//            }
+            with(binding.drowsiness) {
+                text = getString(R.string.drowsy)
+                setTextColor(ContextCompat.getColor(mainActivity, R.color.red))
+            }
 //            with(binding.drowsinessFitting) {
 //                text = getString(R.string.drowsy)
 //                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
 //            }
-//            with(binding.warningFilter) {
-//                visibility = View.VISIBLE
-//                (drawable as AnimationDrawable).start()
-//            }
+            with(binding.warningFilter) {
+                visibility = View.VISIBLE
+                (drawable as AnimationDrawable).start()
+            }
         }
     }
 
@@ -554,18 +560,18 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         //toneGenerator1.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
 
         lifecycleScope.launch(Dispatchers.Main) {
-//            with(binding.drowsiness) {
-//                text = getString(R.string.drowsy)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//            }
+            with(binding.drowsiness) {
+                text = getString(R.string.drowsy)
+                setTextColor(ContextCompat.getColor(activityContext!!, R.color.red))
+            }
 //            with(binding.drowsinessFitting) {
 //                text = getString(R.string.drowsy)
 //                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
 //            }
-//            with(binding.warningFilter) {
-//                visibility = View.VISIBLE
-//                (drawable as AnimationDrawable).start()
-//            }
+            with(binding.warningFilter) {
+                visibility = View.VISIBLE
+                (drawable as AnimationDrawable).start()
+            }
         }
     }
 
@@ -583,18 +589,18 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         toneGenerator2.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
 
         lifecycleScope.launch(Dispatchers.Main) {
-//            with(binding.drowsiness) {
-//                text = getString(R.string.sleep)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//            }
+            with(binding.drowsiness) {
+                text = getString(R.string.sleep)
+                setTextColor(ContextCompat.getColor(activityContext!!, R.color.red))
+            }
 //            with(binding.drowsinessFitting) {
 //                text = getString(R.string.sleep)
 //                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
 //            }
-//            with(binding.warningFilter) {
-//                visibility = View.VISIBLE
-//                (drawable as AnimationDrawable).start()
-//            }
+            with(binding.warningFilter) {
+                visibility = View.VISIBLE
+                (drawable as AnimationDrawable).start()
+            }
         }
     }
 
@@ -616,6 +622,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //            }
         }
     }
+
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
             val deniedList = result.filter { !it.value }.map { it.key }
@@ -626,7 +633,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     isCameraOn = false
                     println("any2: $isCameraOn")
                 }
-
 //                AlertDialog.Builder(mainActivity)
 //                    .setTitle("알림")
 //                    .setMessage("권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
@@ -638,6 +644,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 isCameraOn = true
             }
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityContext = this.context
@@ -659,42 +666,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             requestPermissionLauncher.launch(cameraPermissionList)
         }
 
-
-
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            while (true) {
-//                saveAndWarn()
-//                delay(1000)
-//            }
-//        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
-        /* Bottom Menu */
-        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomMenu.visibility = View.GONE
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
-        wearableDeviceConnected = false
-        navController = Navigation.findNavController(view)
-        activityContext = this.context
         /* FaceMesh */
-
         prefs = activityContext!!.getSharedPreferences("faceSetting", Context.MODE_PRIVATE)
         faceMeshSettings = booleanArrayOf(
-            prefs.getBoolean("eye", false),
-            prefs.getBoolean("eyeBrow", false),
-            prefs.getBoolean("eyePupil", false),
-            prefs.getBoolean("lib", false),
-            prefs.getBoolean("faceMesh", false),
+            prefs.getBoolean("eye", true),
+            prefs.getBoolean("eyeBrow", true),
+            prefs.getBoolean("eyePupil", true),
+            prefs.getBoolean("lib", true),
+            prefs.getBoolean("faceMesh", true),
             prefs.getBoolean("faceLine", true)
         )
         faceMeshColors = arrayListOf(
@@ -708,6 +687,21 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         prefs = activityContext!!.getSharedPreferences("alarm", Context.MODE_PRIVATE)
         alarmState = prefs.getBoolean("alarmState", false)
 
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            while (true) {
+//                saveAndWarn()
+//                delay(1000)
+//            }
+//        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View {
+        binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
+        /* Bottom Menu */
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
         initFaceMesh()
         initGlSurfaceView()
         postGlSurfaceView()
@@ -716,6 +710,18 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             addView(glSurfaceView)
             requestLayout()
         }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
+        wearableDeviceConnected = false
+        navController = Navigation.findNavController(view)
+        activityContext = this.context
+
+
+
         binding.checkConnect.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             toast.makeToast(requireContext(), "vibrate")
@@ -731,7 +737,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onDataChanged(p0: DataEventBuffer) {
         TODO("Not yet implemented")
     }
-    private fun sendMessage(message : String){
+
+    private fun sendMessage(message: String) {
         toast.makeToast(requireContext(), "send message")
         println(wearableDeviceConnected)
         if (wearableDeviceConnected) {
@@ -771,27 +778,32 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     //DB에 heartrate를 넣는 함수
     @RequiresApi(Build.VERSION_CODES.O)
-    private suspend fun insertDB(rate: Int):Boolean {
+    private suspend fun insertDB(rate: Int): Boolean {
 //val token = System.getenv()["INFLUX_TOKEN"]
-        val user="user"
+        val user = "user"
         //사용자 uid
-        val Uid=auth.currentUser?.uid
+        val Uid = auth.currentUser?.uid
         //val Uid = "T"
         val org = "intern"
         val bucket = "HeartRate"
         //influxDB token
-        val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
+        val token =
+            "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         print(System.getenv())
-        val client = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
+        val client =
+            InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com",
+                token!!.toCharArray(),
+                org,
+                bucket)
         client.use {
             val writeApi = client.getWriteKotlinApi()
             try {
                 //todo : issleep?
                 var issleep = false
-                if(rate<65){
-                    issleep=true
+                if (rate < 65) {
+                    issleep = true
                 }
-                val map1 = mutableMapOf<String,Any>("heart" to rate, "isntsleep" to issleep)
+                val map1 = mutableMapOf<String, Any>("heart" to rate, "isntsleep" to issleep)
                 val point = Point
                     .measurement(user)
                     .addTag("Uid", Uid)
@@ -806,21 +818,22 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         client.close()
         return true
     }
+
     //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
-        var cardColor = ContextCompat.getColor(requireContext(),R.color.line_primary)
+        var cardColor = ContextCompat.getColor(requireContext(), R.color.line_primary)
 
         //Coroutine
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
 
             try {
-                Log.d("try","try get nodes res bool")
+                Log.d("try", "try get nodes res bool")
                 getNodesResBool =
                     getNodes(tempAct.applicationContext)
             } catch (e: Exception) {
-                Log.d("try","try exception")
+                Log.d("try", "try exception")
                 e.printStackTrace()
             }
 
@@ -840,6 +853,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
     }
+
     //현재 모바일이랑 연동된 워치의 node를 가져와서 확인
     private fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
@@ -868,7 +882,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     val sendMessageTask =
                         Wearable.getMessageClient(context)
                             .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
-                    Log.d("sendMessageToWearable","send message")
+                    Log.d("sendMessageToWearable", "send message")
                     //워치로 메시지를 보내고 5번동안 받으면 앱이 열려있고 안받으면 앱이 없다
                     try {
                         // Block on a task and get the result synchronously (because this is on a background thread).
@@ -940,6 +954,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         }
         return resBool
     }
+
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         try {
@@ -962,33 +977,32 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 //워치에서 보낸 심박수를 받는다
                 try {
-                    val dateAndTime : LocalDateTime = LocalDateTime.now()
+                    val dateAndTime: LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append(s)//심박수
-                    var textColor = ContextCompat.getColor(requireContext(),R.color.black)
-                    if (s.toInt() > 90){
-                        textColor = ContextCompat.getColor(requireContext(),R.color.line_warning)
+                    var textColor = ContextCompat.getColor(requireContext(), R.color.black)
+                    if (s.toInt() > 90) {
+                        textColor = ContextCompat.getColor(requireContext(), R.color.line_warning)
                         binding.heartRate.setTextColor(textColor)
-                    }
-                    else if (s.toInt() < 70){
-                        textColor = ContextCompat.getColor(requireContext(),R.color.teal_200)
+                    } else if (s.toInt() < 70) {
+                        textColor = ContextCompat.getColor(requireContext(), R.color.teal_200)
                         binding.heartRate.setTextColor(textColor)
                         sendMessage("vibrate")
                     } else {
-                        textColor = ContextCompat.getColor(requireContext(),R.color.black)
+                        textColor = ContextCompat.getColor(requireContext(), R.color.black)
                         binding.heartRate.setTextColor(textColor)
                     }
                     binding.heartRate.text = sbTemp.toString()
                     newRate = s
-                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
+                    Log.d("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //DB로 데이터 전송
-                    if(last_time!=dateAndTime.toString().substring(14,16)){
+                    if (last_time != dateAndTime.toString().substring(14, 16)) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             val isInserted = async { insertDB(newRate.toInt()) }
-                            Log.d("isInserted",newRate)
-                            Log.d("time", dateAndTime.toString().substring(14,16))
-                            last_time = dateAndTime.toString().substring(14,16)
+                            Log.d("isInserted", newRate)
+                            Log.d("time", dateAndTime.toString().substring(14, 16))
+                            last_time = dateAndTime.toString().substring(14, 16)
                         }
                     }
                 } catch (e: Exception) {
@@ -1004,8 +1018,18 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onCapabilityChanged(p0: CapabilityInfo) {
         TODO("Not yet implemented")
     }
+
     override fun onPause() {
         super.onPause()
+        //overridePendingTransition(0, 0)
+
+        /* FaceMesh */
+        if (isCameraOn) {
+//            timer2.cancel()
+            glSurfaceView.visibility = View.GONE
+            cameraInput.close()
+        }
+        timer2.cancel()
         try {
             Wearable.getDataClient(activityContext!!).removeListener(this)
             Wearable.getMessageClient(activityContext!!).removeListener(this)
@@ -1018,6 +1042,16 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     override fun onResume() {
         super.onResume()
+        isCameraOn = ActivityCompat.checkSelfPermission(activityContext!!, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED
+
+        /* FaceMesh */
+        if (isCameraOn) {
+            binding.faceFitting.visibility = View.VISIBLE
+            postGlSurfaceView()
+        } else {
+            binding.faceFitting.visibility = View.GONE
+        }
         try {
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)

@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/size_icon_btn_graph"
+    android:height="@dimen/size_icon_btn_graph"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path
+        android:fillColor="@color/primary"
+        android:pathData="M71.09,9.44C63.1,9.45 55.47,12.76 50,18.59C39.08,6.94 20.79,6.35 9.14,17.26C3.31,22.72 0,30.35 0,38.34c0,28.78 46.42,57.03 48.44,58.14c0.99,0.6 2.23,0.6 3.22,0C53.58,95.37 100,67.12 100,38.34C99.98,22.39 87.05,9.45 71.09,9.44zM50,90.12C41.92,84.97 6.25,60.87 6.25,38.34C6.26,25.83 16.41,15.69 28.92,15.7c7.37,0.01 14.28,3.6 18.52,9.62c0.99,1.41 2.94,1.75 4.35,0.75c0.29,-0.21 0.55,-0.46 0.75,-0.75c7.19,-10.24 21.32,-12.72 31.56,-5.53c6.04,4.24 9.64,11.16 9.64,18.55C93.75,60.86 58.08,84.95 50,90.12z" />
+</vector>

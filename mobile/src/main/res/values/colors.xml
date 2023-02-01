@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="black_94">#F0000000</color>
+    <color name="black_50">#55000000</color>
+    <color name="green">#FF00FF00</color>
+    <color name="orange">#FFFF8800</color>
+    <color name="blue">#FF0055FF</color>
+    <color name="red">#FFFF0000</color>
+    <color name="drowsy">#FFFFB031</color>
+
     <color name="purple_200">#2565F8</color>
     <color name="purple_500">#2565F8</color>
     <color name="purple_700">#9FC8FF</color>
