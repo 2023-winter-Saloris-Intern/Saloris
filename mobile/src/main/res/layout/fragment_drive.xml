@@ -197,7 +197,7 @@
         android:id="@+id/heart_rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="132dp"
+        android:layout_marginStart="124dp"
 
         android:fontFamily="@font/notosans_kr_bold"
         android:text="0"
