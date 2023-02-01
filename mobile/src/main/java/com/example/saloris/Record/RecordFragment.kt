@@ -180,6 +180,8 @@ class RecordFragment : Fragment() {
                     Daylowest=500
                     //colors 초기화
                     colors.clear()
+                    //todo : chart 초기화..?
+                    chart!!.setDrawMarkers(false)
                     Log.d("colors",colors.toString())
                     last_time=""
                     sleepArr.clear()
@@ -421,7 +423,7 @@ class RecordFragment : Fragment() {
         var all_string = ""
         Log.d("date",date.javaClass.toString())
         val zoneId = ZoneId.systemDefault()
-        //TODO : DB에서 가져오는 시간 범위 확인하기!
+//        TODO : DB에서 가져오는 시간 범위 확인하기!
 //        val start = Instant.from(ZonedDateTime.of(date.minusDays(1), LocalTime.of(15,0,0), zoneId))
 //        val stop = Instant.from(ZonedDateTime.of(date, LocalTime.of(14, 59, 59), zoneId))
         val start = Instant.from(ZonedDateTime.of(date, LocalTime.of(0,0,0), zoneId))
@@ -477,9 +479,10 @@ class RecordFragment : Fragment() {
                 "  |> range(start:$start, stop: $stop)\n" +
                 "  |> filter(fn: (r) =>r[\"_field\"] == \"isntsleep\")\n" +
                 "  |> filter(fn: (r) => r[\"Uid\"] == \"$Uid\")\n")
+        Log.d("qureyissleep",fluxQueryright)
         client2.use {
             //val writeApi = client.getWriteKotlinApi()
-            val results = client2.getQueryKotlinApi().query(fluxQueryright)
+            val results = client.getQueryKotlinApi().query(fluxQueryright)
             Log.d("show",results.toString())
             results.consumeAsFlow()
                 .catch {
@@ -489,27 +492,25 @@ class RecordFragment : Fragment() {
                     Log.d("result",it.toString())
                     //하나씩 값 가져와서
                     val issleep =it.value
-                    //val issleep = it.target
                     val  time = it.time?.atZone(zoneId)
-                    // : LocalDateTime = LocalDateTime.parse (it.time.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")).plusHours(9)
-                    Log.d("type of time", time?.javaClass.toString())
                     Log.d("issleep",time.toString()+"\t"+issleep.toString())
-                    val h_string = "heartRate : "+time.toString()+"\t"+issleep.toString()+"\n"
-                    //chart 데이터에 저장
-                    //addEntry(time.toString(),issleep.toString())
                     sleepArr.add(issleep as Boolean)
-                    //heartrate.add(heartRate)
-                    all_string += h_string
                 }
         }
         sleepArr.add(false)
+        sleepArr.add(false)
+        sleepArr.add(false)
+        sleepArr.add(false)
+        sleepArr.add(false)
         Log.d("sleepArr",sleepArr.toString())
+        Log.d("sleepArrLength",sleepArr.size.toString())
         client2.close()
         //query heart rate
         val fluxQueryleft = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
                 "  |> filter(fn: (r) =>r[\"_field\"] == \"heart\")\n" +
                 "  |> filter(fn: (r) => r[\"Uid\"] == \"$Uid\")\n")
+        Log.d("Qurey",fluxQueryleft)
         client.use {
             //val writeApi = client.getWriteKotlinApi()
             val results = client.getQueryKotlinApi().query(fluxQueryleft)
