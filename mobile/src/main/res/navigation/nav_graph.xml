@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.saloris.Home.HomeFragment"
+        android:name="com.example.saloris.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -166,7 +166,7 @@
         tools:layout="@layout/fragment_record" />
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.example.saloris.Setting.SettingFragment"
+        android:name="com.example.saloris.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" >
         <action

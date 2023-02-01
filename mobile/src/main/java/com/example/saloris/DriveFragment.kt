@@ -654,6 +654,10 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             //Couroutine
             initialiseDevicePairing(tempAct)
         }
+        /* Bottom Menu */
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
+
         //user auth
         auth = Firebase.auth
         //chart
@@ -699,9 +703,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
-        /* Bottom Menu */
-        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomMenu.visibility = View.GONE
+
         initFaceMesh()
         initGlSurfaceView()
         postGlSurfaceView()
@@ -719,7 +721,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
         navController = Navigation.findNavController(view)
         activityContext = this.context
-
 
 
         binding.checkConnect.setOnClickListener {

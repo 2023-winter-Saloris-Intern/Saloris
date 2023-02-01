@@ -59,18 +59,17 @@ class MainActivity : AppCompatActivity() {
         NavController.OnDestinationChangedListener { _, destination, _ ->
             currFragment = destination.id
             when (currFragment) {
-                R.id.recordFragment,
-                R.id.homeFragment,
-                R.id.graphFragment,
-                R.id.settingsFragment, R.id.accountFragment -> {
-                    binding.bottomNav.visibility = View.VISIBLE
+                R.id.driveFragment,
+                R.id.settingsFragment -> {
+                    binding.bottomNav.visibility = View.GONE
                     binding.layoutToolbar.toolbar.visibility = View.GONE
                 }
                 else -> {
-                    binding.layoutToolbar.toolbar.visibility = View.GONE
+                    binding.bottomNav.visibility = View.VISIBLE
                 }
             }
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /* view */
