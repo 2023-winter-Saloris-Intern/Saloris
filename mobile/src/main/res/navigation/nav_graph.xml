@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_splashFragment_to_IntroSlideFragment"
             app:destination="@id/IntroSlideFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_HomeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
      <fragment
         android:id="@+id/loginFragment"

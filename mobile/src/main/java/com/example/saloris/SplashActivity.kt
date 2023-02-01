@@ -1,29 +1,21 @@
 package com.example.saloris
 
+import android.R
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
-import android.view.ContentInfo
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.saloris.databinding.ActivityMainBinding
 import com.example.saloris.databinding.ActivitySplashBinding
-import io.reactivex.rxjava3.internal.subscriptions.SubscriptionHelper.replace
+
 
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var navController: NavController
+//    private lateinit var navController: NavController
     lateinit var binding: ActivitySplashBinding
+
+    var fragment: Fragment = SplashFragment()
 
 //    private var currFragment = R.id.splashFragment
 
@@ -34,12 +26,17 @@ class SplashActivity : AppCompatActivity() {
 
 //        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
-        val handler = Handler()
-        handler.postDelayed({
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }, 5000)
+//        val handler = Handler()
+//        handler.postDelayed({
+//            val intent = Intent(applicationContext, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }, 5000)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.content, SplashFragment())
+            .addToBackStack(SplashActivity::class.java.getSimpleName())
+            .commit()
 //
 //        Handler(Looper.getMainLooper()).postDelayed({
 //            if (isOnBoardingFinished()) {

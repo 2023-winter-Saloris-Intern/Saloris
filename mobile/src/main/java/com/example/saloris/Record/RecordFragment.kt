@@ -276,7 +276,7 @@ class RecordFragment : Fragment() {
                 Log.d("sleepXArr",sleepX.toString())
                 if(xAxisLabel.toFloat() in sleepX) {
                     Log.d("Sleep!!!!!", "the value is sleep!!")
-                    binding.sleepState.text = "혹시 졸았나요?"
+                    binding.sleepState.text = "혹시 졸았나요?\uD83D\uDE34"
                     binding.sleepState.setBackgroundDrawable(sleepCardColor)
                     binding.sleepState.setTextColor(sleepTextColor)
                 }else{
