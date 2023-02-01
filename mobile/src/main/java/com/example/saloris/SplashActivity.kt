@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.example.saloris.databinding.ActivitySplashBinding
 
 
@@ -26,23 +28,34 @@ class SplashActivity : AppCompatActivity() {
 
 //        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
-//        val handler = Handler()
-//        handler.postDelayed({
-//            val intent = Intent(applicationContext, MainActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//        }, 5000)
+        val handler = Handler()
+        handler.postDelayed({
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 5000)
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.content, SplashFragment())
-            .addToBackStack(SplashActivity::class.java.getSimpleName())
-            .commit()
+//        supportFragmentManager.beginTransaction()
+//            .add(R.id.content, SplashFragment())
+//            .addToBackStack(SplashActivity::class.java.getSimpleName())
+//            .commit()
 //
+        //navController = Navigation.findNavController(view)
+
+        //1
 //        Handler(Looper.getMainLooper()).postDelayed({
 //            if (isOnBoardingFinished()) {
-//                navController.navigate(R.id.action_splashFragment_to_loginFragment)
+//
+//                if(!isLoginFinished()) {
+//                    navController.navigate(com.example.saloris.R.id.action_splashFragment_to_HomeFragment)
+//                }
+//
+//                else if(isLoginFinished()) {
+//                    navController.navigate(com.example.saloris.R.id.action_splashFragment_to_loginFragment)
+//                }
+//
 //            } else {
-//                navController.navigate(R.id.action_splashFragment_to_IntroSlideFragment)
+//                navController.navigate(com.example.saloris.R.id.action_splashFragment_to_IntroSlideFragment)
 //            }
 //        }, 5000)
 

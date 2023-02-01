@@ -46,7 +46,7 @@ class SplashFragment : Fragment() {
                 }
 
                 else if(isLoginFinished()) {
-                    navController.navigate(R.id.action_splashFragment_to_loginFragment)
+                    navController.navigate(R.id.action_splashFragment_to_loginStartFragment)
                 }
 
             } else {
@@ -54,6 +54,13 @@ class SplashFragment : Fragment() {
             }
         }, 5000)
     }
+
+//        val handler = Handler()
+//        handler.postDelayed({
+//            val intent = Intent(applicationContext, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }, 5000)
 
     //2
     private fun isOnBoardingFinished(): Boolean {
