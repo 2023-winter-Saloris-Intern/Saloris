@@ -183,7 +183,7 @@
             android:layout_marginTop="264dp"
             android:layout_marginEnd="38dp"
             android:fontFamily="@font/notosans_kr_regular"
-            android:text="최저 심박수(bpm)"
+            android:text="최고 심박수(bpm)"
             android:textColor="@color/black"
             android:textSize="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
