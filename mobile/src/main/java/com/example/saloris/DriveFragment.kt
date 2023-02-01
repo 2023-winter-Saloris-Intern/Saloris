@@ -370,12 +370,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         lifecycleScope.launch(Dispatchers.Main) {
                             with(binding.timerFitting) {
                                 text = 0.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                setTextColor(ContextCompat.getColor(activityContext!!,
+                                    R.color.white))
                                 visibility = View.VISIBLE
                             }
                             with(binding.longClosedFitting) {
                                 text = 0.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                setTextColor(ContextCompat.getColor(activityContext!!,
+                                    R.color.white))
                                 visibility = View.VISIBLE
                             }
                         }
@@ -386,12 +388,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         lifecycleScope.launch(Dispatchers.Main) {
                             with(binding.blink) {
                                 text = betweenTime(beforeTime).toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.drowsy))
+                                setTextColor(ContextCompat.getColor(activityContext!!,
+                                    R.color.drowsy))
                                 visibility = View.INVISIBLE
                             }
                             with(binding.longClosedFitting) {
                                 text = longClosedCount.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                setTextColor(ContextCompat.getColor(activityContext!!,
+                                    R.color.white))
                                 visibility = View.VISIBLE
                             }
                         }
@@ -445,12 +449,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         lifecycleScope.launch(Dispatchers.Main) {
                             with(binding.timerFitting) {
                                 text = (15 - betweenTime(startTime)).toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                setTextColor(ContextCompat.getColor(activityContext!!,
+                                    R.color.white))
                                 visibility = View.VISIBLE
                             }
                             with(binding.longClosedFitting) {
                                 text = longClosedCount.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+                                setTextColor(ContextCompat.getColor(activityContext!!,
+                                    R.color.white))
                                 visibility = View.VISIBLE
                             }
                         }
@@ -460,7 +466,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     totalBlink++
                     beforeCheck = true
                     startCheck = false
-                    if(longClosedCount == 0 || afterState == true) {
+                    if (longClosedCount == 0 || afterState == true) {
                         startCheck = true
                     }
                     longClosedState = false
@@ -655,7 +661,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             initialiseDevicePairing(tempAct)
         }
         /* Bottom Menu */
-        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        val bottomMenu = mainActivity.findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomMenu.visibility = View.GONE
 
         //user auth
@@ -1023,7 +1029,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onPause() {
         super.onPause()
         //overridePendingTransition(0, 0)
-
+        /* Bottom Menu */
+        val bottomMenu = mainActivity.findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
         /* FaceMesh */
         if (isCameraOn) {
 //            timer2.cancel()
@@ -1043,9 +1051,12 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     override fun onResume() {
         super.onResume()
-        isCameraOn = ActivityCompat.checkSelfPermission(activityContext!!, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED
-
+        isCameraOn =
+            ActivityCompat.checkSelfPermission(activityContext!!, Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_GRANTED
+        /* Bottom Menu */
+        val bottomMenu = mainActivity.findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
         /* FaceMesh */
         if (isCameraOn) {
             binding.faceFitting.visibility = View.VISIBLE

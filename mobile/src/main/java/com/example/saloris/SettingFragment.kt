@@ -98,7 +98,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
         // userName, userId 받아오기
 //        binding.userName.text = auth.currentUser!!.displayName
 //        binding.userId.text = auth.currentUser!!.email
