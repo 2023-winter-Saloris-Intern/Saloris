@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.viewpager2.widget.ViewPager2
+import com.example.saloris.MainActivity
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentIntroSlideBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -23,6 +24,11 @@ class IntroSlideFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentIntroSlideBinding.inflate(inflater, container, false)
+
+        /* Bottom Menu */
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
+
         return binding.root
     }
 
@@ -52,6 +58,11 @@ class IntroSlideFragment() : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        /* Bottom Menu */
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
+
         _binding = null
     }
 }

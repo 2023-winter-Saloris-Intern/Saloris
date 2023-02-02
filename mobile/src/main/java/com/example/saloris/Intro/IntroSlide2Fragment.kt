@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
+import com.example.saloris.MainActivity
 import com.example.saloris.R
+import com.example.saloris.databinding.FragmentIntroSlide1Binding
 import com.example.saloris.databinding.FragmentIntroSlide2Binding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 //class IntroSlide2Fragment : Fragment() {
 //    private var _binding: FragmentIntroSlide2Binding? = null
@@ -33,6 +36,11 @@ class IntroSlide2Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentIntroSlide2Binding.inflate(inflater, container, false)
+
+        /* Bottom Menu */
+        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomMenu.visibility = View.GONE
+
         return binding.root
     }
 

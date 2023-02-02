@@ -60,7 +60,10 @@ class MainActivity : AppCompatActivity() {
             currFragment = destination.id
             when (currFragment) {
                 R.id.driveFragment,
-                R.id.settingsFragment -> {
+                R.id.settingsFragment,
+                R.id.IntroSlideFragment,
+                R.id.IntroSlide1Fragment,
+                -> {
                     binding.bottomNav.visibility = View.GONE
                     binding.layoutToolbar.toolbar.visibility = View.GONE
                 }

@@ -3,36 +3,35 @@ package com.example.saloris
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.saloris.data.Networking
 import com.example.saloris.databinding.FragmentHomeBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.example.saloris.util.MakeToast
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
-import java.util.HashSet
+
 
 class HomeFragment : Fragment(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
-    CapabilityClient.OnCapabilityChangedListener{
+    CapabilityClient.OnCapabilityChangedListener {
     var activityContext: Context? = null
 
     private val wearableAppCheckPayload = "AppOpenWearable"
@@ -96,6 +95,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityContext = this.context
@@ -108,17 +108,18 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         /* User Authentication */
         auth = Firebase.auth
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
         /* Bottom Menu */
         val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
-        bottomMenu.visibility = View.VISIBLE
+        bottomMenu.visibility = View.GONE
 
         return binding.root
     }
@@ -128,20 +129,36 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
         navController = Navigation.findNavController(view)
         activityContext = this.context
-        /* User Authentication */
-        if (auth.currentUser == null) {
-            if (isAutoLogined()) {
-                context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
-                navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
-            }
-            navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+
+        //최초 실행 여부 판단하는 구문
+        val pref: SharedPreferences = requireContext().getSharedPreferences("isFirst", Activity.MODE_PRIVATE)
+        val first = pref.getBoolean("isFirst", false)
+        if (first == false) {
+            Log.d("Is first Time?", "first")
+            val editor = pref.edit()
+            editor.putBoolean("isFirst", true)
+            editor.commit()
+            //앱 최초 실행시 하고 싶은 작업
+            navController.navigate(R.id.action_homeFragment_to_IntroSlideFragment)
+
         } else {
-            if (!auth.currentUser?.isEmailVerified!!) {
-                context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
+            Log.d("Is first Time?", "not first")
+            /* User Authentication */
+            if (auth.currentUser == null) {
+                if (isAutoLogined()) {
+                    context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
+                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                }
                 navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+            } else {
+                if (!auth.currentUser?.isEmailVerified!!) {
+                    context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
+                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                }
+                binding.userName.text = auth.currentUser!!.displayName
             }
-            binding.userName.text = auth.currentUser!!.displayName
         }
+
 
         binding.startBtn.setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_driveFragment)
@@ -162,7 +179,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         //wearable device가 연결되었는지 확인
     }
 
-    private fun sendMessage(message : String){
+    private fun sendMessage(message: String) {
         toast.makeToast(requireContext(), "send message")
         val nodeId: String = messageEvent?.sourceNodeId!!
         // Set the data of the message to be the bytes of the Uri.
@@ -172,7 +189,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         // Instantiates clients without member variables, as clients are inexpensive to
         // create. (They are cached and shared between GoogleApi instances.)
         val sendMessageTask = Wearable.getMessageClient(activityContext!!)
-                .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
         sendMessageTask.addOnCompleteListener {
             toast.makeToast(requireContext(), "addOnCompleteListener")
             if (it.isSuccessful) {
@@ -182,21 +199,22 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
     }
+
     //wearOS와 연동되었는지 확인
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
-        var cardColor = ContextCompat.getColor(requireContext(),R.color.line_primary)
+        var cardColor = ContextCompat.getColor(requireContext(), R.color.line_primary)
 
         //Coroutine
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
 
             try {
-                Log.d("try","try get nodes res bool")
+                Log.d("try", "try get nodes res bool")
                 getNodesResBool =
                     getNodes(tempAct.applicationContext)
             } catch (e: Exception) {
-                Log.d("try","try exception")
+                Log.d("try", "try exception")
                 e.printStackTrace()
             }
 
@@ -208,7 +226,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     if (getNodesResBool[1]) {
                         //워치와 연결, 앱이 열려있음
                         wearableDeviceConnected = true
-                        cardColor = ContextCompat.getColor(requireContext(),R.color.primary)
+                        cardColor = ContextCompat.getColor(requireContext(), R.color.primary)
                         binding.startBtn.setCardBackgroundColor(cardColor)
                         binding.explanationTv.setText("운행 시작 버튼이 파란색인 경우\n연결이 완료 되었다는 뜻이에요")
 
@@ -216,7 +234,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                         //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
                         //binding.sendmessageButton.visibility = View.GONE
-                        cardColor = ContextCompat.getColor(requireContext(),R.color.purple_700)
+                        cardColor = ContextCompat.getColor(requireContext(), R.color.purple_700)
                         binding.startBtn.setCardBackgroundColor(cardColor)
                         binding.explanationTv.setText("운행 시작 버튼이 하늘색인 경우\n워치 앱이 닫혀있다는 뜻이에요")
 
@@ -225,13 +243,14 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     //워치와 연결되지 않음
                     wearableDeviceConnected = false
                     //binding.sendmessageButton.visibility = View.GONE
-                    cardColor = ContextCompat.getColor(requireContext(),R.color.grey)
+                    cardColor = ContextCompat.getColor(requireContext(), R.color.grey)
                     binding.startBtn.setCardBackgroundColor(cardColor)
                     binding.explanationTv.setText("운행 시작 버튼이 회색인 경우\n워치와 연결이 안되었다는 뜻이에요")
                 }
             }
         }
     }
+
     //현재 모바일이랑 연동된 워치의 node를 가져와서 확인
     private fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
@@ -260,7 +279,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     val sendMessageTask =
                         Wearable.getMessageClient(context)
                             .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
-                    Log.d("sendMessageToWearable","send message")
+                    Log.d("sendMessageToWearable", "send message")
                     //워치로 메시지를 보내고 5번동안 받으면 앱이 열려있고 안받으면 앱이 없다
                     try {
                         // Block on a task and get the result synchronously (because this is on a background thread).
@@ -352,7 +371,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 //워치에서 보낸 심박수를 받는다
                 try {
-                    val dateAndTime : LocalDateTime = LocalDateTime.now()
+                    val dateAndTime: LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s)//심박수
@@ -363,7 +382,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 //                    binding.scrollviewText.post {
 //                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
 //                    }
-                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
+                    Log.d("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //feedMultiple()
                     //DB로 데이터 전송
@@ -402,6 +421,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onCapabilityChanged(p0: CapabilityInfo) {
         TODO("Not yet implemented")
     }
+
     override fun onPause() {
         super.onPause()
         try {
