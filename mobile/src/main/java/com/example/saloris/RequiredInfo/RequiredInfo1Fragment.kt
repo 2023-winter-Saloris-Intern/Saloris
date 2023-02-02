@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.R
@@ -28,7 +29,6 @@ class RequiredInfo1Fragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        cnt= 0
         super.onCreate(savedInstanceState)
     }
 
@@ -39,26 +39,28 @@ class RequiredInfo1Fragment : Fragment() {
     ): View {
         binding = FragmentRequiredInfo1Binding.inflate(layoutInflater, container, false)
 
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
+        var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+
         // clickevent 구현 필요
-        if(cnt<2){
-            if(binding.manBtn.isSelected==true){
-                binding.manBtn.isSelected=false
-                cnt--
+        binding.manBtn.setOnClickListener{
+            if(binding.manBtn.isPressed==true){
+                binding.manBtn.setBackgroundDrawable(cardColor)
+                binding.manBtn.setTextColor(textColor)
             }
-            else{
-                binding.womanBtn.isSelected=true
-                cnt++
-            }
+//            else if(binding.manBtn.isPressed==false){
+//
+//            }
         }
-        else{
-            if(binding.manBtn.isSelected==true){
-                binding.manBtn.isSelected=false
-                cnt--
+
+        binding.womanBtn.setOnClickListener{
+            if(binding.womanBtn.isPressed==true){
+                binding.womanBtn.setBackgroundDrawable(cardColor)
+                binding.womanBtn.setTextColor(textColor)
             }
-            else{
-                binding.womanBtn.isSelected=true
-                cnt--
-            }
+//            else if(binding.womanBtn.isPressed==false){
+//
+//            }
         }
 
         return binding.root
