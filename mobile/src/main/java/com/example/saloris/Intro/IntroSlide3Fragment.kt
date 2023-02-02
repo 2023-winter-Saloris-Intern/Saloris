@@ -65,7 +65,7 @@ class IntroSlide3Fragment : Fragment() {
             viewPager?.currentItem = 1
         }
         binding.startBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_IntroSlideFragment_to_homeFragment)
+            findNavController().navigate(R.id.action_IntroSlideFragment_to_loginStartFragment)
             onBoardingFinished()
         }
     }

@@ -219,6 +219,9 @@
         <action
             android:id="@+id/action_splashFragment_to_IntroSlideFragment"
             app:destination="@id/IntroSlideFragment" />
+        <action
+            android:id="@+id/action_IntroSlideFragment_to_loginStartFragment"
+            app:destination="@id/loginStartFragment" />
     </fragment>
     <fragment
         android:id="@+id/IntroSlide1Fragment"
@@ -238,6 +241,9 @@
         <action
             android:id="@+id/action_IntroSlide3Fragment_to_homeFragment"
             app:destination="@+id/homeFragment"/>
+        <action
+            android:id="@+id/action_IntroSlide3Fragment_to_loginStartFragment"
+            app:destination="@id/loginStartFragment" />
     </fragment>
     <fragment
         android:id="@+id/Networking"
