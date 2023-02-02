@@ -90,7 +90,7 @@
         android:background="@drawable/gender_choice_btn"
         android:fontFamily="@font/notosans_kr_bold"
         android:text="남성"
-        android:textColor="@color/white"
+        android:textColor="@color/grey"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -103,7 +103,7 @@
         android:background="@drawable/gender_choice_btn"
         android:fontFamily="@font/notosans_kr_bold"
         android:text="여성"
-        android:textColor="@color/white"
+        android:textColor="@color/grey"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
