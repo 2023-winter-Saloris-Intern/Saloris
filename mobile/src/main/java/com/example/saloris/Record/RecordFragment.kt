@@ -90,6 +90,8 @@ class RecordFragment : Fragment() {
     var DayMean = "0"
     var Dayhighest : Int=0
     var Daylowest : Int = 500
+    var Daysum =0f
+    var Daycount=0f
     var averageArr = ArrayList<Double>()
     var DayArr = ArrayList<String>()
     var sleepX = ArrayList<Float>()
@@ -176,12 +178,15 @@ class RecordFragment : Fragment() {
                     binding.graphBtn.setVisibility(View.VISIBLE)
                     binding.dayChart.setVisibility(View.VISIBLE)
                     binding.heartRateNum.setVisibility(View.VISIBLE)
+                    //초기화
                     Dayhighest=0
                     Daylowest=500
+                    Daysum=0f
+                    Daycount=0f
                     //colors 초기화
                     colors.clear()
-                    //todo : chart 초기화..?
-                    chart!!.setDrawMarkers(false)
+                    //markerview null오류 해결 => hilight 초기화
+                    chart!!.highlightValue(null)
                     Log.d("colors",colors.toString())
                     last_time=""
                     sleepArr.clear()
@@ -205,7 +210,7 @@ class RecordFragment : Fragment() {
                         if(show_Data.await()!=null){
                             mainActivity.runOnUiThread(Runnable { // 메시지 큐에 저장될 메시지의 내용
                                 if(Dayhighest!=0) {
-                                    binding.average.text = DayMean;
+                                    binding.average.text = (round(((Daysum/Daycount))*100)/100).toString()
                                     binding.highest.text = Dayhighest.toString();
                                     binding.lowest.text = Daylowest.toString();
                                 }else{
@@ -341,9 +346,12 @@ class RecordFragment : Fragment() {
                 sleepX.add(time.toFloat())
                 Log.d("sleepX ",time.toString())
             }
-            Daylowest= min(newRate.toInt(),Daylowest)
+            if(newRate.toInt()!=0) // 0이 있으면 0이 최소로 나와서
+            { Daylowest= min(newRate.toInt(),Daylowest)}
             Dayhighest=max(newRate.toInt(),Dayhighest)
             Log.d("min max",Daylowest.toString()+Dayhighest.toString())
+            Daysum+=newRate.toInt()
+            Daycount++
             lastSleep = sleepArr[count]
             count++
             last_time=time.toString()
@@ -464,7 +472,8 @@ class RecordFragment : Fragment() {
                 .collect {
                     val time = it.time
                     Log.d("is same?",time.toString().substring(8,10)+" == "+ Dday.toString())
-                    if(time.toString().substring(8,10) == Dday.toString()){
+                    if(time.toString().substring(8,10).toInt() == Dday.toString().toInt()){
+                        //toint를 하는 이유 : 선택 날짜가 한자리일때 01 과 같이 나오기 때문
                         val average = it.value
                         Log.d("average",average.toString())
                         DayMean=(round((average as Double)*100)/100).toString()
