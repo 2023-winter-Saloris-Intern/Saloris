@@ -55,5 +55,13 @@ class RequiredInfo2Fragment : Fragment() {
         binding.goBackBtn.setOnClickListener {
             navController.navigate(R.id.action_requiredInfo2Fragment_to_requiredInfo1Fragment)
         }
+
+        val numberPicker: NumberPicker = requireView().findViewById(com.example.saloris.R.id.number_picker)
+
+        numberPicker.maxValue = 150 //최대값
+
+        numberPicker.minValue = 40 //최소값
+
+        numberPicker.value = 50 // 초기값
     }
 }
