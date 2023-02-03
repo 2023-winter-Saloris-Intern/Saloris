@@ -39,28 +39,40 @@ class RequiredInfo1Fragment : Fragment() {
     ): View {
         binding = FragmentRequiredInfo1Binding.inflate(layoutInflater, container, false)
 
-        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
+        //var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
         var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        //var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
+        var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
 
         // clickevent 구현 필요
         binding.manBtn.setOnClickListener{
-            if(binding.manBtn.isPressed==true){
-                binding.manBtn.setBackgroundDrawable(cardColor)
-                binding.manBtn.setTextColor(textColor)
-            }
-//            else if(binding.manBtn.isPressed==false){
-//
+//            if(binding.manBtn.isPressed==true){
+//                binding.manBtn.setSelected(true)
+//                binding.manBtn.setTextColor(textColor)
 //            }
+//            else {
+//                binding.womanBtn.setSelected(false)
+//                binding.womanBtn.setTextColor(originalTextColor)
+//            }
+            binding.manBtn.setSelected(true)
+            binding.manBtn.setTextColor(textColor)
+            binding.womanBtn.setSelected(false)
+            binding.womanBtn.setTextColor(originalTextColor)
         }
 
         binding.womanBtn.setOnClickListener{
-            if(binding.womanBtn.isPressed==true){
-                binding.womanBtn.setBackgroundDrawable(cardColor)
-                binding.womanBtn.setTextColor(textColor)
-            }
-//            else if(binding.womanBtn.isPressed==false){
-//
+//            if(binding.womanBtn.isPressed==true){
+//                binding.womanBtn.setBackgroundDrawable(cardColor)
+//                binding.womanBtn.setTextColor(textColor)
 //            }
+//            else {
+//                binding.manBtn.setSelected(false)
+//                binding.manBtn.setTextColor(originalTextColor)
+//            }
+            binding.manBtn.setSelected(false)
+            binding.manBtn.setTextColor(originalTextColor)
+            binding.womanBtn.setSelected(true)
+            binding.womanBtn.setTextColor(textColor)
         }
 
         return binding.root

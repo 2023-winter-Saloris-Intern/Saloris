@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.NumberPicker
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.R
@@ -37,6 +38,40 @@ class RequiredInfo4Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRequiredInfo4Binding.inflate(layoutInflater, container, false)
+
+        var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
+
+        // clickevent 구현 필요
+        binding.neverDrink.setOnClickListener{
+
+            binding.neverDrink.setSelected(true)
+            binding.neverDrink.setTextColor(textColor)
+            binding.sometimeDrink.setSelected(false)
+            binding.sometimeDrink.setTextColor(originalTextColor)
+            binding.usuallyDrink.setSelected(false)
+            binding.usuallyDrink.setTextColor(originalTextColor)
+        }
+
+        binding.sometimeDrink.setOnClickListener{
+
+            binding.neverDrink.setSelected(false)
+            binding.neverDrink.setTextColor(originalTextColor)
+            binding.sometimeDrink.setSelected(true)
+            binding.sometimeDrink.setTextColor(textColor)
+            binding.usuallyDrink.setSelected(false)
+            binding.usuallyDrink.setTextColor(originalTextColor)
+        }
+
+        binding.usuallyDrink.setOnClickListener{
+
+            binding.neverDrink.setSelected(false)
+            binding.neverDrink.setTextColor(originalTextColor)
+            binding.sometimeDrink.setSelected(false)
+            binding.sometimeDrink.setTextColor(originalTextColor)
+            binding.usuallyDrink.setSelected(true)
+            binding.usuallyDrink.setTextColor(textColor)
+        }
 
         return binding.root
     }

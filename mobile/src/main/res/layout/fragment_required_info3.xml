@@ -63,7 +63,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/notosans_kr_regular"
         android:text="        보다 정확하고 세세한 졸음 분석을 위해\n 회원님에 대한 몇 가지 기본 정보가 필요합니다."
-        android:textColor="#5F5F5F"
+        android:textColor="#B5B5B5"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

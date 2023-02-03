@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.NumberPicker
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.R
@@ -38,6 +39,40 @@ class RequiredInfo5Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRequiredInfo5Binding.inflate(layoutInflater, container, false)
+
+        var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
+
+        // clickevent 구현 필요
+        binding.neverSmoke.setOnClickListener{
+
+            binding.neverSmoke.setSelected(true)
+            binding.neverSmoke.setTextColor(textColor)
+            binding.sometimeSmoke.setSelected(false)
+            binding.sometimeSmoke.setTextColor(originalTextColor)
+            binding.usuallySmoke.setSelected(false)
+            binding.usuallySmoke.setTextColor(originalTextColor)
+        }
+
+        binding.sometimeSmoke.setOnClickListener{
+
+            binding.neverSmoke.setSelected(false)
+            binding.neverSmoke.setTextColor(originalTextColor)
+            binding.sometimeSmoke.setSelected(true)
+            binding.sometimeSmoke.setTextColor(textColor)
+            binding.usuallySmoke.setSelected(false)
+            binding.usuallySmoke.setTextColor(originalTextColor)
+        }
+
+        binding.usuallySmoke.setOnClickListener{
+
+            binding.neverSmoke.setSelected(false)
+            binding.neverSmoke.setTextColor(originalTextColor)
+            binding.sometimeSmoke.setSelected(false)
+            binding.sometimeSmoke.setTextColor(originalTextColor)
+            binding.usuallySmoke.setSelected(true)
+            binding.usuallySmoke.setTextColor(textColor)
+        }
 
         return binding.root
     }
