@@ -23,40 +23,53 @@
     <!--        app:layout_constraintVertical_bias="0.0" />-->
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/notosans_kr_bold"
-        android:text="심박수로 확인하는\n     나의 졸음운전"
+        android:layout_marginTop="64dp"
+        android:fontFamily="@font/pyeongchangpeace_light"
+        android:text="DONOFF 사용방법 안내"
         android:textColor="@color/black"
-        android:textSize="26dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="       1. 스마트 워치를 착용 후\n 어플을 다운 받고 실행해주세요"
+        android:textColor="@color/black"
+        android:textSize="26dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:fontFamily="@font/notosans_kr_regular"
-        android:text="얼굴 인식으로 실시간 졸음 현황 분석\n   숫자로 바로 확인하는 현재 심박수"
+        android:text="             ‘시작’버튼을 눌러 어플을 실행하고\n 심박수가 제대로 측정되는 중인지 확인해주세요"
         android:textColor="@color/black"
         android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
-<!--    <ImageView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="110dp"-->
-<!--        android:layout_marginEnd="48dp"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/mockup1"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="118dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/help1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/go_next_btn"

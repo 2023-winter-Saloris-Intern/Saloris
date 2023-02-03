@@ -9,14 +9,14 @@
     tools:context=".Help.HelpSlide3Fragment">
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/notosans_kr_regular"
-        android:text="더 새로워진"
+        android:layout_marginTop="48dp"
+        android:fontFamily="@font/pyeongchangpeace_light"
+        android:text="DONOFF 사용방법 안내"
         android:textColor="@color/black"
-        android:textSize="18dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,38 +25,36 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/pyeongchangpeace_light"
-        android:text="DONOFF"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="       3. 기록이 궁금하다면\n  기록확인 메뉴로 이동하여\n원하는 날짜를 선택해주세요"
         android:textColor="@color/black"
-        android:textSize="36dp"
+        android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/notosans_kr_regular"
-        android:text="지금 바로 시작해 볼까요?"
+        android:text="                                  원하는 날짜를 선택해서\n그날의 나의 심박수 그래프와 졸음 여부를 한 눈에 확인하세요"
         android:textColor="@color/black"
-        android:textSize="14dp"
+        android:textSize="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
-<!--    <ImageView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="224dp"-->
-<!--        android:layout_marginEnd="48dp"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/mockup3"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="450dp"
+        android:layout_marginTop="258dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/help3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/go_back_btn"
@@ -76,7 +74,7 @@
         android:id="@+id/start_btn"
         android:layout_width="280dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/blue_round_button"
         android:fontFamily="@font/notosans_kr_bold"
         android:text="시작하기"
