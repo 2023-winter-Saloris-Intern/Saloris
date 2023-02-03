@@ -731,6 +731,11 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
         binding.checkConnect.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
+            if (!wearableDeviceConnected) {
+                val tempAct: Activity = activityContext as AppCompatActivity
+                //Couroutine
+                initialiseDevicePairing(tempAct)
+            }
             toast.makeToast(requireContext(), "vibrate")
             sendMessage("vibrator")
         }
@@ -994,7 +999,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     } else if (s.toInt() < 70) {
                         textColor = ContextCompat.getColor(requireContext(), R.color.teal_200)
                         binding.heartRate.setTextColor(textColor)
-                        sendMessage("vibrate")
+                        sendMessage("vibrator")
                     } else {
                         textColor = ContextCompat.getColor(requireContext(), R.color.black)
                         binding.heartRate.setTextColor(textColor)
