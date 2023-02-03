@@ -196,12 +196,42 @@
     </fragment>
     <fragment
         android:id="@+id/helpFragment"
-        android:name="com.example.saloris.HelpFragment"
+        android:name="com.example.saloris.Help.HelpFragment"
         android:label="fragment_help"
         tools:layout="@layout/fragment_help" >
             <action
-                android:id="@+id/action_helpFragment_to_IntroSlideFragment"
-                app:destination="@+id/IntroSlideFragment"/>
+                android:id="@+id/action_helpFragment_to_helpSlide1Fragment"
+                app:destination="@+id/helpSlide1Fragment"/>
+            <action
+                android:id="@+id/action_helpFragment_to_homeFragment"
+                app:destination="@+id/homeFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/helpSlide1Fragment"
+        android:name="com.example.saloris.Help.HelpSlide1Fragment"
+        android:label="fragment_help_slide1"
+        tools:layout="@layout/fragment_help_slide1" >
+        <action
+            android:id="@+id/action_help1SlideFragment_to_helpSlide2Fragment"
+            app:destination="@+id/helpSlide2Fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/helpSlide2Fragment"
+        android:name="com.example.saloris.Help.HelpSlide2Fragment"
+        android:label="fragment_help_slide2"
+        tools:layout="@layout/fragment_help_slide2" >
+        <action
+            android:id="@+id/action_helpSlide2Fragment_to_helpSlide3Fragment"
+            app:destination="@+id/helpSlide3Fragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/helpSlide3Fragment"
+        android:name="com.example.saloris.Help.HelpSlide3Fragment"
+        android:label="fragment_help_slide3"
+        tools:layout="@layout/fragment_help_slide3" >
+        <action
+            android:id="@+id/action_helpSlide3Fragment_to_homeFragment"
+            app:destination="@+id/homeFragment"/>
     </fragment>
     <fragment
         android:id="@+id/findPasswordFragment"
