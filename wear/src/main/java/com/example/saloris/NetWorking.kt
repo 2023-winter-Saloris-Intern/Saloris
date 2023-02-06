@@ -59,7 +59,7 @@ class NetWorking : WearableListenerService(),
     var steal : String = ""
 
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         activityContext = this
         try {
             Wearable.getDataClient(activityContext!!).addListener(this)
@@ -71,7 +71,7 @@ class NetWorking : WearableListenerService(),
         }
 
         if(mobileDeviceConnected){
-            var S = intent.getStringExtra("heartRate")
+            var S = intent!!.getStringExtra("heartRate")
             if (S!!.isNotEmpty()) {
                 val nodeId: String = messageEvent?.sourceNodeId!!
                 // Set the data of the message to be the bytes of the Uri.
