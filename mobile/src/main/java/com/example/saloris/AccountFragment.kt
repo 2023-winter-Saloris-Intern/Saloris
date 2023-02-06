@@ -86,20 +86,32 @@ class AccountFragment : Fragment() {
             builder.setMessage("정말 계정을 삭제 하시겠습니까?")
             builder.setPositiveButton("네") { _: DialogInterface, _: Int ->
                 val uid = auth.currentUser!!.uid
+                val user = FirebaseAuth.getInstance().currentUser
+                Log.d("user","네~!!!!!!!!!!!!!!!!!!!!!!")
                 Log.d("user",uid)
                 //val dao = HeartRateDao()
 
                 lifecycleScope.launch(Dispatchers.IO) {
                     val isDeleted = async { deleteAllByUser(uid) }
                     if (isDeleted.await()) {
-                        auth.currentUser!!.delete()
-                            .addOnCompleteListener { deleteTask ->
+                        user?.delete()
+                            ?.addOnCompleteListener { deleteTask ->
                                 if (deleteTask.isSuccessful) {
+                                    Log.d("isSuccessful", "isSuccessful@@@@@@@@@@@@@")
                                     context?.let { context ->
                                         toast.makeToast(context, "계정이 삭제되었습니다")
                                     }
                                     navController.navigate(R.id.action_accountFragment_to_loginStartFragment)
-                                } else {
+                                } else if(deleteTask.isCanceled) {
+                                    Log.d("isCanceled", "isCanceled@@@@@@@@@@@@@")
+
+                                } else if(deleteTask.isComplete) {
+                                    Log.d("isComplete", "isComplete@@@@@@@@@@@@@")
+
+                                }
+                                else {
+                                    Log.d("else", deleteTask.result.toString()+"!!!!!!!!!!!!!!!")
+                                    Log.d("else", deleteTask.exception.toString()+"@@@@@@@@@@@@@")
                                     context?.let { context ->
                                         toast.makeToast(
                                             context, "계정이 삭제되지 않았습니다!!. 다시 시도해 주세요."
@@ -137,5 +149,9 @@ class AccountFragment : Fragment() {
             }
         }
         return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 }

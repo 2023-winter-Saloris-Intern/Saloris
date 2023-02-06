@@ -64,10 +64,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.IntroSlideFragment,
                 R.id.IntroSlide1Fragment,
                 R.id.loginStartFragment,
-                    R.id.loginFragment,
+                R.id.loginFragment,
                 R.id.registerFragment,
                 R.id.registerSuccessFragment,
-                    R.id.findPasswordFragment
+                R.id.findPasswordFragment,
                 -> {
                     binding.bottomNav.visibility = View.GONE
                     binding.layoutToolbar.toolbar.visibility = View.GONE
