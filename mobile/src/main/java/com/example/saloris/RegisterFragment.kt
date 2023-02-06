@@ -123,10 +123,6 @@ class RegisterFragment : Fragment() {
     ): View {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
-        /* Bottom Menu */
-        val bottomMenu = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomMenu.visibility = View.GONE
-
         return binding.root
     }
 

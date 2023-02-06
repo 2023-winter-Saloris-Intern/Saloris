@@ -71,7 +71,10 @@ class NetWorking : WearableListenerService(),
         }
 
         if(mobileDeviceConnected){
-            var S = intent!!.getStringExtra("heartRate")
+            var S = intent?.getStringExtra("heartRate")
+            var battery = intent?.getStringExtra("battery")
+            S = S+"/"+battery
+            Log.d("heartrate and battery",S)
             if (S!!.isNotEmpty()) {
                 val nodeId: String = messageEvent?.sourceNodeId!!
                 // Set the data of the message to be the bytes of the Uri.
@@ -86,7 +89,7 @@ class NetWorking : WearableListenerService(),
                         .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
 
-                sendMessageTask.addOnCompleteListener {
+                sendMessageTask.addOnCompleteListener{
                     if (it.isSuccessful) {
                         Log.d("send1", "Message sent successfully")
                     } else {
@@ -101,7 +104,6 @@ class NetWorking : WearableListenerService(),
                 ).show()
             }
         }
-
 
         return super.onStartCommand(intent, flags, startId)
     }

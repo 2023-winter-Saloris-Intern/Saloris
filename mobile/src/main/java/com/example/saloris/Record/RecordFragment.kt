@@ -105,6 +105,8 @@ class RecordFragment : Fragment() {
 
         chart =  binding.dayChart
 
+
+
         binding.calendarView1.setVisibility(View.GONE)
         binding.dayChart.setVisibility(View.GONE)
         binding.heartRateNum.setVisibility(View.GONE)
@@ -279,6 +281,13 @@ class RecordFragment : Fragment() {
             }
         })
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        /* Bottom Menu */
+        val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
+        bottomMenu.visibility = View.VISIBLE
     }
 
     //chart

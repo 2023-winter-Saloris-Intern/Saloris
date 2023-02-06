@@ -1014,7 +1014,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.heartRate.setTextColor(textColor)
                         sendMessage("vibrator")
                     } else {
-                        textColor = ContextCompat.getColor(requireContext(), R.color.black)
+                        textColor = ContextCompat.getColor(requireContext(), R.color.white)
                         binding.heartRate.setTextColor(textColor)
                     }
                     binding.heartRate.text = sbTemp.toString()

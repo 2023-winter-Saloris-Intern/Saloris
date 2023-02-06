@@ -32,11 +32,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/watch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/device_scan_btn"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="60dp"
         android:layout_gravity="center"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="16dp"
         android:clickable="true"
         android:padding="10dp"
@@ -51,67 +61,55 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="48dp"
-                android:src="@drawable/watch"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/notosans_kr_regular"
-                android:text="워치 정보"
-                android:textColor="@color/black"
-                android:textSize="12dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/watch_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
                 android:fontFamily="@font/notosans_kr_bold"
                 android:text="워치 연결 정보 없음"
                 android:textColor="@color/black"
                 android:textSize="12dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_height="21dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/notosans_kr_regular"
-                android:text="연결 일시"
+                android:text="배터리"
                 android:textColor="@color/black"
                 android:textSize="12dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/watch_info" />
 
             <TextView
-                android:id="@+id/watch_connect_date"
+                android:id="@+id/watch_battery"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_height="21dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/notosans_kr_bold"
-                android:text="연결 정보 없음"
+                android:text="-"
                 android:textColor="@color/black"
                 android:textSize="12dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+                app:layout_constraintStart_toEndOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/watch_info" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="21dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/notosans_kr_bold"
+                android:text=" %"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@+id/watch_battery"
+                app:layout_constraintTop_toBottomOf="@+id/watch_info" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
