@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +17,14 @@ import com.example.saloris.util.MakeToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.influxdb.client.InfluxDBClientFactory
+import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneId
 
 class AccountFragment : Fragment() {
     /* View */
@@ -30,6 +36,11 @@ class AccountFragment : Fragment() {
 
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
+
+    val user="user"
+    val org = "intern"
+    val bucket = "HeartRate"
+    val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
 
     private fun deleteAutoLoginInfo() {
         val autoLoginPref =
@@ -75,36 +86,56 @@ class AccountFragment : Fragment() {
             builder.setMessage("정말 계정을 삭제 하시겠습니까?")
             builder.setPositiveButton("네") { _: DialogInterface, _: Int ->
                 val uid = auth.currentUser!!.uid
+                Log.d("user",uid)
                 //val dao = HeartRateDao()
 
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    val isDeleted = async { dao.deleteAllByUser(uid) }
-//                    if (isDeleted.await()) {
-//                        auth.currentUser!!.delete()
-//                            .addOnCompleteListener { deleteTask ->
-//                                if (deleteTask.isSuccessful) {
-//                                    context?.let { context ->
-//                                        toast.makeToast(context, "계정이 삭제되었습니다")
-//                                    }
-//                                    navController.navigate(R.id.action_accountFragment_to_loginStartFragment)
-//                                } else {
-//                                    context?.let { context ->
-//                                        toast.makeToast(
-//                                            context, "계정이 삭제되지 않았습니다. 다시 시도해 주세요."
-//                                        )
-//                                    }
-//                                }
-//                            }
-//                        // ?: Backup?
-//                    } else {
-//                        context?.let { context ->
-//                            toast.makeToast(context, "계정이 삭제되지 않았습니다. 다시 시도해 주세요.")
-//                        }
-//                    }
-//                }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val isDeleted = async { deleteAllByUser(uid) }
+                    if (isDeleted.await()) {
+                        auth.currentUser!!.delete()
+                            .addOnCompleteListener { deleteTask ->
+                                if (deleteTask.isSuccessful) {
+                                    context?.let { context ->
+                                        toast.makeToast(context, "계정이 삭제되었습니다")
+                                    }
+                                    navController.navigate(R.id.action_accountFragment_to_loginStartFragment)
+                                } else {
+                                    context?.let { context ->
+                                        toast.makeToast(
+                                            context, "계정이 삭제되지 않았습니다!!. 다시 시도해 주세요."
+                                        )
+                                    }
+                                }
+                            }
+                        // ?: Backup?
+                    } else {
+                        context?.let { context ->
+                            toast.makeToast(context, "계정이 삭제되지 않았습니다. 다시 시도해 주세요.")
+                        }
+                    }
+                }
             }
             builder.setNegativeButton("아니요") { _: DialogInterface, _: Int -> }
             builder.show()
         }
+    }
+    fun deleteAllByUser(uid: String): Boolean {
+        val client = InfluxDBClientFactory.create()
+
+        val start = OffsetDateTime.ofInstant(Instant.ofEpochSecond(0), ZoneId.of("UTC"))
+        val stop = OffsetDateTime.now()
+        val measurement = "user"
+        client.use {
+            try {
+                val deleteApi = client.deleteApi
+                deleteApi.delete(
+                    start, stop, "_measurement=\"$measurement\" AND Uid=\"$uid\"", bucket, org
+                )
+            } catch (ie: InfluxException) {
+                Log.e("InfluxException", "Delete: ${ie.cause}")
+                return false
+            }
+        }
+        return true
     }
 }
