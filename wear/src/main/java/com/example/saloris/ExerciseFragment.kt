@@ -349,37 +349,39 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
     }
 
     private fun updateMetrics(latestMetrics: DataPointContainer) {
-        latestMetrics.getData(DataType.HEART_RATE_BPM).let {
+        latestMetrics.getData(DataType.HEART_RATE_BPM).let{
             if (it.isNotEmpty()) {
-                binding.heartRateText.text = it.last().value.roundToInt().toString()
-                Log.d("Heart Rate_ExerciseFragment_updateMetrics", it.last().value.roundToInt().toString())
+                binding.heartRateText.text=it.last().value.roundToInt().toString()
+                Log.d("Heart Rate_ExerciseFragment_updateMetrics",it.last().value.roundToInt().toString())
 
-                val heart_rate_value = it.last().value.roundToInt().toString()
+                val heart_rate_value =it.last().value.roundToInt().toString()
 
                 if(heart_rate_value!="0") {
-                    min_heart = min(min_heart, heart_rate_value.toInt())
-                    max_heart = max(max_heart, heart_rate_value.toInt())
+                    min_heart =min(min_heart, heart_rate_value.toInt())
+                    max_heart =max(max_heart, heart_rate_value.toInt())
                     sum += heart_rate_value.toInt()
                     count += 1
                     mean_heart = sum / count
-                    binding.minHeart.text = min_heart.toString()
-                    binding.meanHeart.text = mean_heart.toString()
-                    binding.maxHeart.text = max_heart.toString()
+                    binding.minHeart.text= min_heart.toString()
+                    binding.meanHeart.text= mean_heart.toString()
+                    binding.maxHeart.text= max_heart.toString()
                 }
                 //TODO : send to mobile 1s
+                var battery = getBatteryRemain(mainActivity)
+                Log.d("Battery!!",battery.toString())
                 val dateAndtime: String = LocalDateTime.now().toString().substring(14,16)
                 serviceIt.putExtra("heartRate",heart_rate_value)
+                serviceIt.putExtra("battery",battery.toString())
                 activity?.startService(serviceIt)
                 Log.d("time_ExerciseFragment_updateMetrics",dateAndtime)
                 Log.d("putValue_ExerciseFragment_updateMetrics",heart_rate_value)
                 lastTime=dateAndtime
+
                 //todo chart
                 newRate=heart_rate_value
                 if(newRate!="0") {
                     feedMultiple()
                 }
-                var battery = getBatteryRemain(mainActivity)
-                Log.d("Battery!!",battery.toString())
             }
         }
 
