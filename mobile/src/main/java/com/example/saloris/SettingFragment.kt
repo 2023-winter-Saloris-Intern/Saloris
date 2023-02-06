@@ -4,14 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentSettingBinding
@@ -22,7 +26,14 @@ import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.influxdb.client.domain.WritePrecision
+import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
+import com.influxdb.client.write.Point
+import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
+import java.nio.charset.StandardCharsets
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.HashSet
 
 class SettingFragment : Fragment(), CoroutineScope by MainScope(),
@@ -39,16 +50,20 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     private var currentAckFromWearForAppOpenCheck: String? = null
     private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
 
-//    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
+    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
 
     private val TAG_GET_NODES: String = "getnodes1"
-//    private val TAG_MESSAGE_RECEIVED: String = "receive1"
-//
-//    private var messageEvent: MessageEvent? = null
-//    private var wearableNodeUri: String? = null
-//
-//    private lateinit var onBackPressedCallback: OnBackPressedCallback
-//    var btnBackPressedTime: Long = 0
+    private val TAG_MESSAGE_RECEIVED: String = "receive1"
+
+    private var messageEvent: MessageEvent? = null
+    private var wearableNodeUri: String? = null
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
+    var btnBackPressedTime: Long = 0
+
+    //var newRate = ""
+    var Rate = ""
+    var last_time = ""
 
     /* View */
     private lateinit var binding: FragmentSettingBinding
@@ -297,9 +312,13 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
-//        try {
-//            val s =
-//                String(p0.data, StandardCharsets.UTF_8)
+        try {
+            val rateAndBattery =String(p0.data, StandardCharsets.UTF_8).split("/")
+            val s =rateAndBattery[0]
+            val battery = rateAndBattery[1]
+            Log.d("battery",battery)
+            //binding.watchBattery.setText(battery)
+
 //            val messageEventPath: String = p0.path
 //            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
 //                //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
@@ -308,40 +327,38 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    TAG_MESSAGE_RECEIVED,
 //                    "Received acknowledgement message that app is open in wear"
 //                )
+//                val sbTemp = StringBuilder()
+//                binding.watchBattery.setText(battery)
 //
 //                messageEvent = p0
 //                wearableNodeUri = p0.sourceNodeId
 //            } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
-//                //워치에서 보낸 심박수를 받는다
+//                  //워치에서 보낸 심박수를 받는다
 //                try {
-//                    val dateAndTime : LocalDateTime = LocalDateTime.now()
+//                    val dateAndTime: LocalDateTime = LocalDateTime.now()
 //                    val sbTemp = StringBuilder()
-//                    sbTemp.append("\n")
 //                    sbTemp.append(s)//심박수
-//                    //sbTemp.append( "==="+dateAndTime.toString())
-//                    //Log.d("receive1", " $sbTemp")
+//
 //                    newRate = s
-////                    binding.scrollviewText.requestFocus()
-////                    binding.scrollviewText.post {
-////                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-////                    }
-//                    Log.d("onMessageReceived_mainActivity","feedMultiple()")
-//                    //chart에 표시
-//                    //feedMultiple()
+                    //Log.d("onMessageReceived_mainActivity", "feedMultiple()")
+                    //chart에 표시
 //                    //DB로 데이터 전송
-////                    lifecycleScope.launch(Dispatchers.IO) {
-////                        val isInserted = async { insertDB(newRate) }
-////                        Log.d("isInserted",newRate)
-////                        Log.d("time", dateAndTime.toString())
-////                    }
+//                    if (last_time != dateAndTime.toString().substring(14, 16)) {
+//                        lifecycleScope.launch(Dispatchers.IO){
+//                            val isInserted =async{insertDB(newRate.toInt())}
+//                            Log.d("isInserted", newRate)
+//                            Log.d("time", dateAndTime.toString().substring(14, 16))
+//                            last_time = dateAndTime.toString().substring(14, 16)
+//                        }
+//                    }
 //                } catch (e: Exception) {
 //                    e.printStackTrace()
 //                }
 //            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Log.d("receive1", "Handled")
-//        }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("receive1", "Handled")
+        }
     }
 
     override fun onDestroyView() {
@@ -371,7 +388,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             e.printStackTrace()
         }
     }
-
 
     override fun onResume() {
         super.onResume()
