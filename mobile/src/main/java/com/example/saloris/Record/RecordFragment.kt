@@ -330,11 +330,13 @@ class RecordFragment : Fragment() {
                 Log.d("sleepX ",time.toString())
             }
             if(newRate.toInt()!=0) // 0이 있으면 0이 최소로 나와서
-            { Daylowest= min(newRate.toInt(),Daylowest)}
-            Dayhighest=max(newRate.toInt(),Dayhighest)
+            {
+                Daylowest= min(newRate.toInt(),Daylowest)
+                Daysum+=newRate.toInt()
+                Dayhighest=max(newRate.toInt(),Dayhighest)
+                Daycount++
+            }
             Log.d("min max",Daylowest.toString()+Dayhighest.toString())
-            Daysum+=newRate.toInt()
-            Daycount++
             lastSleep = sleepArr[count]
             count++
             last_time=time.toString()
