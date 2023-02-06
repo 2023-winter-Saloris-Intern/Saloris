@@ -50,19 +50,18 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     private var currentAckFromWearForAppOpenCheck: String? = null
     private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
 
-    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
+//    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
 
     private val TAG_GET_NODES: String = "getnodes1"
-    private val TAG_MESSAGE_RECEIVED: String = "receive1"
-
-    private var messageEvent: MessageEvent? = null
-    private var wearableNodeUri: String? = null
-
-    private lateinit var onBackPressedCallback: OnBackPressedCallback
-    var btnBackPressedTime: Long = 0
-
-    //var newRate = ""
-    var Rate = ""
+//    private val TAG_MESSAGE_RECEIVED: String = "receive1"
+//
+//    private var messageEvent: MessageEvent? = null
+//    private var wearableNodeUri: String? = null
+//
+//    private lateinit var onBackPressedCallback: OnBackPressedCallback
+//    var btnBackPressedTime: Long = 0
+//
+//    var Rate = ""
     var last_time = ""
 
     /* View */
