@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentHomeBinding
 import com.example.saloris.util.MakeToast
+import com.example.salorisv.DevicePairing
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
@@ -225,7 +226,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     //if message Acknowlegement Received
                     if (getNodesResBool[1]) {
                         //워치와 연결, 앱이 열려있음
-                        wearableDeviceConnected = true
+                        DevicePairing.wearableDeviceConnected = true
                         cardColor = ContextCompat.getColor(requireContext(), R.color.primary)
                         binding.startBtn.setCardBackgroundColor(cardColor)
                         binding.explanationTv.setText("운행 시작 버튼이 파란색인 경우\n연결이 완료 되었다는 뜻이에요")
@@ -273,6 +274,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     val nodeId = node.id
                     // Set the data of the message to be the bytes of the Uri.
                     val payload: ByteArray = wearableAppCheckPayload.toByteArray()
+                    DevicePairing.nodeId = nodeId
+                    DevicePairing.wearableDeviceConnected=wearableDeviceConnected
                     // Send the rpc
                     // Instantiates clients without member variables, as clients are inexpensive to
                     // create. (They are cached and shared between GoogleApi instances.)
