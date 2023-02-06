@@ -156,6 +156,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
                 binding.userName.text = auth.currentUser!!.displayName
+                binding.userName2.text = auth.currentUser!!.displayName
+
             }
         }
 

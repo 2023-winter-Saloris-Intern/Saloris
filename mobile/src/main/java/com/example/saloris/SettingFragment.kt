@@ -347,9 +347,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onDestroyView() {
         super.onDestroyView()
 
-        /* Bottom Menu */
-        val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
-        bottomMenu.visibility = View.VISIBLE
     }
 
 //    override fun onDetach() {
