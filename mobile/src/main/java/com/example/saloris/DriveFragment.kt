@@ -655,7 +655,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityContext = this.context
-        //wearableDeviceConnected = false
+        wearableDeviceConnected = false
         if (!wearableDeviceConnected) {
             val tempAct: Activity = activityContext as AppCompatActivity
             //Couroutine
@@ -758,14 +758,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private fun sendMessage(message: String) {
         //toast.makeToast(requireContext(), "send message")
         println(wearableDeviceConnected)
-        //val wearableDeviceConnected = DevicePairing.getwearableDeviceConnected()
-        Log.d("wearableDeviceConneced from DevicePairing",wearableDeviceConnected.toString())
+        val wearableDeviceConnected1 = DevicePairing.getwearableDeviceConnected()
+        Log.d("wearableDeviceConneced from DevicePairing",wearableDeviceConnected1.toString())
         if (wearableDeviceConnected!!) {
             if (binding.heartRate.text!!.isNotEmpty()) {
                 //toast.makeToast(requireContext(), "send message")
-                //val nodeId: String = messageEvent?.sourceNodeId!!
-                val nodeId = DevicePairing.getNodeId()
-                Log.d("nodeid from DevicePairing",nodeId.toString())
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                val nodeId1 = DevicePairing.getNodeId()
+                Log.d("nodeid from DevicePairing",nodeId1.toString())
                 // Set the data of the message to be the bytes of the Uri.
                 val payload: ByteArray =
                     message.toByteArray()
@@ -865,13 +865,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             //UI Thread
             withContext(Dispatchers.Main) {
                 getNodesResBool?.get(1)?.let { Log.d("getnodesresbool : ", it.toString()) }
+                //binding.heartRate.text="-"
                 if (getNodesResBool!![0]) {
                     //if message Acknowlegement Received
                     if (getNodesResBool[1]) {
                         wearableDeviceConnected = true
+                        Log.d("heartrate text","wearable true")
                     } else {
                         wearableDeviceConnected = false
-                        binding.heartRate.text="-"
                     }
                 } else {
                     wearableDeviceConnected = false
@@ -984,8 +985,12 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         try {
-            val s =
-                String(p0.data, StandardCharsets.UTF_8)
+//            val s =
+//                String(p0.data, StandardCharsets.UTF_8)
+            val rateAndBattery =String(p0.data, StandardCharsets.UTF_8).split("/")
+            val s =rateAndBattery[0]
+            //val battery = rateAndBattery[1]
+            //Log.d("battery",battery)
             val messageEventPath: String = p0.path
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
