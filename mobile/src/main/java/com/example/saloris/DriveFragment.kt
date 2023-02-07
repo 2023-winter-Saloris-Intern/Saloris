@@ -741,6 +741,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 initialiseDevicePairing(tempAct)
             }
             //toast.makeToast(requireContext(), "vibrate")
+            binding.heartRate.text = "-"
             sendMessage("vibrator")
         }
         binding.finishDriveBtn.setOnClickListener {
@@ -757,7 +758,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private fun sendMessage(message: String) {
         //toast.makeToast(requireContext(), "send message")
         println(wearableDeviceConnected)
-        val wearableDeviceConnected = DevicePairing.getwearableDeviceConnected()
+        //val wearableDeviceConnected = DevicePairing.getwearableDeviceConnected()
         Log.d("wearableDeviceConneced from DevicePairing",wearableDeviceConnected.toString())
         if (wearableDeviceConnected!!) {
             if (binding.heartRate.text!!.isNotEmpty()) {
