@@ -5,38 +5,34 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
-import android.os.Build
+import android.os.BatteryManager
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentSettingBinding
 import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.influxdb.client.domain.WritePrecision
-import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
-import com.influxdb.client.write.Point
-import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
-import java.time.Instant
-import java.time.LocalDateTime
-import java.util.HashSet
+
 
 class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -55,15 +51,9 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
 
     private val TAG_GET_NODES: String = "getnodes1"
+
 //    private val TAG_MESSAGE_RECEIVED: String = "receive1"
-//
-//    private var messageEvent: MessageEvent? = null
-//    private var wearableNodeUri: String? = null
-//
-//    private lateinit var onBackPressedCallback: OnBackPressedCallback
-//    var btnBackPressedTime: Long = 0
-//
-//    var Rate = ""
+
     var last_time = ""
 
     /* View */
@@ -191,6 +181,15 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             //UI Thread
             withContext(Dispatchers.Main) {
                 getNodesResBool?.get(1)?.let { Log.d("getnodesresbool : ", it.toString()) }
+
+                val ifilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                val batteryStatus = requireContext()!!.registerReceiver(null, ifilter)
+
+                val level = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+
+                val batteryPct = level
+
                 if (getNodesResBool!![0]) {
                     //if message Acknowlegement Received
                     if (getNodesResBool[1]) {
@@ -199,7 +198,9 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
-                        //binding.watchInfo.setText()
+                        //binding.watchBattery.setText(batteryLevel.toString())
+
+
                     } else {
                         //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
@@ -207,6 +208,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
+                        binding.watchBattery.setText((batteryPct).toString())
 
                     }
                 } else {
@@ -329,44 +331,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             val s =rateAndBattery[0]
             val battery = rateAndBattery[1]
             Log.d("battery",battery)
-            //binding.watchBattery.setText(battery)
 
-//            val messageEventPath: String = p0.path
-//            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
-//                //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
-//                currentAckFromWearForAppOpenCheck = s
-//                Log.d(
-//                    TAG_MESSAGE_RECEIVED,
-//                    "Received acknowledgement message that app is open in wear"
-//                )
-//                val sbTemp = StringBuilder()
-//                binding.watchBattery.setText(battery)
-//
-//                messageEvent = p0
-//                wearableNodeUri = p0.sourceNodeId
-//            } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
-//                  //워치에서 보낸 심박수를 받는다
-//                try {
-//                    val dateAndTime: LocalDateTime = LocalDateTime.now()
-//                    val sbTemp = StringBuilder()
-//                    sbTemp.append(s)//심박수
-//
-//                    newRate = s
-                    //Log.d("onMessageReceived_mainActivity", "feedMultiple()")
-                    //chart에 표시
-//                    //DB로 데이터 전송
-//                    if (last_time != dateAndTime.toString().substring(14, 16)) {
-//                        lifecycleScope.launch(Dispatchers.IO){
-//                            val isInserted =async{insertDB(newRate.toInt())}
-//                            Log.d("isInserted", newRate)
-//                            Log.d("time", dateAndTime.toString().substring(14, 16))
-//                            last_time = dateAndTime.toString().substring(14, 16)
-//                        }
-//                    }
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d("receive1", "Handled")
@@ -377,11 +342,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
         super.onDestroyView()
 
     }
-
-//    override fun onDetach() {
-//        super.onDetach()
-//        onBackPressedCallback.remove()
-//    }
 
     override fun onDataChanged(p0: DataEventBuffer) {
         TODO("Not yet implemented")
