@@ -30,7 +30,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/donoff_launch"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/donoff_launch"
         android:supportsRtl="true"
         android:theme="@style/Theme.Saloris"
         tools:targetApi="31">
