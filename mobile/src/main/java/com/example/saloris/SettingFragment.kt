@@ -2,7 +2,9 @@ package com.example.saloris
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -118,9 +120,20 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 
         // 로그아웃 -> 로그인 화면
         binding.btnLogout.setOnClickListener {
-            auth.signOut()
-            deleteAutoLoginInfo()
-            navController.navigate(R.id.action_settingFragment_to_loginStartFragment)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("로그아웃")
+                .setMessage("계정을 로그아웃 하시겠습니까?")
+                .setPositiveButton("네",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        auth.signOut()
+                        deleteAutoLoginInfo()
+                        navController.navigate(R.id.action_settingFragment_to_loginStartFragment)
+                    })
+                .setNegativeButton("아니오",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        dialog.dismiss()
+                    })
+            builder.show()
         }
         // 도움말
         binding.btnHelp.setOnClickListener {

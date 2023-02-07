@@ -148,6 +148,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                 if (isAutoLogined()) {
                     context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                }else {
+                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
             } else {
                 if (!auth.currentUser?.isEmailVerified!!) {
