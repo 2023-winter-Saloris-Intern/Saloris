@@ -72,7 +72,7 @@ class RecordFragment : Fragment() {
     var Dyear = 0
     var Dmonth =0
     var Dday = 0
-    var DayMean = "0"
+    var DayMean = 0f
     var Dayhighest : Int=0
     var Daylowest : Int = 500
     var Daysum =0f
@@ -198,6 +198,9 @@ class RecordFragment : Fragment() {
                                     binding.average.text = (round(((Daysum/Daycount))*100)/100).toString()
                                     binding.highest.text = Dayhighest.toString();
                                     binding.lowest.text = Daylowest.toString();
+                                    if(Dayhighest>80f){
+                                        chart!!.axisLeft.axisMaximum=150f
+                                    }
                                 }else{
                                     binding.average.text = "-";
                                     binding.highest.text ="-";
@@ -244,7 +247,7 @@ class RecordFragment : Fragment() {
         chart!!.xAxis.axisMinimum=0f
         chart!!.xAxis.axisMaximum=1200f
         chart!!.axisRight.isEnabled = false
-        chart!!.axisLeft.axisMaximum=100f // y축 min,max
+        chart!!.axisLeft.axisMaximum=150f // y축 min,max
         chart!!.axisLeft.axisMinimum=50f
         chart!!.legend.textColor = Color.BLUE
         chart!!.animateXY(1000, 1000)
@@ -344,6 +347,7 @@ class RecordFragment : Fragment() {
                 Daysum+=newRate.toInt()
                 Dayhighest=max(newRate.toInt(),Dayhighest)
                 Daycount++
+                DayMean=(round(((Daysum/Daycount))*100)/100)
             }
             Log.d("min max",Daylowest.toString()+Dayhighest.toString())
             lastSleep = sleepArr[count]
@@ -355,6 +359,8 @@ class RecordFragment : Fragment() {
 //            chart!!.notifyDataSetChanged()
             chart!!.setVisibleXRangeMaximum(10f) // x축을 10까지만 보여주고 그 이후부터는 이동..
             chart!!.moveViewToX(time.toFloat()-10f) // 가장 최근 추가한 데이터로 이동
+            chart!!.setVisibleYRangeMaximum(50f,YAxis.AxisDependency.LEFT) // x축을 10까지만 보여주고 그 이후부터는 이동..
+            chart!!.moveViewTo(time.toFloat()-10f,DayMean,YAxis.AxisDependency.LEFT)
         }
     }
     //chart 설정
@@ -470,7 +476,7 @@ class RecordFragment : Fragment() {
                         //toint를 하는 이유 : 선택 날짜가 한자리일때 01 과 같이 나오기 때문
                         val average = it.value
                         Log.d("average",average.toString())
-                        DayMean=(round((average as Double)*100)/100).toString()
+                        //DayMean=(round((average as Double)*100)/100).toString()
                     }
                     Log.d("date",time.toString())
 
