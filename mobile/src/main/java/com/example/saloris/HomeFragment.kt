@@ -149,7 +149,6 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
-                navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
             } else {
                 if (!auth.currentUser?.isEmailVerified!!) {
                     context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
@@ -405,10 +404,6 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        /* Bottom Menu */
-        val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
-        bottomMenu.visibility = View.VISIBLE
     }
 
     override fun onDetach() {

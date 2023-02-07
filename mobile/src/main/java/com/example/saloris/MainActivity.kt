@@ -68,6 +68,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.registerFragment,
                 R.id.registerSuccessFragment,
                 R.id.findPasswordFragment,
+                R.id.requiredInfo1Fragment,
+                R.id.requiredInfo2Fragment,
+                R.id.requiredInfo3Fragment,
+                R.id.requiredInfo4Fragment,
+                R.id.requiredInfo5Fragment,
+                R.id.requiredInfoFragment,
                 -> {
                     binding.bottomNav.visibility = View.GONE
                     binding.layoutToolbar.toolbar.visibility = View.GONE
