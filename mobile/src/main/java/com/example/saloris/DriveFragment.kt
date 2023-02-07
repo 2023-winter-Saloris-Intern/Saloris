@@ -1091,4 +1091,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             e.printStackTrace()
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
 }

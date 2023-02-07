@@ -1,4 +1,5 @@
-package com.example.saloris.util.ble//package com.example.saloris.util.ble
+//package com.example.saloris.util.ble
+//package com.example.saloris.util.ble
 //
 //import android.Manifest
 //import android.annotation.SuppressLint
@@ -57,7 +58,7 @@ package com.example.saloris.util.ble//package com.example.saloris.util.ble
 //
 //            binding.root.setOnClickListener {
 //                it.findNavController().navigate(R.id.action_scanFragment_to_startDriveFragment, bundle)
-////                val builder = AlertDialog.Builder(requireContext())
+//                val builder = AlertDialog.Builder(requireContext())
 //
 //            }
 //        }
