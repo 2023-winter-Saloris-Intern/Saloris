@@ -189,7 +189,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                val scale = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
 //                val batteryPct = level
 
-                val nodeId = getNodes(requireContext())
+                //val nodeId = getNodes(requireContext())
 
 //                val client = Wearable.getNodeClient(requireContext())
 //                val result = client.getBatteryInfo(nodeId).await()
