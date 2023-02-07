@@ -229,6 +229,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     //if message Acknowlegement Received
                     if (getNodesResBool[1]) {
                         //워치와 연결, 앱이 열려있음
+                        wearableDeviceConnected = true
                         DevicePairing.wearableDeviceConnected = true
                         cardColor = ContextCompat.getColor(requireContext(), R.color.primary)
                         binding.startBtn.setCardBackgroundColor(cardColor)
@@ -237,6 +238,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     } else {
                         //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
+                        DevicePairing.wearableDeviceConnected = false
                         //binding.sendmessageButton.visibility = View.GONE
                         cardColor = ContextCompat.getColor(requireContext(), R.color.purple_700)
                         binding.startBtn.setCardBackgroundColor(cardColor)
@@ -246,6 +248,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                 } else {
                     //워치와 연결되지 않음
                     wearableDeviceConnected = false
+                    DevicePairing.wearableDeviceConnected = false
                     //binding.sendmessageButton.visibility = View.GONE
                     cardColor = ContextCompat.getColor(requireContext(), R.color.grey)
                     binding.startBtn.setCardBackgroundColor(cardColor)
@@ -278,7 +281,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     // Set the data of the message to be the bytes of the Uri.
                     val payload: ByteArray = wearableAppCheckPayload.toByteArray()
                     DevicePairing.nodeId = nodeId
-                    DevicePairing.wearableDeviceConnected=wearableDeviceConnected
+                    //DevicePairing.wearableDeviceConnected=wearableDeviceConnected
                     // Send the rpc
                     // Instantiates clients without member variables, as clients are inexpensive to
                     // create. (They are cached and shared between GoogleApi instances.)
