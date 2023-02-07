@@ -32,6 +32,7 @@ import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentDriveBinding
 import com.example.saloris.facemesh.FaceMeshResultGlRenderer
 import com.example.saloris.util.*
+import com.example.salorisv.DevicePairing
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -654,7 +655,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityContext = this.context
-        wearableDeviceConnected = false
+        //wearableDeviceConnected = false
         if (!wearableDeviceConnected) {
             val tempAct: Activity = activityContext as AppCompatActivity
             //Couroutine
@@ -718,6 +719,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             addView(glSurfaceView)
             requestLayout()
         }
+//        if(getArguments()!=null) {
+//            Log.d("from home ", getArguments()?.getString("data").toString())
+//        }
         return binding.root
     }
 
@@ -736,7 +740,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 //Couroutine
                 initialiseDevicePairing(tempAct)
             }
-            toast.makeToast(requireContext(), "vibrate")
+            //toast.makeToast(requireContext(), "vibrate")
+            binding.heartRate.text = "-"
             sendMessage("vibrator")
         }
         binding.finishDriveBtn.setOnClickListener {
@@ -751,12 +756,16 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     private fun sendMessage(message: String) {
-        toast.makeToast(requireContext(), "send message")
+        //toast.makeToast(requireContext(), "send message")
         println(wearableDeviceConnected)
-        if (wearableDeviceConnected) {
+        //val wearableDeviceConnected = DevicePairing.getwearableDeviceConnected()
+        Log.d("wearableDeviceConneced from DevicePairing",wearableDeviceConnected.toString())
+        if (wearableDeviceConnected!!) {
             if (binding.heartRate.text!!.isNotEmpty()) {
-                toast.makeToast(requireContext(), "send message")
-                val nodeId: String = messageEvent?.sourceNodeId!!
+                //toast.makeToast(requireContext(), "send message")
+                //val nodeId: String = messageEvent?.sourceNodeId!!
+                val nodeId = DevicePairing.getNodeId()
+                Log.d("nodeid from DevicePairing",nodeId.toString())
                 // Set the data of the message to be the bytes of the Uri.
                 val payload: ByteArray =
                     message.toByteArray()
@@ -765,17 +774,21 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 // Instantiates clients without member variables, as clients are inexpensive to
                 // create. (They are cached and shared between GoogleApi instances.)
                 val sendMessageTask =
-                    Wearable.getMessageClient(activityContext!!)
-                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+                    nodeId?.let {
+                        Wearable.getMessageClient(activityContext!!)
+                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+                    }
 
-                sendMessageTask.addOnCompleteListener {
-                    toast.makeToast(requireContext(), "addOnCompleteListener")
-                    if (it.isSuccessful) {
-                        toast.makeToast(requireContext(), "연결 성공")
+                if (sendMessageTask != null) {
+                    sendMessageTask.addOnCompleteListener {
+                        //toast.makeToast(requireContext(), "addOnCompleteListener")
+                        if (it.isSuccessful) {
+                            //toast.makeToast(requireContext(), "연결 성공")
 
 
-                    } else {
-                        toast.makeToast(requireContext(), "다시 연결")
+                        } else {
+                            //toast.makeToast(requireContext(), "다시 연결")
+                        }
                     }
                 }
             } else {
@@ -858,6 +871,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         wearableDeviceConnected = true
                     } else {
                         wearableDeviceConnected = false
+                        binding.heartRate.text="-"
                     }
                 } else {
                     wearableDeviceConnected = false
