@@ -186,9 +186,18 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 val batteryStatus = requireContext()!!.registerReceiver(null, ifilter)
 
                 val level = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                val scale = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+//                val scale = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+//                val batteryPct = level
 
-                val batteryPct = level
+                val nodeId = getNodes(requireContext())
+
+//                val client = Wearable.getNodeClient(requireContext())
+//                val result = client.getBatteryInfo(nodeId).await()
+//                if (result.status.isSuccess) {
+//                    val batteryInfo = result.batteryInfo
+//                    val level = batteryInfo.chargeLevel
+//                    val scale = batteryInfo.chargeStatus
+//                }
 
                 if (getNodesResBool!![0]) {
                     //if message Acknowlegement Received
@@ -198,7 +207,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
-                        //binding.watchBattery.setText(batteryLevel.toString())
+                        binding.watchBattery.setText((level).toString())
 
 
                     } else {
@@ -208,7 +217,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
-                        binding.watchBattery.setText((batteryPct).toString())
+                        binding.watchBattery.setText((level).toString())
 
                     }
                 } else {
@@ -331,6 +340,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             val s =rateAndBattery[0]
             val battery = rateAndBattery[1]
             Log.d("battery",battery)
+            binding.watchBattery.setText(battery)
 
         } catch (e: Exception) {
             e.printStackTrace()
