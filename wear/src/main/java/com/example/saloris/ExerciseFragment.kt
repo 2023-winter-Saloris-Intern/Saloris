@@ -153,6 +153,8 @@ class ExerciseFragment : Fragment(), AmbientModeSupport.AmbientCallbackProvider,
         binding.pauseResumeButton.setOnClickListener {
             // App could take a perceptible amount of time to transition between states; put button into
             // an intermediary "disabled" state to provide UI feedback.
+            Log.d("stop service","stop")
+            activity?.stopService(serviceIt)
             it.isEnabled = false
             pauseResumeExercise()
         }
