@@ -263,6 +263,7 @@ class RecordFragment : Fragment() {
             var sleepCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.sleep_state_btn)
             var nonSleepCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.nonsleep_state_btn)
             var sleepTextColor = ContextCompat.getColor(requireContext(),R.color.heart_rate)
+            var nonSleepBGColor = ContextCompat.getColor(requireContext(),R.color.purple_500)
             var nonSleepTextColor = ContextCompat.getColor(requireContext(),R.color.black)
 
             override fun onValueSelected(e: Entry, h: Highlight){
@@ -274,10 +275,12 @@ class RecordFragment : Fragment() {
                     binding.sleepState.text = "혹시 졸았나요?\uD83D\uDE34"
                     binding.sleepState.setBackgroundDrawable(sleepCardColor)
                     binding.sleepState.setTextColor(sleepTextColor)
+                    //mv.setBackgroundColor(sleepTextColor)
                 }else{
                     binding.sleepState.text = " - "
                     binding.sleepState.setBackgroundDrawable(nonSleepCardColor)
                     binding.sleepState.setTextColor(nonSleepTextColor)
+                    //mv.setBackgroundColor(nonSleepBGColor)
                 }
             }
             override fun onNothingSelected() {

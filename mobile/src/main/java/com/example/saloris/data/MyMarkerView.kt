@@ -35,12 +35,12 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
             hour = (time_min/60+9).toString()
         }
         // 시 : 분 형식으로 바꿔서
-        val mark = hour + ":"+minute
+        val mark = hour + "시"+minute+"분"
         if (e is CandleEntry) {
             //markerView layout의 text에 넣기
-            tvContent.text ="heartRate:"+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"time"+mark
+            tvContent.text ="심박수: "+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\n시간: "+mark
         } else {
-            tvContent.text ="heartRate:"+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\ntime"+mark
+            tvContent.text ="심박수: "+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\n시간: "+mark
         }// "" +  Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+ "" + Utils.formatNumber(e.high.toInt().toFloat(), 0, true) +
         super.refreshContent(e, highlight)
     }
