@@ -1,21 +1,33 @@
 package com.example.saloris
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothManager
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -23,8 +35,6 @@ import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentSettingBinding
 import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
@@ -32,6 +42,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
+import com.example.saloris.util.ble.BleListAdapter
 
 
 class SettingFragment : Fragment(), CoroutineScope by MainScope(),
@@ -70,12 +81,54 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     private lateinit var auth: FirebaseAuth
     var newRate = ""
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    private val bluetoothPermissionList = arrayOf(
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_CONNECT
+    )
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            val deniedList = result.filter { !it.value }.map { it.key }
+            Log.d("State", "$deniedList")
+            if (deniedList.isNotEmpty()) {
+                androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("알림")
+                    .setMessage("권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
+                    .setPositiveButton("설정") { _, _ -> openAndroidSetting() }
+                    .setNegativeButton("취소", null)
+                    .create()
+                    .show()
+            } else {
+            }
+        }
+    private fun openAndroidSetting() {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            addCategory(Intent.CATEGORY_DEFAULT)
+            data = Uri.parse("package:${activity?.packageName}")
+        }
+        startActivity(intent)
+    }
     private fun deleteAutoLoginInfo() {
         val autoLoginPref =
             requireContext().getSharedPreferences("autoLogin", Activity.MODE_PRIVATE)
         val autoLoginEdit = autoLoginPref.edit()
         autoLoginEdit.clear()
         autoLoginEdit.apply()
+    }
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun getName(): String? {
+        Log.d("getName", "getName!!!!!!!")
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val pairedDevices = bluetoothAdapter.bondedDevices
+        var name: String = ""
+        for (device in pairedDevices) {
+            Log.d("getName", "Name: ${device.name}")
+            name = device.name
+        }
+        return name
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,18 +148,20 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSettingBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         // userName, userId 받아오기
 //        binding.userName.text = auth.currentUser!!.displayName
 //        binding.userId.text = auth.currentUser!!.email
+        binding.watchInfo.text = getName()
 
         // 로그아웃 -> 로그인 화면
         binding.btnLogout.setOnClickListener {
