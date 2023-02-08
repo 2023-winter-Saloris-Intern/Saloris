@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.AnimationDrawable
 import android.media.AudioManager
+import android.media.RingtoneManager
 import android.media.ToneGenerator
 import android.net.Uri
 import android.os.*
@@ -15,20 +16,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.saloris.databinding.FragmentDriveBinding
 import com.example.saloris.facemesh.FaceMeshResultGlRenderer
 import com.example.saloris.util.*
@@ -57,6 +57,7 @@ import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.pow
 import kotlin.math.sqrt
+
 
 class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -653,6 +654,26 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
 
+    fun playSoundAndVibration(context: Context) {
+        // 소리 재생
+//        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+//        audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+//        audioManager.setStreamVolume(AudioManager.STREAM_RING, audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0)
+        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        //소리를 울리기 위해 Ringtone 객체 참조하기
+        val ringtone =
+            RingtoneManager.getRingtone(context, uri)
+        ringtone.play()
+
+        // 진동
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(500)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityContext = this.context
@@ -685,7 +706,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             prefs.getBoolean("eyeBrow", true),
             prefs.getBoolean("eyePupil", true),
             prefs.getBoolean("lib", true),
-            prefs.getBoolean("faceMesh", true),
+            prefs.getBoolean("faceMesh", false),
             prefs.getBoolean("faceLine", true)
         )
         faceMeshColors = arrayListOf(
@@ -741,6 +762,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 //Couroutine
                 initialiseDevicePairing(tempAct)
             }
+            playSoundAndVibration(requireContext())
             //toast.makeToast(requireContext(), "vibrate")
             binding.heartRate.text = "-"
             sendMessage("vibrator")
@@ -1027,6 +1049,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     } else if (s.toInt() < 70) {
                         textColor = ContextCompat.getColor(requireContext(), R.color.teal_200)
                         binding.heartRate.setTextColor(textColor)
+                        playSoundAndVibration(requireContext())
                         sendMessage("vibrator")
                     } else {
                         textColor = ContextCompat.getColor(requireContext(), R.color.white)
