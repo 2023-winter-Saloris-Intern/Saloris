@@ -5,16 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothManager
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
@@ -25,9 +19,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -35,6 +29,8 @@ import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentSettingBinding
 import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
@@ -42,7 +38,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
-import com.example.saloris.util.ble.BleListAdapter
 
 
 class SettingFragment : Fragment(), CoroutineScope by MainScope(),
@@ -62,6 +57,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
 
     private val TAG_GET_NODES: String = "getnodes1"
+
 
 //    private val TAG_MESSAGE_RECEIVED: String = "receive1"
 
@@ -131,6 +127,41 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
         return name
     }
 
+//    private fun retrieveDeviceNode() {
+//        Wearable.getNodeClient(requireActivity()).connectedNodes.addOnCompleteListener { task ->
+//            if (task.isSuccessful() && task.getResult().size > 0) {
+//                val node: Node? = task.getResult()?.get(0)
+//                if (node != null) {
+//                    retrieveBatteryLevel(node.id)
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun retrieveBatteryLevel(nodeId: String) {
+//        Wearable.getMessageClient(requireActivity()).sendMessage(nodeId,
+//            Companion.BATTERY_LEVEL_PATH, null)
+//            .addOnCompleteListener(object : OnCompleteListener<Int?> {
+//                override fun onComplete(@NonNull task: Task<Int?>) {
+//                    if (task.isSuccessful()) {
+//                        val batteryLevel: Int? = task.getResult()
+//                        updateBatteryLevel(batteryLevel)
+//                    }
+//                }
+//            })
+//    }
+//
+//    private fun updateBatteryLevel(batteryLevel: Int?) {
+//        if (batteryLevel != null) {
+//            batteryLevel?.let {
+//                Log.d("getBattery", "BatteryPercent: ${batteryLevel}")
+//                binding.watchBattery.setText(batteryLevel.toString())
+//            }
+//        }
+//    }
+
+
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -215,6 +246,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     //wearOS와 연동되었는지 확인
+    @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
         var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.ligt_blue_round_btn)
@@ -241,6 +273,9 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 val batteryStatus = requireContext()!!.registerReceiver(null, ifilter)
 
                 val level = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+
+//                val batteryCapacity: Float = wearDevice.battery.chargeLevel
+//
 //                val scale = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
 //                val batteryPct = level
 
@@ -254,6 +289,17 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    val scale = batteryInfo.chargeStatus
 //                }
 
+//                val nodeId = getNodes(requireContext())
+//
+//                val nodeClient = context?.let { Wearable.getNodeClient(it) }
+//                val result = nodeClient.getBatteryInfo(nodeId).await()
+//                if (result.status.isSuccess) {
+//                    val batteryInfo = result.batteryInfo
+//                    val level = batteryInfo.chargeLevel
+//                    val scale = batteryInfo.chargeStatus
+//                }
+
+
                 if (getNodesResBool!![0]) {
                     //if message Acknowlegement Received
                     if (getNodesResBool[1]) {
@@ -263,7 +309,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         binding.watchBattery.setText((level).toString())
-
+                        //updateBatteryLevel(batteryLevel = null)
 
                     } else {
                         //워치와 연결, 앱이 닫혀있음
@@ -273,6 +319,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         binding.watchBattery.setText((level).toString())
+                        //updateBatteryLevel(batteryLevel = null)
 
                     }
                 } else {
@@ -437,5 +484,9 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             e.printStackTrace()
         }
     }
+
+//    companion object {
+//        private const val BATTERY_LEVEL_PATH = "/battery_level"
+//    }
 
 }
