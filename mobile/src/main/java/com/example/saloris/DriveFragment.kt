@@ -92,6 +92,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private var messageEvent: MessageEvent? = null
     private var wearableNodeUri: String? = null
 
+    private val BatteryLow = 35
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
 
@@ -104,7 +105,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     var newRate = ""
     var Rate = ""
     var last_time = ""
-
+    var last_battery=true
     /* Toast */
     private val toast = MakeToast()
 
@@ -989,8 +990,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //                String(p0.data, StandardCharsets.UTF_8)
             val rateAndBattery =String(p0.data, StandardCharsets.UTF_8).split("/")
             val s =rateAndBattery[0]
-            //val battery = rateAndBattery[1]
-            //Log.d("battery",battery)
             val messageEventPath: String = p0.path
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
@@ -1008,6 +1007,16 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 //워치에서 보낸 심박수를 받는다
                 try {
+                    val battery = rateAndBattery[1]
+                    Log.d("battery",battery)
+                    if(battery.toInt()>BatteryLow){
+                        last_battery=true
+                    }
+                    if(battery.toInt()<BatteryLow && last_battery){
+                        Log.d("battery","low!!!!!!")
+                        sendMessage("vibrator")
+                        last_battery=false
+                    }
                     val dateAndTime: LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append(s)//심박수
