@@ -75,21 +75,37 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/notosans_kr_bold"
-        android:text="몸무게를 선택해주세요"
+        android:text="성별을 선택해주세요"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <NumberPicker
-        android:id="@+id/number_picker"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:datePickerMode="spinner"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/man_btn"
+        android:layout_width="130dp"
+        android:layout_height="95dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/gender_choice_btn"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="남성"
+        android:textColor="@color/grey"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/woman_btn"
+        android:layout_width="130dp"
+        android:layout_height="95dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/gender_choice_btn"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="여성"
+        android:textColor="@color/grey"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -99,7 +115,7 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/blue_round_button"
         android:fontFamily="@font/notosans_kr_bold"
-        android:text="다음(3 / 6)"
+        android:text="다음(2 / 6)"
         android:textColor="@color/white"
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

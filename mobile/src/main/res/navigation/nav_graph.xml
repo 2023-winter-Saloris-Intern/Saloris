@@ -95,18 +95,18 @@
     </fragment>
     <fragment
         android:id="@+id/requiredInfoFragment"
-        android:name="com.example.saloris.RequiredInfo.RequiredInfoFragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo1Fragment"
         android:label="fragment_required_info"
-        tools:layout="@layout/fragment_required_info" >
+        tools:layout="@layout/fragment_required_info2" >
         <action
             android:id="@+id/action_requiredInfoFragment_to_requiredInfo1Fragment"
             app:destination="@id/requiredInfo1Fragment"/>
     </fragment>
     <fragment
         android:id="@+id/requiredInfo1Fragment"
-        android:name="com.example.saloris.RequiredInfo.RequiredInfo1Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo2Fragment"
         android:label="fragment_required_info1"
-        tools:layout="@layout/fragment_required_info1">
+        tools:layout="@layout/fragment_required_info2">
         <action
             android:id="@+id/action_requiredInfo1Fragment_to_requiredInfo2Fragment"
             app:destination="@id/requiredInfo2Fragment"/>
@@ -116,9 +116,9 @@
     </fragment>
     <fragment
         android:id="@+id/requiredInfo2Fragment"
-        android:name="com.example.saloris.RequiredInfo.RequiredInfo2Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo3Fragment"
         android:label="fragment_required_info2"
-        tools:layout="@layout/fragment_required_info2">
+        tools:layout="@layout/fragment_required_info3">
         <action
             android:id="@+id/action_requiredInfo2Fragment_to_requiredInfo1Fragment"
             app:destination="@id/requiredInfo1Fragment"/>
@@ -128,9 +128,9 @@
     </fragment>
     <fragment
         android:id="@+id/requiredInfo3Fragment"
-        android:name="com.example.saloris.RequiredInfo.RequiredInfo3Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo4Fragment"
         android:label="fragment_required_info3"
-        tools:layout="@layout/fragment_required_info3">
+        tools:layout="@layout/fragment_required_info4">
         <action
             android:id="@+id/action_requiredInfo3Fragment_to_requiredInfo2Fragment"
             app:destination="@id/requiredInfo2Fragment"/>
@@ -140,9 +140,9 @@
     </fragment>
     <fragment
         android:id="@+id/requiredInfo4Fragment"
-        android:name="com.example.saloris.RequiredInfo.RequiredInfo4Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo5Fragment"
         android:label="fragment_required_info4"
-        tools:layout="@layout/fragment_required_info4">
+        tools:layout="@layout/fragment_required_info5">
         <action
             android:id="@+id/action_requiredInfo4Fragment_to_requiredInfo3Fragment"
             app:destination="@id/requiredInfo3Fragment"/>
@@ -153,9 +153,9 @@
 
     <fragment
         android:id="@+id/requiredInfo5Fragment"
-        android:name="com.example.saloris.RequiredInfo.RequiredInfo5Fragment"
+        android:name="com.example.saloris.RequiredInfo.RequiredInfo6Fragment"
         android:label="fragment_required_info5"
-        tools:layout="@layout/fragment_required_info5">
+        tools:layout="@layout/fragment_required_info6">
         <action
             android:id="@+id/action_requiredInfo5Fragment_to_requiredInfo4Fragment"
             app:destination="@id/requiredInfo2Fragment"/>

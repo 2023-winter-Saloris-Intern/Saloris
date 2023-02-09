@@ -1,26 +1,16 @@
 package com.example.saloris.RequiredInfo
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.NumberPicker
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.saloris.R
-import com.example.saloris.databinding.FragmentRequiredInfo2Binding
 import com.example.saloris.databinding.FragmentRequiredInfo4Binding
 import com.example.saloris.databinding.FragmentRequiredInfo5Binding
-import com.example.saloris.databinding.FragmentRequiredInfoBinding
-import com.example.saloris.databinding.FragmentSettingBinding
-import com.example.saloris.util.MakeToast
-import com.example.saloris.util.OpenDialog
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 class RequiredInfo5Fragment : Fragment() {
 
@@ -44,34 +34,34 @@ class RequiredInfo5Fragment : Fragment() {
         var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
 
         // clickevent 구현 필요
-        binding.neverSmoke.setOnClickListener{
+        binding.neverDrink.setOnClickListener{
 
-            binding.neverSmoke.setSelected(true)
-            binding.neverSmoke.setTextColor(textColor)
-            binding.sometimeSmoke.setSelected(false)
-            binding.sometimeSmoke.setTextColor(originalTextColor)
-            binding.usuallySmoke.setSelected(false)
-            binding.usuallySmoke.setTextColor(originalTextColor)
+            binding.neverDrink.setSelected(true)
+            binding.neverDrink.setTextColor(textColor)
+            binding.sometimeDrink.setSelected(false)
+            binding.sometimeDrink.setTextColor(originalTextColor)
+            binding.usuallyDrink.setSelected(false)
+            binding.usuallyDrink.setTextColor(originalTextColor)
         }
 
-        binding.sometimeSmoke.setOnClickListener{
+        binding.sometimeDrink.setOnClickListener{
 
-            binding.neverSmoke.setSelected(false)
-            binding.neverSmoke.setTextColor(originalTextColor)
-            binding.sometimeSmoke.setSelected(true)
-            binding.sometimeSmoke.setTextColor(textColor)
-            binding.usuallySmoke.setSelected(false)
-            binding.usuallySmoke.setTextColor(originalTextColor)
+            binding.neverDrink.setSelected(false)
+            binding.neverDrink.setTextColor(originalTextColor)
+            binding.sometimeDrink.setSelected(true)
+            binding.sometimeDrink.setTextColor(textColor)
+            binding.usuallyDrink.setSelected(false)
+            binding.usuallyDrink.setTextColor(originalTextColor)
         }
 
-        binding.usuallySmoke.setOnClickListener{
+        binding.usuallyDrink.setOnClickListener{
 
-            binding.neverSmoke.setSelected(false)
-            binding.neverSmoke.setTextColor(originalTextColor)
-            binding.sometimeSmoke.setSelected(false)
-            binding.sometimeSmoke.setTextColor(originalTextColor)
-            binding.usuallySmoke.setSelected(true)
-            binding.usuallySmoke.setTextColor(textColor)
+            binding.neverDrink.setSelected(false)
+            binding.neverDrink.setTextColor(originalTextColor)
+            binding.sometimeDrink.setSelected(false)
+            binding.sometimeDrink.setTextColor(originalTextColor)
+            binding.usuallyDrink.setSelected(true)
+            binding.usuallyDrink.setTextColor(textColor)
         }
 
         return binding.root
@@ -82,11 +72,11 @@ class RequiredInfo5Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo5Fragment_to_loginFragment)
+            navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo5Fragment)
         }
 
         binding.goBackBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo5Fragment_to_requiredInfo4Fragment)
+            navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo3Fragment)
         }
     }
 }
