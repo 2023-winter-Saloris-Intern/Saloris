@@ -275,12 +275,17 @@ class RecordFragment : Fragment() {
                     binding.sleepState.text = "혹시 졸았나요?\uD83D\uDE34"
                     binding.sleepState.setBackgroundDrawable(sleepCardColor)
                     binding.sleepState.setTextColor(sleepTextColor)
-                    //mv.setBackgroundColor(sleepTextColor)
+                    val mv = MyMarkerView(mainActivity, R.layout.custom_marker_view_red,"Show")
+                    // set the marker to the chart
+                    chart!!.setMarker(mv);
                 }else{
                     binding.sleepState.text = " - "
                     binding.sleepState.setBackgroundDrawable(nonSleepCardColor)
                     binding.sleepState.setTextColor(nonSleepTextColor)
                     //mv.setBackgroundColor(nonSleepBGColor)
+                    val mv = MyMarkerView(mainActivity, R.layout.custom_marker_view,"Show")
+                    // set the marker to the chart
+                    chart!!.setMarker(mv);
                 }
             }
             override fun onNothingSelected() {
