@@ -12,7 +12,9 @@ import androidx.navigation.Navigation
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentRequiredInfo1Binding
 import com.example.saloris.databinding.FragmentRequiredInfo2Binding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class RequiredInfo2Fragment : Fragment() {
 
@@ -20,18 +22,18 @@ class RequiredInfo2Fragment : Fragment() {
     private lateinit var binding: FragmentRequiredInfo2Binding
     private lateinit var navController: NavController
 
-    var cnt: Int = 0
-    //true 남, false 여
-    var sex: Boolean = true
-    // Create a reference to the Firestore database
-    val db = FirebaseFirestore.getInstance()
+    /* User Authentication */
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
 
-    // Create a new document with a unique ID
-    val newDocument = db.collection("users").document()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
     }
 
     override fun onCreateView(
@@ -41,6 +43,10 @@ class RequiredInfo2Fragment : Fragment() {
     ): View {
         binding = FragmentRequiredInfo2Binding.inflate(layoutInflater, container, false)
 
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        var userInfo = RequiredInfo()
 
 
         //var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
@@ -58,7 +64,9 @@ class RequiredInfo2Fragment : Fragment() {
 //                binding.womanBtn.setSelected(false)
 //                binding.womanBtn.setTextColor(originalTextColor)
 //            }
-            sex = true
+
+            userInfo.userSex = true
+            firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSex",userInfo.userSex)
             binding.manBtn.setSelected(true)
             binding.manBtn.setTextColor(textColor)
             binding.womanBtn.setSelected(false)
@@ -74,7 +82,8 @@ class RequiredInfo2Fragment : Fragment() {
 //                binding.manBtn.setSelected(false)
 //                binding.manBtn.setTextColor(originalTextColor)
 //            }
-            sex = false
+            userInfo.userSex = false
+            firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSex",userInfo.userSex)
             binding.manBtn.setSelected(false)
             binding.manBtn.setTextColor(originalTextColor)
             binding.womanBtn.setSelected(true)
@@ -88,14 +97,6 @@ class RequiredInfo2Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            // Add data to the new document
-            val data = hashMapOf(
-                "userSex" to sex,
-            )
-            db.collection("users").document().set(data)
-            newDocument.set(data)
-                .addOnSuccessListener { Log.d("Firestore", "$sex Data added successfully!!!!!!!!!!!!") }
-                .addOnFailureListener { e -> Log.w("Firestore", "Error adding data", e) }
             navController.navigate(R.id.action_requiredInfo1Fragment_to_requiredInfo2Fragment)
         }
 

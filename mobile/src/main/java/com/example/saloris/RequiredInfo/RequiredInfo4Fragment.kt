@@ -11,6 +11,9 @@ import androidx.navigation.Navigation
 import com.example.saloris.R
 import com.example.saloris.databinding.FragmentRequiredInfo3Binding
 import com.example.saloris.databinding.FragmentRequiredInfo4Binding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 
 class RequiredInfo4Fragment : Fragment() {
@@ -20,9 +23,16 @@ class RequiredInfo4Fragment : Fragment() {
     private lateinit var navController: NavController
 
     //lateinit var numberPicker: NumberPicker
+    /* User Authentication */
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
     }
 
     override fun onCreateView(
@@ -54,5 +64,11 @@ class RequiredInfo4Fragment : Fragment() {
         numberPicker.minValue = 150 //최소값
 
         numberPicker.value = 170 // 초기값
+        // 값이 변경될 때 마다 Firestore에 값을 업데이트
+        numberPicker.setOnValueChangedListener { _, _, newVal ->
+            val userInfo = RequiredInfo()
+            userInfo.userHeight = newVal.toString()
+            firestore?.collection("users")?.document(auth?.uid!!)?.update("userHeight", userInfo.userHeight)
+        }
     }
 }

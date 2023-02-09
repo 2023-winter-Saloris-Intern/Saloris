@@ -1,10 +1,13 @@
 package com.example.saloris.RequiredInfo
 
 data class RequiredInfo(
-    var uid: String,
-    var birth: String,
-    var weight: String,
-    var height: String,
-    var drink: String,
-    var smoke: String
+    var uid: String? = null,
+    var userId: String? = null,
+    var userName: String? = null,
+    var userBirth: String? = null,
+    var userSex: Boolean? = null,
+    var userWeight: String? = null,
+    var userHeight: String? = null,
+    var userDrink: String? = null,
+    var userSmoke: String? = null
 )

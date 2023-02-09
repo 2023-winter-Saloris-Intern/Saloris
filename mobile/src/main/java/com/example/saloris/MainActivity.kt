@@ -24,8 +24,11 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.saloris.RequiredInfo.RequiredInfo
 import com.example.saloris.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,8 +71,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     /* User Authentication */
-    private lateinit var auth: FirebaseAuth
-
+    //private lateinit var auth: FirebaseAuth
+    var auth : FirebaseAuth? = null
+    var firestore : FirebaseFirestore? = null
+    var storage : FirebaseStorage? = null
     /* View */
     private lateinit var navController: NavController
     lateinit var binding: ActivityMainBinding
@@ -126,6 +131,7 @@ class MainActivity : AppCompatActivity() {
         /* view */
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //bluetooth permission
         requestPermissionLauncher.launch(bluetoothPermissionList)
         overridePendingTransition(0, 0)
         /* Status Bar & Navigation Bar */
@@ -152,7 +158,10 @@ class MainActivity : AppCompatActivity() {
 //            it.setHomeAsUpIndicator(R.drawable.ic_back)
 //        }
         /* User Authentication */
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

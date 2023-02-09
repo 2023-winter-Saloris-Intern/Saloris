@@ -11,6 +11,7 @@ import com.example.saloris.R
 import com.example.saloris.databinding.FragmentRequiredInfo1Binding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class RequiredInfo1Fragment : Fragment() {
 
@@ -18,8 +19,10 @@ class RequiredInfo1Fragment : Fragment() {
     private lateinit var binding: FragmentRequiredInfo1Binding
     private lateinit var navController: NavController
 
+    /* User Authentication */
     private lateinit var auth: FirebaseAuth
-    lateinit var firestore : FirebaseFirestore
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,13 @@ class RequiredInfo1Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRequiredInfo1Binding.inflate(layoutInflater, container, false)
+
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        var userInfo = RequiredInfo()
+
+
         return binding.root
     }
 
