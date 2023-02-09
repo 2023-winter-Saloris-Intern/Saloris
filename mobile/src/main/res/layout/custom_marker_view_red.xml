@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:background="@drawable/bg_marker"
+            android:background="@drawable/bg_marker_red"
             android:layout_centerHorizontal="true"
             android:padding="5dp"
             android:text=""
@@ -33,7 +33,7 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/bg_marker_tail"
+            android:background="@drawable/bg_marker_tail_red"
             app:layout_constraintTop_toBottomOf="@+id/tvContentHead" />
     </LinearLayout>
 </RelativeLayout>
