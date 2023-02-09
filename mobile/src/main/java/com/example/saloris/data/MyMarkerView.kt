@@ -38,9 +38,9 @@ class MyMarkerView(context: Context?, layoutResource: Int,type:String) :
         val mark = hour + "시"+minute+"분"
         if (e is CandleEntry) {
             //markerView layout의 text에 넣기
-            tvContent.text =mark+"심박수: "+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\n"+mark
+            tvContent.text =mark+"심박수 "+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\n"+mark
         } else {
-            tvContent.text ="심박수: "+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\n"+mark
+            tvContent.text ="심박수 "+Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+"\n"+mark
         }// "" +  Utils.formatNumber(e.y.toInt().toFloat(), 0, true)+ "" + Utils.formatNumber(e.high.toInt().toFloat(), 0, true) +
         super.refreshContent(e, highlight)
     }

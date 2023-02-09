@@ -21,6 +21,8 @@
             android:background="@drawable/bg_marker"
             android:layout_centerHorizontal="true"
             android:padding="5dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
             android:text=""
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
