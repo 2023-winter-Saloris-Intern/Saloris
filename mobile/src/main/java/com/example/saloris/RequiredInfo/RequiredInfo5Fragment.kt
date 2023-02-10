@@ -30,7 +30,9 @@ class RequiredInfo5Fragment : Fragment() {
     ): View {
         binding = FragmentRequiredInfo5Binding.inflate(layoutInflater, container, false)
 
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
         var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
         var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
 
         // clickevent 구현 필요
@@ -42,6 +44,8 @@ class RequiredInfo5Fragment : Fragment() {
             binding.sometimeDrink.setTextColor(originalTextColor)
             binding.usuallyDrink.setSelected(false)
             binding.usuallyDrink.setTextColor(originalTextColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
         }
 
         binding.sometimeDrink.setOnClickListener{
@@ -52,6 +56,8 @@ class RequiredInfo5Fragment : Fragment() {
             binding.sometimeDrink.setTextColor(textColor)
             binding.usuallyDrink.setSelected(false)
             binding.usuallyDrink.setTextColor(originalTextColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
         }
 
         binding.usuallyDrink.setOnClickListener{
@@ -62,6 +68,14 @@ class RequiredInfo5Fragment : Fragment() {
             binding.sometimeDrink.setTextColor(originalTextColor)
             binding.usuallyDrink.setSelected(true)
             binding.usuallyDrink.setTextColor(textColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
+        }
+
+        if(!(binding.neverDrink.isSelected) && !(binding.sometimeDrink.isSelected) && !(binding.usuallyDrink.isSelected)) {
+            binding.goNextStepBtn.setSelected(false)
+            binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
+            binding.goNextStepBtn.setTextColor(originalTextColor)
         }
 
         return binding.root
@@ -72,7 +86,11 @@ class RequiredInfo5Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo5Fragment)
+
+            if((binding.neverDrink.isSelected) || (binding.sometimeDrink.isSelected) || (binding.usuallyDrink.isSelected)) {
+                navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo5Fragment)
+            }
+           // navController.navigate(R.id.action_requiredInfo4Fragment_to_requiredInfo5Fragment)
         }
 
         binding.goBackBtn.setOnClickListener {

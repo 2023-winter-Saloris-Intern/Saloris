@@ -30,7 +30,9 @@ class RequiredInfo6Fragment : Fragment() {
     ): View {
         binding = FragmentRequiredInfo6Binding.inflate(layoutInflater, container, false)
 
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
         var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
         var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
 
         // clickevent 구현 필요
@@ -42,6 +44,8 @@ class RequiredInfo6Fragment : Fragment() {
             binding.sometimeSmoke.setTextColor(originalTextColor)
             binding.usuallySmoke.setSelected(false)
             binding.usuallySmoke.setTextColor(originalTextColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
         }
 
         binding.sometimeSmoke.setOnClickListener{
@@ -52,6 +56,8 @@ class RequiredInfo6Fragment : Fragment() {
             binding.sometimeSmoke.setTextColor(textColor)
             binding.usuallySmoke.setSelected(false)
             binding.usuallySmoke.setTextColor(originalTextColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
         }
 
         binding.usuallySmoke.setOnClickListener{
@@ -62,6 +68,14 @@ class RequiredInfo6Fragment : Fragment() {
             binding.sometimeSmoke.setTextColor(originalTextColor)
             binding.usuallySmoke.setSelected(true)
             binding.usuallySmoke.setTextColor(textColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
+        }
+
+        if(!(binding.neverSmoke.isSelected) && !(binding.sometimeSmoke.isSelected) && !(binding.usuallySmoke.isSelected)) {
+            binding.goNextStepBtn.setSelected(false)
+            binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
+            binding.goNextStepBtn.setTextColor(originalTextColor)
         }
 
         return binding.root
@@ -72,7 +86,11 @@ class RequiredInfo6Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo5Fragment_to_loginFragment)
+
+            if((binding.neverSmoke.isSelected) || (binding.sometimeSmoke.isSelected) || (binding.usuallySmoke.isSelected)) {
+                navController.navigate(R.id.action_requiredInfo5Fragment_to_loginFragment)
+            }
+            //navController.navigate(R.id.action_requiredInfo5Fragment_to_loginFragment)
         }
 
         binding.goBackBtn.setOnClickListener {
