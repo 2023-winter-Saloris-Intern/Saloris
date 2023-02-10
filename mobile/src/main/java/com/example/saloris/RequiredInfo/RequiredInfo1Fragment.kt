@@ -42,32 +42,10 @@ class RequiredInfo1Fragment : Fragment() {
     ): View {
         binding = FragmentRequiredInfo1Binding.inflate(layoutInflater, container, false)
 
-        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
-        var textColor = ContextCompat.getColor(requireContext(),R.color.white)
-        var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
-        var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
-
         //Initialize Firebase Storage
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
-        var userInfo = RequiredInfo()
 
-//        val numberPicker: NumberPicker = binding.datePicker
-//        numberPicker.setOnValueChangedListener { picker, oldVal, newVal ->
-//            if (newVal != 0) {
-//                // 값이 0이 아닐 때, 다음 페이지로 이동 가능
-//                binding.goNextStepBtn.setOnClickListener {
-//                    binding.goNextStepBtn.setBackgroundDrawable(cardColor)
-//                    binding.goNextStepBtn.setTextColor(textColor)
-//                    navController.navigate(R.id.action_requiredInfoFragment_to_requiredInfo1Fragment)
-//                }
-//            } else {
-//                // 값이 0일 때, 다음 페이지로 이동 불가
-//                binding.goNextStepBtn.isEnabled = false
-//                binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
-//                binding.goNextStepBtn.setTextColor(originalTextColor)
-//            }
-//        }
 
         return binding.root
     }
@@ -75,9 +53,30 @@ class RequiredInfo1Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+        var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
+        var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
 
+        binding.goNextStepBtn.isEnabled = false
+        binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
+        binding.goNextStepBtn.setTextColor(originalTextColor)
         binding.goNextStepBtn.setOnClickListener {
             navController.navigate(R.id.action_requiredInfoFragment_to_requiredInfo1Fragment)
+//            if (binding.numberPicker != null) {
+//                navController.navigate(R.id.action_requiredInfo2Fragment_to_requiredInfo3Fragment)
+//            }
         }
+
+        val datePicker: DatePicker = requireView().findViewById(R.id.datePicker)
+        datePicker.setOnDateChangedListener { _, year, monthOfYear, dayOfMonth ->
+            changeButton()
+        }
+    }
+
+    private fun changeButton(){
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
+        var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        binding.goNextStepBtn.isEnabled = true
+        binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+        binding.goNextStepBtn.setTextColor(textColor)
     }
 }

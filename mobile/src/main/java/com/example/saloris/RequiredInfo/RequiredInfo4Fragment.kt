@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.NumberPicker
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -49,8 +50,18 @@ class RequiredInfo4Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
+        var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
+
+        navController = Navigation.findNavController(view)
+        binding.goNextStepBtn.isEnabled = false
+        binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
+        binding.goNextStepBtn.setTextColor(originalTextColor)
         binding.goNextStepBtn.setOnClickListener {
             navController.navigate(R.id.action_requiredInfo3Fragment_to_requiredInfo4Fragment)
+//            if (binding.numberPicker != null) {
+//                navController.navigate(R.id.action_requiredInfo2Fragment_to_requiredInfo3Fragment)
+//            }
         }
 
         binding.goBackBtn.setOnClickListener {
@@ -67,8 +78,18 @@ class RequiredInfo4Fragment : Fragment() {
         // 값이 변경될 때 마다 Firestore에 값을 업데이트
         numberPicker.setOnValueChangedListener { _, _, newVal ->
             val userInfo = RequiredInfo()
+            changeButton()
             userInfo.userHeight = newVal.toString()
             firestore?.collection("users")?.document(auth?.uid!!)?.update("userHeight", userInfo.userHeight)
         }
     }
+
+    private fun changeButton(){
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
+        var textColor = ContextCompat.getColor(requireContext(),R.color.white)
+        binding.goNextStepBtn.isEnabled = true
+        binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+        binding.goNextStepBtn.setTextColor(textColor)
+    }
+
 }

@@ -54,6 +54,7 @@ class RequiredInfo3Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
         var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
+
         navController = Navigation.findNavController(view)
         binding.goNextStepBtn.isEnabled = false
         binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
