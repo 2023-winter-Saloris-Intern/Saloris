@@ -49,10 +49,12 @@ class RequiredInfo2Fragment : Fragment() {
         var userInfo = RequiredInfo()
 
 
-        //var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
+
+        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.blue_round_button)
         var textColor = ContextCompat.getColor(requireContext(),R.color.white)
-        //var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
+        var originalCardColor = ContextCompat.getDrawable(requireContext(),R.drawable.light_grey_btn)
         var originalTextColor = ContextCompat.getColor(requireContext(),R.color.grey)
+
 
         // clickevent 구현 필요
         binding.manBtn.setOnClickListener{
@@ -71,6 +73,8 @@ class RequiredInfo2Fragment : Fragment() {
             binding.manBtn.setTextColor(textColor)
             binding.womanBtn.setSelected(false)
             binding.womanBtn.setTextColor(originalTextColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
         }
 
         binding.womanBtn.setOnClickListener{
@@ -88,7 +92,16 @@ class RequiredInfo2Fragment : Fragment() {
             binding.manBtn.setTextColor(originalTextColor)
             binding.womanBtn.setSelected(true)
             binding.womanBtn.setTextColor(textColor)
+            binding.goNextStepBtn.setBackgroundDrawable(cardColor)
+            binding.goNextStepBtn.setTextColor(textColor)
         }
+
+        if(!(binding.manBtn.isSelected) && !(binding.womanBtn.isSelected)) {
+            binding.goNextStepBtn.setSelected(false)
+            binding.goNextStepBtn.setBackgroundDrawable(originalCardColor)
+            binding.goNextStepBtn.setTextColor(originalTextColor)
+        }
+
         return binding.root
     }
 
@@ -97,7 +110,20 @@ class RequiredInfo2Fragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         binding.goNextStepBtn.setOnClickListener {
-            navController.navigate(R.id.action_requiredInfo1Fragment_to_requiredInfo2Fragment)
+
+            // Add data to the new document
+            val data = hashMapOf(
+                "userSex" to sex,
+            )
+            db.collection("users").document().set(data)
+            newDocument.set(data)
+                .addOnSuccessListener { Log.d("Firestore", "$sex Data added successfully!!!!!!!!!!!!") }
+                .addOnFailureListener { e -> Log.w("Firestore", "Error adding data", e) }
+
+            if((binding.manBtn.isSelected) || (binding.womanBtn.isSelected)) {
+                navController.navigate(R.id.action_requiredInfo1Fragment_to_requiredInfo2Fragment)
+            }
+//            navController.navigate(R.id.action_requiredInfo1Fragment_to_requiredInfo2Fragment)
         }
 
         binding.goBackBtn.setOnClickListener {
