@@ -27,10 +27,11 @@ class RequiredInfo2Fragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
 
-
+    var currentStep: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
@@ -133,4 +134,9 @@ class RequiredInfo2Fragment : Fragment() {
         this.itemClickListener = onItemClickListener
     }
     private lateinit var itemClickListener : OnItemClickListener
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("currentStep", currentStep)
+    }
 }

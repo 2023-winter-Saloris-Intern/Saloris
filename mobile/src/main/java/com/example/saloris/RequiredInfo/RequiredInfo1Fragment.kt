@@ -22,6 +22,7 @@ class RequiredInfo1Fragment : Fragment() {
     /* View */
     private lateinit var binding: FragmentRequiredInfo1Binding
     private lateinit var navController: NavController
+    var currentStep: Int = 0
 
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
@@ -30,6 +31,9 @@ class RequiredInfo1Fragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            currentStep = savedInstanceState.getInt("currentStep")
+        }
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -69,6 +73,10 @@ class RequiredInfo1Fragment : Fragment() {
         val datePicker: DatePicker = requireView().findViewById(R.id.datePicker)
         datePicker.setOnDateChangedListener { _, year, monthOfYear, dayOfMonth ->
             changeButton()
+            val userInfo = RequiredInfo()
+            var day: String = "${year}년 ${monthOfYear + 1}월 ${dayOfMonth}일"
+            userInfo.userBirth = day
+            firestore?.collection("users")?.document(auth?.uid!!)?.update("userBirth", userInfo.userBirth)
         }
     }
 
@@ -78,5 +86,10 @@ class RequiredInfo1Fragment : Fragment() {
         binding.goNextStepBtn.isEnabled = true
         binding.goNextStepBtn.setBackgroundDrawable(cardColor)
         binding.goNextStepBtn.setTextColor(textColor)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("currentStep", currentStep)
     }
 }
