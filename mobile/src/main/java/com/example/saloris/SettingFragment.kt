@@ -218,9 +218,9 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
         binding.btnAccountSettings.setOnClickListener {
             navController.navigate(R.id.action_settingFragment_to_accountFragment)
         }
-        binding.test.setOnClickListener {
-            navController.navigate(R.id.action_settingFragment_to_requiredInfoFragment)
-        }
+//        binding.test.setOnClickListener {
+//            navController.navigate(R.id.action_settingFragment_to_requiredInfoFragment)
+//        }
 
         binding.disconnectBtn.setOnClickListener {
             //wearable device가 연결되었는지 확인하는 버튼
