@@ -206,7 +206,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //                                    binding.stateFitting.visibility = View.INVISIBLE
                                     binding.stateFitting2.visibility = View.VISIBLE
 //                                    binding.faceFittingWarningText.visibility = View.INVISIBLE
-                                    binding.guideline.visibility = View.INVISIBLE
 //                                    if (isBluetoothOn) {
 //                                        binding.state.visibility = View.VISIBLE
 //                                    }
@@ -222,11 +221,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //                    if (isBluetoothOn) {
 //                        binding.stateFitting.visibility = View.VISIBLE
 //                    }
-                    with(binding.guideline) {
-                        setBackgroundResource(R.drawable.face_guideline)
-                        guidelineAnimation = background as AnimationDrawable
-                        guidelineAnimation.start()
-                    }
 //                    if (!isFaceOn) {
 //                        binding.faceFittingWarningText.text = getString(R.string.face_fitting_init)
 //                    }
@@ -358,31 +352,31 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 }
                 if (longClosedCount == 1 && (betweenTime(startTime) % 1) == 0L) {
                     lifecycleScope.launch(Dispatchers.Main) {
-                        with(binding.timerFitting) {
-                            text = (15 - betweenTime(startTime)).toString()
-                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
-                            visibility = View.VISIBLE
-                        }
-                        with(binding.longClosedFitting) {
-                            text = longClosedCount.toString()
-                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
-                            visibility = View.VISIBLE
-                        }
+//                        with(binding.timerFitting) {
+//                            text = (15 - betweenTime(startTime)).toString()
+//                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+//                            visibility = View.VISIBLE
+//                        }
+//                        with(binding.longClosedFitting) {
+//                            text = longClosedCount.toString()
+//                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
+//                            visibility = View.VISIBLE
+//                        }
                     }
                     if (betweenTime(startTime) <= 0) {
                         lifecycleScope.launch(Dispatchers.Main) {
-                            with(binding.timerFitting) {
-                                text = 0.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!,
-                                    R.color.white))
-                                visibility = View.VISIBLE
-                            }
-                            with(binding.longClosedFitting) {
-                                text = 0.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!,
-                                    R.color.white))
-                                visibility = View.VISIBLE
-                            }
+//                            with(binding.timerFitting) {
+//                                text = 0.toString()
+//                                setTextColor(ContextCompat.getColor(activityContext!!,
+//                                    R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+//                            with(binding.longClosedFitting) {
+//                                text = 0.toString()
+//                                setTextColor(ContextCompat.getColor(activityContext!!,
+//                                    R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
                         }
                     }
                 }
@@ -395,16 +389,17 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                                     R.color.drowsy))
                                 visibility = View.INVISIBLE
                             }
-                            with(binding.longClosedFitting) {
-                                text = longClosedCount.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!,
-                                    R.color.white))
-                                visibility = View.VISIBLE
-                            }
+//                            with(binding.longClosedFitting) {
+//                                text = longClosedCount.toString()
+//                                setTextColor(ContextCompat.getColor(activityContext!!,
+//                                    R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
                         }
                     }
                 }
-                if (betweenTime(beforeTime) >= 3) {
+                if (betweenTime(beforeTime) >= 2) {
+                    playSoundAndVibration(requireContext())
                     longClosedCount++
                     longClosedEye++
                     longClosedState = true
@@ -414,11 +409,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                             text = getString(R.string.long_closed_eye)
                             setTextColor(ContextCompat.getColor(activityContext!!, R.color.red))
                             visibility = View.INVISIBLE
-                        }
-                        with(binding.longClosedFitting) {
-                            text = longClosedCount.toString()
-                            setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
-                            visibility = View.VISIBLE
                         }
                     }
                     if (longClosedCount == 0) {
@@ -450,18 +440,18 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     }
                     if (longClosedCount == 1 && (betweenTime(startTime) % 1) == 0L) {
                         lifecycleScope.launch(Dispatchers.Main) {
-                            with(binding.timerFitting) {
-                                text = (15 - betweenTime(startTime)).toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!,
-                                    R.color.white))
-                                visibility = View.VISIBLE
-                            }
-                            with(binding.longClosedFitting) {
-                                text = longClosedCount.toString()
-                                setTextColor(ContextCompat.getColor(activityContext!!,
-                                    R.color.white))
-                                visibility = View.VISIBLE
-                            }
+//                            with(binding.timerFitting) {
+//                                text = (15 - betweenTime(startTime)).toString()
+//                                setTextColor(ContextCompat.getColor(activityContext!!,
+//                                    R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
+//                            with(binding.longClosedFitting) {
+//                                text = longClosedCount.toString()
+//                                setTextColor(ContextCompat.getColor(activityContext!!,
+//                                    R.color.white))
+//                                visibility = View.VISIBLE
+//                            }
                         }
                     }
                     count = 0
@@ -528,26 +518,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startWarningOn() {
-//        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            val vibratorManager =
-//                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-//            vibratorManager.defaultVibrator
-//        } else {
-//            @Suppress("DEPRECATION")
-//            getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
-//        }
-        //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         toneGenerator1.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
 
         lifecycleScope.launch(Dispatchers.Main) {
-            with(binding.drowsiness) {
-                text = getString(R.string.drowsy)
-                setTextColor(ContextCompat.getColor(mainActivity, R.color.red))
-            }
-//            with(binding.drowsinessFitting) {
-//                text = getString(R.string.drowsy)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//            }
             with(binding.warningFilter) {
                 visibility = View.VISIBLE
                 (drawable as AnimationDrawable).start()
@@ -557,26 +530,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startWarningOff() {
-//        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            val vibratorManager =
-//                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-//            vibratorManager.defaultVibrator
-//        } else {
-//            @Suppress("DEPRECATION")
-//            getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
-//        }
-        //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         //toneGenerator1.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
 
         lifecycleScope.launch(Dispatchers.Main) {
-            with(binding.drowsiness) {
-                text = getString(R.string.drowsy)
-                setTextColor(ContextCompat.getColor(activityContext!!, R.color.red))
-            }
-//            with(binding.drowsinessFitting) {
-//                text = getString(R.string.drowsy)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//            }
             with(binding.warningFilter) {
                 visibility = View.VISIBLE
                 (drawable as AnimationDrawable).start()
@@ -586,26 +542,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun continueWarning() {
-//        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            val vibratorManager =
-//                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-//            vibratorManager.defaultVibrator
-//        } else {
-//            @Suppress("DEPRECATION")
-//            getSystemService(AppCompatActivity.VIBRATOR_SERVICE) as Vibrator
-//        }
-//        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         toneGenerator2.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 500)
 
         lifecycleScope.launch(Dispatchers.Main) {
-            with(binding.drowsiness) {
-                text = getString(R.string.sleep)
-                setTextColor(ContextCompat.getColor(activityContext!!, R.color.red))
-            }
-//            with(binding.drowsinessFitting) {
-//                text = getString(R.string.sleep)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.red))
-//            }
             with(binding.warningFilter) {
                 visibility = View.VISIBLE
                 (drawable as AnimationDrawable).start()
@@ -617,14 +556,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         toneGenerator1.stopTone()
 
         lifecycleScope.launch(Dispatchers.Main) {
-            with(binding.drowsiness) {
-                text = getString(R.string.normal)
-                setTextColor(ContextCompat.getColor(activityContext!!, R.color.white))
-            }
-//            with(binding.drowsinessFitting) {
-//                text = getString(R.string.normal)
-//                setTextColor(ContextCompat.getColor(this@StateActivity, R.color.white))
-//            }
             with(binding.warningFilter) {
                 visibility = View.GONE
                 (drawable as AnimationDrawable).stop()
@@ -654,7 +585,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
 
-    fun playSoundAndVibration(context: Context) {
+    private fun playSoundAndVibration(context: Context) {
         // 소리 재생
 //        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 //        audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
@@ -755,6 +686,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         activityContext = this.context
 
 
+
+
         binding.checkConnect.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             if (!wearableDeviceConnected) {
@@ -762,7 +695,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 //Couroutine
                 initialiseDevicePairing(tempAct)
             }
-            playSoundAndVibration(requireContext())
             //toast.makeToast(requireContext(), "vibrate")
             binding.heartRate.text = "-"
             sendMessage("vibrator")

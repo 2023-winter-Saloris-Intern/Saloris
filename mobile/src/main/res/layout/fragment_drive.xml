@@ -51,35 +51,13 @@
             android:layout_height="match_parent"
             android:visibility="invisible">
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:contentDescription="@string/heart_rate"
-                android:src="@drawable/ic_hr"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
-
-            <TextView
-                android:id="@+id/drowsiness"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/normal"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_xx_large"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/blink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/blink"
-                app:layout_constraintEnd_toStartOf="@+id/drowsiness"
-                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -109,7 +87,7 @@
         android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_smallest"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
@@ -121,75 +99,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/timer_img"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:contentDescription="@string/timer"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_timer"
-                app:tint="@color/white" />
-
-            <TextView
-                android:id="@+id/long_closed_fitting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="0"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_large"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <TextView
-                android:id="@+id/timer_fitting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:minWidth="55dp"
-                android:textAlignment="textEnd"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_large"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/timer_unit_fitting"
-                app:layout_constraintEnd_toStartOf="@+id/timer_unit_fitting"
-                app:layout_constraintStart_toEndOf="@+id/timer_img"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/timer_unit_fitting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="@string/second"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_large"
-                app:layout_constraintBaseline_toBaselineOf="@id/timer_fitting"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/long_closed_fitting"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-        <ImageView
-            android:id="@+id/guideline"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/face_guideline"
-            android:contentDescription="@string/face_fitting_line"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="20dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
