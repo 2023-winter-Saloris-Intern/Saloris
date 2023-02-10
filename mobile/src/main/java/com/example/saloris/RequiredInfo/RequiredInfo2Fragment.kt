@@ -111,15 +111,6 @@ class RequiredInfo2Fragment : Fragment() {
 
         binding.goNextStepBtn.setOnClickListener {
 
-            // Add data to the new document
-            val data = hashMapOf(
-                "userSex" to sex,
-            )
-            db.collection("users").document().set(data)
-            newDocument.set(data)
-                .addOnSuccessListener { Log.d("Firestore", "$sex Data added successfully!!!!!!!!!!!!") }
-                .addOnFailureListener { e -> Log.w("Firestore", "Error adding data", e) }
-
             if((binding.manBtn.isSelected) || (binding.womanBtn.isSelected)) {
                 navController.navigate(R.id.action_requiredInfo1Fragment_to_requiredInfo2Fragment)
             }
