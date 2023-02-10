@@ -66,9 +66,10 @@ class RequiredInfo2Fragment : Fragment() {
 //                binding.womanBtn.setSelected(false)
 //                binding.womanBtn.setTextColor(originalTextColor)
 //            }
-
+            //파이어 베이스 파이어 스토어에 성별 저장
             userInfo.userSex = true
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSex",userInfo.userSex)
+
             binding.manBtn.setSelected(true)
             binding.manBtn.setTextColor(textColor)
             binding.womanBtn.setSelected(false)
@@ -86,6 +87,7 @@ class RequiredInfo2Fragment : Fragment() {
 //                binding.manBtn.setSelected(false)
 //                binding.manBtn.setTextColor(originalTextColor)
 //            }
+            //파이어 베이스 파이어 스토어에 성별 저장
             userInfo.userSex = false
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSex",userInfo.userSex)
             binding.manBtn.setSelected(false)

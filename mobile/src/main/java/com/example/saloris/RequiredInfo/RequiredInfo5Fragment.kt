@@ -52,6 +52,7 @@ class RequiredInfo5Fragment : Fragment() {
 
         // clickevent 구현 필요
         binding.neverDrink.setOnClickListener{
+            //파이어 베이스 파이어 스토어에 음주 저장
             userInfo.userDrink = "neverDrink"
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userDrink",userInfo.userDrink)
             binding.neverDrink.setSelected(true)
@@ -65,6 +66,7 @@ class RequiredInfo5Fragment : Fragment() {
         }
 
         binding.sometimeDrink.setOnClickListener{
+            //파이어 베이스 파이어 스토어에 음주 저장
             userInfo.userDrink = "sometimeDrink"
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userDrink",userInfo.userDrink)
             binding.neverDrink.setSelected(false)
@@ -78,6 +80,7 @@ class RequiredInfo5Fragment : Fragment() {
         }
 
         binding.usuallyDrink.setOnClickListener{
+            //파이어 베이스 파이어 스토어에 음주 저장
             userInfo.userDrink = "usuallyDrink"
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userDrink",userInfo.userDrink)
             binding.neverDrink.setSelected(false)

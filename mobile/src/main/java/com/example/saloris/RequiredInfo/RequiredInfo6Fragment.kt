@@ -52,6 +52,7 @@ class RequiredInfo6Fragment : Fragment() {
 
         // clickevent 구현 필요
         binding.neverSmoke.setOnClickListener{
+            //파이어 베이스 파이어 스토어에 흡연 저장
             userInfo.userSmoke = "neverSmoke"
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSmoke",userInfo.userSmoke)
             binding.neverSmoke.setSelected(true)
@@ -65,6 +66,7 @@ class RequiredInfo6Fragment : Fragment() {
         }
 
         binding.sometimeSmoke.setOnClickListener{
+            //파이어 베이스 파이어 스토어에 흡연 저장
             userInfo.userSmoke = "sometimeSmoke"
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSmoke",userInfo.userSmoke)
             binding.neverSmoke.setSelected(false)
@@ -78,6 +80,7 @@ class RequiredInfo6Fragment : Fragment() {
         }
 
         binding.usuallySmoke.setOnClickListener{
+            //파이어 베이스 파이어 스토어에 흡연 저장
             userInfo.userSmoke = "usuallySmoke"
             firestore?.collection("users")?.document(auth?.uid.toString())?.update("userSmoke",userInfo.userSmoke)
             binding.neverSmoke.setSelected(false)
