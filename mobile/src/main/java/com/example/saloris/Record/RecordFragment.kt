@@ -458,7 +458,7 @@ class RecordFragment : Fragment() {
                     print("catch")
                 }
                 .collect {
-                    val time = it.time.toString().substring(8,10)
+                    val time = it.time.toString().substring(0,10)
                     //Log.d("time!!!!!!!!!!!!!!!!!",it.time.toString())
                     val average = it.value
                     averageArr.add(average as Double)
@@ -505,36 +505,6 @@ class RecordFragment : Fragment() {
 //                "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
 //                "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
 //                "  |> mean(column: \"_value\")")
-        val fluxQueryMean = ("import \"experimental/date/boundaries\"\n" +
-                "thisMonth = boundaries.month()\n" +
-                "from(bucket: \"HeartRate\")\n" +
-                "  |> range(start: thisMonth.start, stop: thisMonth.stop)\n" +
-                "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
-                "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
-                "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
-                "  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false, timeSrc: \"_start\")")
-        client3.use {
-            //val writeApi = client.getW배터리 정보 가져오기riteKotlinApi()
-            val results = client3.getQueryKotlinApi().query(fluxQueryMean)
-            Log.d("show",results.toString())
-            results.consumeAsFlow()
-                .catch {
-                    print("catch")
-                }
-                .collect {
-                    val time = it.time
-                    Log.d("is same?",time.toString().substring(8,10)+" == "+ Dday.toString())
-                    if(time.toString().substring(8,10).toInt() == Dday.toString().toInt()){
-                        //toint를 하는 이유 : 선택 날짜가 한자리일때 01 과 같이 나오기 때문
-                        val average = it.value
-                        Log.d("average",average.toString())
-                        //DayMean=(round((average as Double)*100)/100).toString()
-                    }
-                    Log.d("date",time.toString())
-
-                }
-        }
-        client3.close()
         //query issleep 출력
         val fluxQueryright = ("from(bucket: \"HeartRate\")\n" +
                 "  |> range(start:$start, stop: $stop)\n" +
