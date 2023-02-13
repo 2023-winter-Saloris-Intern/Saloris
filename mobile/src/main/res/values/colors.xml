@@ -34,6 +34,9 @@
     <color name="background_disabled">#FFE6E6E6</color>
     <color name="background_edittext">@color/background_secondary</color>
 
+    <color name="chart_line_sleep">#FFC60000</color>
+    <color name="chart_line_nonsleep">#2565F8</color>
+
     <color name="face_guideline">@color/white</color>
     <color name="face_guideline_complete">@color/primary</color>
 </resources>
