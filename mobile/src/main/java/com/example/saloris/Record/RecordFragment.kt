@@ -167,10 +167,13 @@ class RecordFragment : Fragment() {
                     mainActivity.runOnUiThread(Runnable {
                         //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
                         //잘 돌아갈지는 모르겠다..
-                        val format = org.threeten.bp.format.DateTimeFormatter.ofPattern("yyyy-MM-dd")
                         val dayArr = arrayListOf("yyyy-MM-dd")
+                        val format = org.threeten.bp.format.DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+                        val dateString = "2023-02-13"
+
                         val calendarDays = dayArr.map {
-                            val date = org.threeten.bp.LocalDate.parse(it,format)
+                            val date = org.threeten.bp.LocalDate.parse(dateString.toString(),format)
                             CalendarDay.from(date)
                         }
                         val decorator = EventDecorator(calendarDays)
@@ -577,7 +580,6 @@ class RecordFragment : Fragment() {
 
 class EventDecorator() : DayViewDecorator {
 
-    private var color = 0
     private lateinit var dates : HashSet<CalendarDay>
 
     constructor(dates: Collection<CalendarDay>) : this() {
@@ -589,7 +591,7 @@ class EventDecorator() : DayViewDecorator {
     }
 
     override fun decorate(view: DayViewFacade?) {
-        view?.addSpan(DotSpan(10F, color))
+        view?.addSpan(DotSpan(10F, Color.BLUE))
     }
 }
 
