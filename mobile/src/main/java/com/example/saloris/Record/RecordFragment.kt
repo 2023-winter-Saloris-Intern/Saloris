@@ -3,7 +3,8 @@ package com.example.saloris.Record
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import android.os.Build
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
@@ -43,9 +44,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.*
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -162,11 +163,18 @@ class RecordFragment : Fragment() {
                         Log.d("date from db",DayArr.toString())
                     }
                 }
-                if(a.await()!=null){
+                if (a.await() != null) {
                     mainActivity.runOnUiThread(Runnable {
                         //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
                         //잘 돌아갈지는 모르겠다..
-                        //calendarView.addDecorator(EventDecorator(DayArr))
+//                        val format = org.threeten.bp.format.DateTimeFormatter.ofPattern("dd")
+//                        val dayArr = arrayListOf("dd")
+//                        val calendarDays = dayArr.map {
+//                            val date = org.threeten.bp.LocalDate.parse(it,format)
+//                            CalendarDay.from(date)
+//                        }
+//                        val decorator = EventDecorator(calendarDays)
+//                        calendarView.addDecorator(decorator)
                     });
                 }
             }
@@ -469,6 +477,7 @@ class RecordFragment : Fragment() {
 //        TODO : DB에서 가져오는 시간 범위 확인하기!
 //        val start = Instant.from(ZonedDateTime.of(date.minusDays(1), LocalTime.of(15,0,0), zoneId))
 //        val stop = Instant.from(ZonedDateTime.of(date, LocalTime.of(14, 59, 59), zoneId))
+
         val start = Instant.from(ZonedDateTime.of(date, LocalTime.of(0,0,0), zoneId))
         val stop = Instant.from(ZonedDateTime.of(date, LocalTime.of(23, 59, 59), zoneId))
         Log.d("start time",start.toString())
@@ -588,52 +597,58 @@ class RecordFragment : Fragment() {
     }
 }
 
-//class EventDecorator() : DayViewDecorator {
-//
-//    private var color = 0
-//    private lateinit var dates : HashSet<CalendarDay>
-//
-//    constructor(dates: Collection<CalendarDay>) : this() {
-//        this.dates=HashSet(dates)
-//    }
-//
-//    override fun shouldDecorate(day: CalendarDay?): Boolean {
-//        return dates.contains(day)
-//    }
-//
-//    override fun decorate(view: DayViewFacade?) {
-//        view?.addSpan(DotSpan(10F, color))
-//    }
-//}
+class EventDecorator() : DayViewDecorator {
 
-class EventDecorator : DayViewDecorator {
-    private val dates: Collection<CalendarDay>
+    private var color = 0
+    private lateinit var dates : HashSet<CalendarDay>
 
-    constructor(dateStrings: ArrayList<String>) {
-        this.dates = ArrayList()
-        for (dateString in dateStrings) {
-            val calendar = Calendar.getInstance()
-            val date = SimpleDateFormat("yyyy-MM-dd").parse(dateString)
-            calendar.time = date
-
-            val localDate: org.threeten.bp.LocalDate = org.threeten.bp.LocalDate.parse(date.toString())
-            this.dates.add(CalendarDay.from(localDate))
-
-        }
+    constructor(dates: Collection<CalendarDay>) : this() {
+        this.dates=HashSet(dates)
     }
 
-    override fun shouldDecorate(day: CalendarDay): Boolean {
+    override fun shouldDecorate(day: CalendarDay?): Boolean {
         return dates.contains(day)
     }
 
-    override fun decorate(view: DayViewFacade) {
-        Drawable.createFromStream(
-            MainActivity::class.java.getResourceAsStream("calendar_marker.xml"),
-            "calendar_marker")?.let {
-            view.setSelectionDrawable(
-                it
-            )
-        }
-        view.addSpan(DotSpan(5f, Color.BLACK)) // set dot color and size
+    override fun decorate(view: DayViewFacade?) {
+        view?.addSpan(DotSpan(10F, color))
     }
 }
+
+//class EventDecorator : DayViewDecorator {
+//    private val dates: Collection<CalendarDay>
+//
+//    constructor(dateStrings: ArrayList<String>) {
+//        this.dates = ArrayList()
+//        for (dateString in dateStrings) {
+//            val calendar = Calendar.getInstance()
+//            val dateString = "Thu Jan 01 00:00:00 GMT+09:00 1970"
+//            val simpleDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy")
+//            try {
+//                val date = simpleDateFormat.parse(dateString)
+//                calendar.time = date
+//                val localDate: org.threeten.bp.LocalDate = org.threeten.bp.LocalDate.parse(date.toString())
+//                this.dates.add(CalendarDay.from(localDate))
+//
+//            } catch (e: ParseException) {
+//                e.printStackTrace()
+//            }
+//
+//        }
+//    }
+//
+//    override fun shouldDecorate(day: CalendarDay): Boolean {
+//        return dates.contains(day)
+//    }
+//
+//    override fun decorate(view: DayViewFacade) {
+//        Drawable.createFromStream(
+//            MainActivity::class.java.getResourceAsStream("calendar_marker.xml"),
+//            "calendar_marker")?.let {
+//            view.setSelectionDrawable(
+//                it
+//            )
+//        }
+//        view.addSpan(DotSpan(5f, Color.BLACK)) // set dot color and size
+//    }
+//}
