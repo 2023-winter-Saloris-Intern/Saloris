@@ -320,6 +320,8 @@ class RecordFragment : Fragment() {
             Log.d("time",time.toString())
             Log.d("last_time",last_time)
             Log.d("count", count.toString())
+            var SleeplineColor = ContextCompat.getColor(requireContext(),R.color.chart_line_sleep)
+            var nonSleeplineColor = ContextCompat.getColor(requireContext(),R.color.chart_line_nonsleep)
             if(last_time!=""){
                 if((last_time.toInt()+1)<time) {//거리가 멀어서 색 무색으로
                     Log.d("notin", last_time + time.toString())
@@ -332,12 +334,12 @@ class RecordFragment : Fragment() {
                     if(lastSleep==sleepArr[count]){
                         //두개 같은 값 => 변화 없음
                         Log.d("sleepis","same")
-                        colors.add(if(sleepArr[count]) Color.RED else Color.BLUE)
+                        colors.add(if(sleepArr[count]) SleeplineColor else nonSleeplineColor)
                     }else{
                         Log.d("sleepis","not same")
                         data.addEntry(Entry(((time.toFloat()-0.5)).toFloat(),((newRate.toFloat()+lastRate)/2.0).toFloat()), 0)
-                        colors.add(if(lastSleep) Color.RED else Color.BLUE)
-                        colors.add(if(sleepArr[count]) Color.RED else Color.BLUE)
+                        colors.add(if(lastSleep) SleeplineColor else nonSleeplineColor)
+                        colors.add(if(sleepArr[count]) SleeplineColor else nonSleeplineColor)
                         Log.d("time",((time.toFloat()-0.5)).toString())
                         Log.d("midrate",((newRate.toFloat()+lastRate)/2.0).toString())
                     }
@@ -551,7 +553,8 @@ class RecordFragment : Fragment() {
                 }
         }
         client.close()
-        colors.add(Color.BLUE)
+        var nonSleeplineColor = ContextCompat.getColor(requireContext(),R.color.chart_line_nonsleep)
+        colors.add(nonSleeplineColor)
         Log.d("colors",colors.toString())
         //print(heartrate)
         return all_string
