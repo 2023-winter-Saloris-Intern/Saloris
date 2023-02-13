@@ -167,14 +167,14 @@ class RecordFragment : Fragment() {
                     mainActivity.runOnUiThread(Runnable {
                         //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
                         //잘 돌아갈지는 모르겠다..
-//                        val format = org.threeten.bp.format.DateTimeFormatter.ofPattern("dd")
-//                        val dayArr = arrayListOf("dd")
-//                        val calendarDays = dayArr.map {
-//                            val date = org.threeten.bp.LocalDate.parse(it,format)
-//                            CalendarDay.from(date)
-//                        }
-//                        val decorator = EventDecorator(calendarDays)
-//                        calendarView.addDecorator(decorator)
+                        val format = org.threeten.bp.format.DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                        val dayArr = arrayListOf("yyyy-MM-dd")
+                        val calendarDays = dayArr.map {
+                            val date = org.threeten.bp.LocalDate.parse(it,format)
+                            CalendarDay.from(date)
+                        }
+                        val decorator = EventDecorator(calendarDays)
+                        calendarView.addDecorator(decorator)
                     });
                 }
             }
