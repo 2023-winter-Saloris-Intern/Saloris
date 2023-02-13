@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -44,11 +45,26 @@ import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 
+class MinMaxDecorator(min: CalendarDay, max:CalendarDay): DayViewDecorator {
+    val maxDay = max
+    val minDay = min
+
+    override fun shouldDecorate(day: CalendarDay?): Boolean {
+        return (day?.month == maxDay.month && day.day > maxDay.day)
+                || (day?.month == minDay.month && day.day < minDay.day)
+    }
+
+    override fun decorate(view: DayViewFacade?) {
+        view?.addSpan(object: ForegroundColorSpan(Color.parseColor("#d2d2d2")){})
+        view?.setDaysDisabled(true)
+    }
+}
 
 class RecordFragment : Fragment() {
     private var _binding: FragmentRecordBinding? = null
@@ -95,6 +111,18 @@ class RecordFragment : Fragment() {
     // 직전에 클릭됐던 Item의 position
     private val prePosition = -1
 
+    var startTimeCalendar = Calendar.getInstance()
+    var endTimeCalendar = Calendar.getInstance()
+
+    val currentYear = startTimeCalendar.get(Calendar.YEAR)
+    val currentMonth = startTimeCalendar.get(Calendar.MONTH)
+    val currentDate = startTimeCalendar.get(Calendar.DATE)
+
+    val stCalendarDay = CalendarDay.from(currentYear, currentMonth, currentDate)
+    val enCalendarDay = CalendarDay.from(endTimeCalendar.get(Calendar.YEAR), endTimeCalendar.get(Calendar.MONTH), endTimeCalendar.get(Calendar.DATE))
+
+    val minMaxDecorator = MinMaxDecorator(stCalendarDay, enCalendarDay)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -109,7 +137,7 @@ class RecordFragment : Fragment() {
         binding.heartRateNum.setVisibility(View.GONE)
         auth = Firebase.auth
         binding.dateChoiceBtn.setOnClickListener {
-            var CalendarView = R.id.calendar_view1
+            //var CalendarView = R.id.calendar_view1
 
             val dateText: TextView = requireView().findViewById(R.id.date_text)
             //val calendarView: CalendarView = requireView().findViewById(R.id.calendar_view1)
@@ -119,8 +147,8 @@ class RecordFragment : Fragment() {
 
             //val date: Date = Date(calendarView.date)
 
-            val today = CalendarDay.today()
-            calendarView.state().edit().setMaximumDate(today).commit()
+//            val today = CalendarDay.today()
+//            calendarView.state().edit().setMaximumDate(today).commit()
 
             //calendarView.maxDate = System.currentTimeMillis()
 
@@ -138,8 +166,7 @@ class RecordFragment : Fragment() {
                     mainActivity.runOnUiThread(Runnable {
                         //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
                         //잘 돌아갈지는 모르겠다..
-                        calendarView = requireView().findViewById(R.id.calendar_view1)
-                        //calendarView.addDecorator(EventDecorator())
+                        //calendarView.addDecorator(EventDecorator(DayArr))
                     });
                 }
             }
@@ -561,21 +588,52 @@ class RecordFragment : Fragment() {
     }
 }
 
-class EventDecorator() : DayViewDecorator {
+//class EventDecorator() : DayViewDecorator {
+//
+//    private var color = 0
+//    private lateinit var dates : HashSet<CalendarDay>
+//
+//    constructor(dates: Collection<CalendarDay>) : this() {
+//        this.dates=HashSet(dates)
+//    }
+//
+//    override fun shouldDecorate(day: CalendarDay?): Boolean {
+//        return dates.contains(day)
+//    }
+//
+//    override fun decorate(view: DayViewFacade?) {
+//        view?.addSpan(DotSpan(10F, color))
+//    }
+//}
 
-    private var color = 0
-    private lateinit var dates : HashSet<CalendarDay>
+class EventDecorator : DayViewDecorator {
+    private val dates: Collection<CalendarDay>
 
-    constructor(color: Int, dates: Collection<CalendarDay>) : this() {
-        this.color=color
-        this.dates=HashSet(dates)
+    constructor(dateStrings: ArrayList<String>) {
+        this.dates = ArrayList()
+        for (dateString in dateStrings) {
+            val calendar = Calendar.getInstance()
+            val date = SimpleDateFormat("yyyy-MM-dd").parse(dateString)
+            calendar.time = date
+
+            val localDate: org.threeten.bp.LocalDate = org.threeten.bp.LocalDate.parse(date.toString())
+            this.dates.add(CalendarDay.from(localDate))
+
+        }
     }
 
-    override fun shouldDecorate(day: CalendarDay?): Boolean {
+    override fun shouldDecorate(day: CalendarDay): Boolean {
         return dates.contains(day)
     }
 
-    override fun decorate(view: DayViewFacade?) {
-        view?.addSpan(DotSpan(10F, color))
+    override fun decorate(view: DayViewFacade) {
+        Drawable.createFromStream(
+            MainActivity::class.java.getResourceAsStream("calendar_marker.xml"),
+            "calendar_marker")?.let {
+            view.setSelectionDrawable(
+                it
+            )
+        }
+        view.addSpan(DotSpan(5f, Color.BLACK)) // set dot color and size
     }
 }
