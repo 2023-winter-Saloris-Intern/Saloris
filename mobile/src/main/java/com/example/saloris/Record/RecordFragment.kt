@@ -422,18 +422,25 @@ class RecordFragment : Fragment() {
     @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun datefromDB(Uid:String): String{
+        var month_offset = "0"
         val org = "intern"
+        val userTime = auth.currentUser?.metadata?.creationTimestamp
+        val currentDateTime =
+            userTime?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDateTime() }.toString() + "Z"
+        //Log.d("Current!!!!!!!!!!!!!!!",currentDateTime.toString())
+        //Log.d("!!!!!!!!!!metadata",userTime.toString())
         val bucket = "HeartRate"
         val token = "yZmCmFFTYYoetepTiOpXDRK8oyL1f_orD6oZH8SXsvlf213z-_iRmXtaf-AjyLe2HS-NhfxcNeY-0K6qR0k6Sw=="
         val client3 = InfluxDBClientKotlinFactory.create("https://europe-west1-1.gcp.cloud2.influxdata.com", token!!.toCharArray(), org, bucket)
         val fluxQueryMean = ("import \"experimental/date/boundaries\"\n" +
-                "thisMonth = boundaries.month()\n" +
+                "thisMonth = boundaries.month(month_offset: $month_offset)\n" +
                 "from(bucket: \"HeartRate\")\n" +
-                "  |> range(start: thisMonth.start, stop: thisMonth.stop)\n" +
+                "  |> range(start: $currentDateTime, stop: thisMonth.stop)\n" +
                 "  |> filter(fn: (r) => r[\"_measurement\"] == \"user\")\n" +
                 "  |> filter(fn: (r) => r[\"Uid\"] ==\"$Uid\")\n" +
                 "  |> filter(fn: (r) => r[\"_field\"] == \"heart\")\n" +
                 "  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false, timeSrc: \"_start\")")
+        //Log.d("Query!!!!!!!!!!!!!!!!!!",fluxQueryMean)
         client3.use {
             //val writeApi = client.getW배터리 정보 가져오기riteKotlinApi()
             val results = client3.getQueryKotlinApi().query(fluxQueryMean)
@@ -444,6 +451,7 @@ class RecordFragment : Fragment() {
                 }
                 .collect {
                     val time = it.time.toString().substring(8,10)
+                    //Log.d("time!!!!!!!!!!!!!!!!!",it.time.toString())
                     val average = it.value
                     averageArr.add(average as Double)
                     DayArr.add(time)
