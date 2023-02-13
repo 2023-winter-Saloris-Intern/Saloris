@@ -219,7 +219,7 @@ class RecordFragment : Fragment() {
                 calendarView.setOnDateChangedListener { widget, date, selected ->
                     var day: String = "${date.year}년 ${date.month}월 ${date.day}일"
                     Dyear = date.year
-                    Dmonth = date.month+1
+                    Dmonth = date.month
                     Dday = date.day
                     dateText.text = day
                 }
@@ -246,7 +246,7 @@ class RecordFragment : Fragment() {
         chart!!.xAxis.axisMaximum=1200f
         chart!!.axisRight.isEnabled = false
         chart!!.axisLeft.axisMaximum=150f // y축 min,max
-        chart!!.axisLeft.axisMinimum=50f
+        chart!!.axisLeft.axisMinimum=30f
         chart!!.legend.textColor = Color.BLUE
         chart!!.animateXY(1000, 1000)
         chart!!.invalidate()
