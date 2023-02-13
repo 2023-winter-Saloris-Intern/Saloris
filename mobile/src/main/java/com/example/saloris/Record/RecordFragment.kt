@@ -3,6 +3,7 @@ package com.example.saloris.Record
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,11 +11,9 @@ import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CalendarView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.saloris.MainActivity
@@ -27,7 +26,6 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -50,6 +48,7 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
+
 
 class RecordFragment : Fragment() {
     private var _binding: FragmentRecordBinding? = null
@@ -105,8 +104,6 @@ class RecordFragment : Fragment() {
 
         chart =  binding.dayChart
 
-
-
         binding.calendarView1.setVisibility(View.GONE)
         binding.dayChart.setVisibility(View.GONE)
         binding.heartRateNum.setVisibility(View.GONE)
@@ -115,17 +112,17 @@ class RecordFragment : Fragment() {
             var CalendarView = R.id.calendar_view1
 
             val dateText: TextView = requireView().findViewById(R.id.date_text)
-            val calendarView: CalendarView = requireView().findViewById(R.id.calendar_view1)
-//            val calendarView: MaterialCalendarView = requireView().findViewById(R.id.calendar_view1)
+            //val calendarView: CalendarView = requireView().findViewById(R.id.calendar_view1)
+            var calendarView: MaterialCalendarView = requireView().findViewById(R.id.calendar_view1)
 
             val dateFormat: DateFormat = SimpleDateFormat("yyyy년MM월dd일")
 
-            val date: Date = Date(calendarView.date)
+            //val date: Date = Date(calendarView.date)
 
-//            calendarView.state().edit()
-//                .setMinimumDate(CalendarDay.from(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH))
+            val today = CalendarDay.today()
+            calendarView.state().edit().setMaximumDate(today).commit()
 
-            calendarView.maxDate = System.currentTimeMillis()
+            //calendarView.maxDate = System.currentTimeMillis()
 
             DayArr.clear()
             averageArr.clear()
@@ -141,7 +138,8 @@ class RecordFragment : Fragment() {
                     mainActivity.runOnUiThread(Runnable {
                         //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
                         //잘 돌아갈지는 모르겠다..
-
+                        calendarView = requireView().findViewById(R.id.calendar_view1)
+                        //calendarView.addDecorator(EventDecorator())
                     });
                 }
             }
@@ -218,11 +216,11 @@ class RecordFragment : Fragment() {
 
                 }
 
-                calendarView.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
-                    var day: String = "${year}년 ${month + 1}월 ${dayOfMonth}일"
-                    Dyear = year
-                    Dmonth = month+1
-                    Dday = dayOfMonth
+                calendarView.setOnDateChangedListener { widget, date, selected ->
+                    var day: String = "${date.year}년 ${date.month}월 ${date.day}일"
+                    Dyear = date.year
+                    Dmonth = date.month+1
+                    Dday = date.day
                     dateText.text = day
                 }
 
