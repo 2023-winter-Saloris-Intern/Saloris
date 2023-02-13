@@ -33,10 +33,12 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.MessageClient.OnMessageReceivedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import java.nio.charset.StandardCharsets
 
 
@@ -245,6 +247,8 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
         //wearable device가 연결되었는지 확인
     }
 
+    //val messageReceiver = OnMessageReceivedListener {  }
+
     //wearOS와 연동되었는지 확인
     @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("SetTextI18n")
@@ -269,18 +273,18 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             withContext(Dispatchers.Main) {
                 getNodesResBool?.get(1)?.let { Log.d("getnodesresbool : ", it.toString()) }
 
-                val ifilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                val batteryStatus = requireContext()!!.registerReceiver(null, ifilter)
-
-                val level = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+//                val ifilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+//                val batteryStatus = requireContext()!!.registerReceiver(null, ifilter)
+//
+//                val level = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
 
 //                val batteryCapacity: Float = wearDevice.battery.chargeLevel
 //
 //                val scale = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
 //                val batteryPct = level
 
-                //val nodeId = getNodes(requireContext())
-
+//                val nodeId = getNodes(requireContext())
+//
 //                val client = Wearable.getNodeClient(requireContext())
 //                val result = client.getBatteryInfo(nodeId).await()
 //                if (result.status.isSuccess) {
@@ -289,14 +293,25 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    val scale = batteryInfo.chargeStatus
 //                }
 
-//                val nodeId = getNodes(requireContext())
-//
-//                val nodeClient = context?.let { Wearable.getNodeClient(it) }
-//                val result = nodeClient.getBatteryInfo(nodeId).await()
-//                if (result.status.isSuccess) {
-//                    val batteryInfo = result.batteryInfo
-//                    val level = batteryInfo.chargeLevel
-//                    val scale = batteryInfo.chargeStatus
+                fun updateBatteryLevel(context: Context): Int {
+                    val batteryManager =
+                        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                    val batteryLevel =
+                        batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
+                    return batteryLevel
+                }
+
+//                val dataClient = context?.let { Wearable.getDataClient(it) }
+//                val batteryUri = Uri.Builder()
+//                    .scheme(PutDataRequest.WEAR_URI_SCHEME)
+//                    .path("/battery")
+//                    .build()
+//                val dataItem = dataClient!!.getDataItem(batteryUri).await()
+//                if (dataItem != null) {
+//                    val batteryDataMap = dataItem.dataMap
+//                    val level = batteryDataMap.getInt("level")
+//                    val scale = batteryDataMap.getInt("scale")
 //                }
 
 
@@ -308,7 +323,8 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
-                        binding.watchBattery.setText((level).toString())
+                        //messageReceiver.onMessageReceived(p0)
+                        binding.watchBattery.setText(updateBatteryLevel(requireContext()).toString())
                         //updateBatteryLevel(batteryLevel = null)
 
                     } else {
@@ -318,17 +334,14 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
-                        binding.watchBattery.setText((level).toString())
+                        //messageReceiver.onMessageReceived(p0)
+                        binding.watchBattery.setText(updateBatteryLevel(requireContext()).toString())
                         //updateBatteryLevel(batteryLevel = null)
 
                     }
                 } else {
                     //워치와 연결되지 않음
                     wearableDeviceConnected = false
-                    //binding.sendmessageButton.visibility = View.GONE
-//                    cardColor = ContextCompat.getColor(requireContext(),R.color.grey)
-//                    binding.startBtn.setCardBackgroundColor(cardColor)
-//                    binding.explanationTv.setText("운행 시작 버튼이 회색인 경우\n워치와 연결이 안되었다는 뜻이에요")
                     binding.disconnectBtn.setText("워치 연결 정보 없음")
                 }
             }
@@ -448,6 +461,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             e.printStackTrace()
             Log.d("receive1", "Handled")
         }
+
     }
 
     override fun onDestroyView() {
