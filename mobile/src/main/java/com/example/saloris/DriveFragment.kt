@@ -179,7 +179,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private var fittingLevel = 0
     private var timerCheck = true
 
-    lateinit var db: AppDatabase
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initGlSurfaceView() {
@@ -663,13 +662,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //            }
 //        }
 
-        val db = getActivity()?.let {
-            Room.databaseBuilder(
-                it.getApplicationContext(),
-                AppDatabase::class.java,
-                "heartRateDB"
-            ).build()
-        }
     }
 
     override fun onCreateView(
@@ -1009,6 +1001,13 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         lifecycleScope.launch(Dispatchers.IO) {
                             //val isInserted = async { insertDB(newRate.toInt()) }
                             var newData= HeartRate(dateAndTime.toString(),newRate.toInt(),false)
+                            var db = getActivity()?.let {
+                                Room.databaseBuilder(
+                                    it.getApplicationContext(),
+                                    AppDatabase::class.java,
+                                    "heartRateDB"
+                                ).build()
+                            }
                             val inInserted = async{db!!.heartRateDao().insertHeartRate(newData)}
                             Log.d("isInserted", newRate)
                             Log.d("time", dateAndTime.toString().substring(14, 16))
