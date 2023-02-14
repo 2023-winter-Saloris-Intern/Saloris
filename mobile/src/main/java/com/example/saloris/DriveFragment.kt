@@ -28,8 +28,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.saloris.LocalDB.AppDatabase
 import com.example.saloris.LocalDB.HeartRate
 import com.example.saloris.databinding.FragmentDriveBinding
@@ -54,6 +52,8 @@ import com.influxdb.client.write.Point
 import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -1001,14 +1001,16 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         lifecycleScope.launch(Dispatchers.IO) {
                             //val isInserted = async { insertDB(newRate.toInt()) }
                             var newData= HeartRate(dateAndTime.toString(),newRate.toInt(),false)
-                            var db = getActivity()?.let {
+                            Log.d("NewData ",newData.toString())
+                            var db =
                                 Room.databaseBuilder(
-                                    it.getApplicationContext(),
+                                    requireContext().applicationContext,
                                     AppDatabase::class.java,
                                     "heartRateDB"
                                 ).build()
-                            }
-                            val inInserted = async{db!!.heartRateDao().insertHeartRate(newData)}
+
+                            db!!.heartRateDao().insertHeartRate(newData)
+                            Log.d("fromDB",db!!.heartRateDao().getAll().toString())
                             Log.d("isInserted", newRate)
                             Log.d("time", dateAndTime.toString().substring(14, 16))
                             last_time = dateAndTime.toString().substring(14, 16)

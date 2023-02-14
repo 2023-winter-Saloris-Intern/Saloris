@@ -15,9 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.example.saloris.LocalDB.AppDatabase
 import com.example.saloris.MainActivity
 import com.example.saloris.MyMarkerView
 import com.example.saloris.R
@@ -222,7 +226,28 @@ class RecordFragment : Fragment() {
                         //show ( uid , 선택 시간) : 선택한 날짜의 데이터를 차트로 출력
                         val show_Data = async {
                             if (Uid != null) {
-                                show(Uid,date)
+                                //show(Uid,date)
+                                var db =
+                                    Room.databaseBuilder(
+                                        requireContext().applicationContext,
+                                        AppDatabase::class.java,
+                                        "heartRateDB"
+                                    ).build()
+                                Log.d("date",date.toString())
+                                Log.d("fromDB!!!!!!!!!!",db!!.heartRateDao().getHeartRate(date.toString()+"%").toString())
+                                var heartRateList = db!!.heartRateDao().getHeartRate(date.toString()+"%")
+                                //todo chart!!!
+                                for(dao in heartRateList){
+                                    Log.d("time",dao.InsertTime)
+                                    Log.d("heartrate",dao.HeartRate.toString())
+                                    Log.d("sleep",dao.Sleep.toString())
+                                    sleepArr.add(dao.Sleep!!)
+                                    addEntry(dao.InsertTime,dao.HeartRate.toString())
+
+                                }
+                                var nonSleeplineColor = ContextCompat.getColor(requireContext(),R.color.chart_line_nonsleep)
+                                colors.add(nonSleeplineColor)
+                                Log.d("colors",colors.toString())
                             }
                         }
                         if(show_Data.await()!=null){

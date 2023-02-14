@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.room.Room
+import com.example.saloris.LocalDB.AppDatabase
 import com.example.saloris.databinding.FragmentAccountBinding
 import com.example.saloris.util.MakeToast
 import com.google.firebase.auth.FirebaseAuth
@@ -92,8 +94,15 @@ class AccountFragment : Fragment() {
                 //val dao = HeartRateDao()
 
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val isDeleted = async { deleteAllByUser(uid) }
-                    if (isDeleted.await()) {
+//                    val isDeleted = async { deleteAllByUser(uid) }
+                    var db =
+                        Room.databaseBuilder(
+                            requireContext().applicationContext,
+                            AppDatabase::class.java,
+                            "heartRateDB"
+                        ).build()
+                    db!!.heartRateDao().deleteAll()
+                    if (true) {
                         user?.delete()
                             ?.addOnCompleteListener { deleteTask ->
                                 if (deleteTask.isSuccessful) {

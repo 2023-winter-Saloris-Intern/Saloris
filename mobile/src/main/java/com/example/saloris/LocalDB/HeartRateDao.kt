@@ -14,4 +14,7 @@ interface HeartRateDao {
 
     @Query("DELETE FROM heartrate")
     fun deleteAll()
+
+    @Query("SELECT * FROM heartrate WHERE InsertTime LIKE :Date")
+    fun getHeartRate(Date : String):List<HeartRate>
 }
