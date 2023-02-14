@@ -9,5 +9,6 @@ data class RequiredInfo(
     var userWeight: String? = null,
     var userHeight: String? = null,
     var userDrink: String? = null,
-    var userSmoke: String? = null
+    var userSmoke: String? = null,
+    var emailVerified: Boolean? = null
 )

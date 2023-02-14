@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_homeFragment_to_SplashFragment"
             app:destination="@id/splashFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_registerSuccessFragment"
+            app:destination="@id/registerSuccessFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -75,6 +78,9 @@
         <action
             android:id="@+id/action_splashFragment_to_loginStartFragment"
             app:destination="@id/loginStartFragment" />
+        <action
+            android:id="@+id/action_loginStartFragment_to_registerSuccessFragment"
+            app:destination="@id/registerSuccessFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"

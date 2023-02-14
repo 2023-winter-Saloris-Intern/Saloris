@@ -163,6 +163,9 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+//        var userInfo = RequiredInfo()
+//        userInfo?.userName = auth?.currentUser!!.displayName
+//        firestore?.collection("users")?.document(auth?.uid!!)?.update("userName", userInfo.userName)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController

@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.saloris.RequiredInfo.RequiredInfo
 import com.example.saloris.databinding.FragmentHomeBinding
 import com.example.saloris.util.MakeToast
 import com.example.salorisv.DevicePairing
@@ -23,7 +24,9 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
@@ -60,6 +63,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
     var newRate = ""
 
     private fun isAutoLogined(): Boolean {
@@ -117,7 +122,14 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
+//        var userInfo = RequiredInfo()
+//        userInfo?.userName = auth?.currentUser!!.displayName
+//        firestore?.collection("users")?.document(auth?.uid!!)?.update("userName", userInfo.userName)
         /* Bottom Menu */
         val bottomMenu = (requireActivity() as MainActivity).binding.bottomNav
         bottomMenu.visibility = View.VISIBLE
@@ -155,14 +167,12 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             } else {
                 if (!auth.currentUser?.isEmailVerified!!) {
                     context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
-                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                    checkData()
                 }
                 binding.userName.text = auth.currentUser!!.displayName
                 binding.userName2.text = auth.currentUser!!.displayName
-
             }
         }
-
 
         binding.startBtn.setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_driveFragment)
@@ -181,6 +191,42 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
         //wearable device가 연결되었는지 확인
+    }
+
+    private fun checkData() {
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        val currentUser = auth.currentUser
+        val userRef = firestore.collection("users").document(currentUser!!.uid)
+        Log.d("userRef", "$userRef!!!!!!!!!!@@@@@@")
+
+        userRef.get()
+            .addOnSuccessListener { document ->
+                Log.d("document", "$document!!!!!!!!!!!")
+                if (document != null) {
+                    val userSex = document.getBoolean("userSex")
+                    val userBirth = document.getString("userBirth")
+                    val userWeight = document.getString("userWeight")
+                    val userHeight = document.getString("userHeight")
+                    val userSmoke = document.getString("userSmoke")
+                    val userDrink = document.getString("userDrink")
+                    if (userSex == null || userSmoke == null || userDrink == null
+                        || userBirth == null || userHeight == null || userWeight == null
+                    ) {
+                        navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
+                    } else {
+                        Log.d("이거 아님?", "action_homeFragment_to_loginStartFragment")
+                        navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                    }
+                } else {
+                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                }
+            }
+        //현재 유저에 대한 필드 값을 가지고 와서 데이터 검사를 해야함
+        //이 코드는 모든 유저들의 필드 값을 가지고 오기 때문에 조건문을 통해 해결해야함
+
     }
 
     private fun sendMessage(message: String) {

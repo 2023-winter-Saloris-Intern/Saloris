@@ -1,6 +1,7 @@
 package com.example.saloris
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,21 +11,30 @@ import androidx.navigation.Navigation
 import com.example.saloris.R
 import com.example.saloris.RequiredInfo.RequiredInfo
 import com.example.saloris.databinding.FragmentRegisterSuccessBinding
+import com.example.saloris.util.MakeToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
 class RegisterSuccessFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterSuccessBinding
     private lateinit var navController: NavController
+
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
+
+    /* Toast */
+    private val toast = MakeToast()
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         binding = FragmentRegisterSuccessBinding.inflate(layoutInflater, container, false)
 
@@ -34,14 +44,14 @@ class RegisterSuccessFragment : Fragment() {
 
         //Initialize Firebase Storage
         storage = FirebaseStorage.getInstance()
-        auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         var userInfo = RequiredInfo()
-
-        userInfo.uid = auth?.uid
-        userInfo.userId = auth?.currentUser?.email
-        userInfo.userName = auth?.currentUser?.displayName
+        userInfo?.uid = auth?.uid
+        userInfo?.userName = auth?.currentUser?.displayName
+        userInfo?.userId = auth?.currentUser?.email
+        userInfo?.emailVerified = auth?.currentUser?.isEmailVerified
         firestore?.collection("users")?.document(auth?.uid.toString())?.set(userInfo)
 
         return binding.root
@@ -50,11 +60,39 @@ class RegisterSuccessFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
+        auth = Firebase.auth
+//        binding.btnRequiredInfo.isEnabled = true
+//        binding.checkEmailVerified.setOnClickListener {
+//            Log.d("checkEmailVerified", "${auth.currentUser?.isEmailVerified!!}!!!!!!!!")
+//            if (auth.currentUser?.isEmailVerified!!) {
+//                binding.btnRequiredInfo.isEnabled = true
+//            } else {
+//                Log.d("checkEmailVerified", "${auth.currentUser?.isEmailVerified!!}!!!!!!!!")
+//                Firebase.auth.currentUser!!.sendEmailVerification()
+//                    .addOnCompleteListener { verifyTask ->
+//                        context?.let { context ->
+//                            toast.makeToast(
+//                                context,
+//                                if (verifyTask.isSuccessful)
+//                                    "인증 이메일을 다시 전송했습니다. 메일함에서 인증해주세요"
+//                                else
+//                                    "메일함을 확인해주세요"
+//                            )
+//                        }
+//                    }
+//            }
+//            val user = auth.currentUser
+//            if (user != null && user.isEmailVerified) {
+//                binding.btnRequiredInfo.isEnabled = true
+//            } else {
+//                context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
+//                binding.btnRequiredInfo.isEnabled = false
+//            }
+//        }
         // 필수 정보 입력
         binding.btnRequiredInfo.setOnClickListener {
-
-            navController.navigate(R.id.action_registerSuccessFragment_to_RequiredInfoFragment, arguments)
+            navController.navigate(R.id.action_registerSuccessFragment_to_RequiredInfoFragment,
+                arguments)
         }
     }
 }

@@ -82,4 +82,18 @@
         app:layout_constraintTop_toBottomOf="@+id/textView14"
         app:layout_constraintWidth_max="@dimen/width_max" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/check_email_verified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/blue_round_button"
+        android:fontFamily="@font/notosans_kr_bold"
+        android:text="이메일 인증 확인하기"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_required_info" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
