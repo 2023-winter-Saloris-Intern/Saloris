@@ -27,8 +27,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import com.example.saloris.LocalDB.AppDatabase
+import com.example.saloris.LocalDB.HeartRate
 import com.example.saloris.databinding.FragmentDriveBinding
 import com.example.saloris.facemesh.FaceMeshResultGlRenderer
 import com.example.saloris.util.*
@@ -175,6 +178,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     private var fittingLevel = 0
     private var timerCheck = true
+
+    lateinit var db: AppDatabase
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initGlSurfaceView() {
@@ -657,6 +662,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //                delay(1000)
 //            }
 //        }
+
+        val db = getActivity()?.let {
+            Room.databaseBuilder(
+                it.getApplicationContext(),
+                AppDatabase::class.java,
+                "heartRateDB"
+            ).build()
+        }
     }
 
     override fun onCreateView(
@@ -989,12 +1002,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     }
                     binding.heartRate.text = sbTemp.toString()
                     newRate = s
-                    Log.d("onMessageReceived_mainActivity", "feedMultiple()")
+                    Log.d ("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //DB로 데이터 전송
                     if (last_time != dateAndTime.toString().substring(14, 16)) {
                         lifecycleScope.launch(Dispatchers.IO) {
-                            val isInserted = async { insertDB(newRate.toInt()) }
+                            //val isInserted = async { insertDB(newRate.toInt()) }
+                            var newData= HeartRate(dateAndTime.toString(),newRate.toInt(),false)
+                            val inInserted = async{db!!.heartRateDao().insertHeartRate(newData)}
                             Log.d("isInserted", newRate)
                             Log.d("time", dateAndTime.toString().substring(14, 16))
                             last_time = dateAndTime.toString().substring(14, 16)

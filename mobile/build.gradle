@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'kotlin-kapt'	// 추가
 }
 apply plugin: 'com.google.gms.google-services'
 
@@ -117,4 +118,27 @@ dependencies {
     implementation 'com.google.mediapipe:facemesh:latest.release'
     //prolificinteractive
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
+
+    implementation("androidx.room:room-runtime:2.5.0")
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:2.5.0")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:2.5.0")
+
+    // optional - RxJava2 support for Room
+    implementation("androidx.room:room-rxjava2:2.5.0")
+
+    // optional - RxJava3 support for Room
+    implementation("androidx.room:room-rxjava3:2.5.0")
+
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation("androidx.room:room-guava:2.5.0")
+
+    // optional - Test helpers
+    testImplementation("androidx.room:room-testing:2.5.0")
+
+    // optional - Paging 3 Integration
+    implementation("androidx.room:room-paging:2.5.0")
 }
