@@ -1,6 +1,7 @@
 package com.example.saloris
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -181,6 +182,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun isAutoLogined(): Boolean {
+        val autoLoginPref =
+            this.getSharedPreferences("autoLogin", Activity.MODE_PRIVATE)
+        return autoLoginPref.contains("username")
+    }
     fun checkData() {
         //Initialize Firebase Storage
         storage = FirebaseStorage.getInstance()
@@ -205,10 +211,13 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
                     } else {
-                        Log.d("이거 아님?", "action_homeFragment_to_loginStartFragment")
-                        navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                        Log.d("checkData", "document가 null이 아니고 필수 정보 입력이 끝났을때")
+                        if (!isAutoLogined()) {
+                            navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                        }
                     }
                 } else {
+                    Log.d("checkData", "document가 null이면")
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
             }
