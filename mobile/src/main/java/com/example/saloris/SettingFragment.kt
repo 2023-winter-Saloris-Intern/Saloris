@@ -403,16 +403,12 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 try {
                     val nodeId = node.id
 
-//                    val dataClient = context?.let { Wearable.getDataClient(it) }
-//                    val batteryUri = Uri.Builder()
-//                        .scheme(PutDataRequest.WEAR_URI_SCHEME)
-//                        .path("/battery")
-//                        .build()
-//                    val dataItem = dataClient?.getDataItem(batteryUri)?.await()
-//                    val batteryDataMap = dataItem?.dataMap
-//                    if (batteryDataMap != null) {
-//                        val level = batteryDataMap.getInt("level")
-//                        val scale = batteryDataMap.getInt("scale")
+//                    val client = Wearable.getNodeClient(requireContext())
+//                    val result = client.getBatteryInfo(nodeId).await()
+//                    if (result.status.isSuccess) {
+//                        val batteryInfo = result.batteryInfo
+//                        val level = batteryInfo.chargeLevel
+//                        val scale = batteryInfo.chargeStatus
 //                    }
 
                     // Set the data of the message to be the bytes of the Uri.
