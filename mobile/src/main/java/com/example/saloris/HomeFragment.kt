@@ -160,14 +160,17 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         } else {
             Log.d("Is first Time?", "not first")
             /* User Authentication */
+            //유저가 없을때
             if (auth.currentUser == null) {
                 if (isAutoLogined()) {
                     context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
             } else {
+                //유저가 있을때
+                checkData()
                 if (!auth.currentUser?.isEmailVerified!!) {
-                    //(activity as MainActivity).checkData()
+                    //유저가 이메일 인증을 안했을때
                     context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
                 }
                 binding.userName.text = auth.currentUser!!.displayName
@@ -194,7 +197,41 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         //wearable device가 연결되었는지 확인
     }
 
+    fun checkData() {
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        val currentUser = auth.currentUser
+        val userRef = firestore.collection("users").document(currentUser!!.uid)
+        Log.d("userRef", "$userRef!!!!!!!!!!@@@@@@")
 
+        userRef.get()
+            .addOnSuccessListener { document ->
+                Log.d("document", "$document!!!!!!!!!!!")
+                if (document != null) {
+                    val userSex = document.getBoolean("userSex")
+                    val userBirth = document.getString("userBirth")
+                    val userWeight = document.getString("userWeight")
+                    val userHeight = document.getString("userHeight")
+                    val userSmoke = document.getString("userSmoke")
+                    val userDrink = document.getString("userDrink")
+                    if (userSex == null || userSmoke == null || userDrink == null
+                        || userBirth == null || userHeight == null || userWeight == null
+                    ) {
+                        navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
+                    } else {
+                        Log.d("checkData", "document가 null이 아니고 필수 정보 입력이 끝났을때")
+                        if (!isAutoLogined()) {
+                            navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                        }
+                    }
+                } else {
+                    Log.d("checkData", "document가 null이면")
+                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                }
+            }
+    }
 
     private fun sendMessage(message: String) {
         toast.makeToast(requireContext(), "send message")
