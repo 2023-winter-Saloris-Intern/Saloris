@@ -295,14 +295,14 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    val scale = batteryInfo.chargeStatus
 //                }
 
-                fun updateBatteryLevel(context: Context): Int {
-                    val batteryManager =
-                        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-                    val batteryLevel =
-                        batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
-                    return batteryLevel
-                }
+//                fun updateBatteryLevel(context: Context): Int {
+//                    val batteryManager =
+//                        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+//                    val batteryLevel =
+//                        batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+//
+//                    return batteryLevel
+//                }
 
 //                val dataClient = context?.let { Wearable.getDataClient(it) }
 //                val batteryUri = Uri.Builder()
@@ -326,7 +326,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         //messageReceiver.onMessageReceived(p0)
-                        binding.watchBattery.setText(updateBatteryLevel(requireContext()).toString())
+                        //binding.watchBattery.setText(updateBatteryLevel(requireContext()).toString())
                         //updateBatteryLevel(batteryLevel = null)
 
                     } else {
@@ -337,7 +337,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         //messageReceiver.onMessageReceived(p0)
-                        binding.watchBattery.setText(updateBatteryLevel(requireContext()).toString())
+                        //binding.watchBattery.setText(updateBatteryLevel(requireContext()).toString())
                         //updateBatteryLevel(batteryLevel = null)
 
                     }

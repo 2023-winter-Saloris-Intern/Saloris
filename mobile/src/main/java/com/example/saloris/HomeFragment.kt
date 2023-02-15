@@ -218,7 +218,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                         navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
                     } else {
                         Log.d("이거 아님?", "action_homeFragment_to_loginStartFragment")
-                        navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                        //navController.navigate(R.id.action_homeFragment_to_driveFragment)
                     }
                 } else {
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
