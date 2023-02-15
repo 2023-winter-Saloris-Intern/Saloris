@@ -45,7 +45,7 @@ import java.nio.charset.StandardCharsets
 class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
-    CapabilityClient.OnCapabilityChangedListener{
+    CapabilityClient.OnCapabilityChangedListener {
 
     var activityContext: Context? = null
 
@@ -99,6 +99,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             } else {
             }
         }
+
     private fun openAndroidSetting() {
         val intent = Intent().apply {
             action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -107,6 +108,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
         }
         startActivity(intent)
     }
+
     private fun deleteAutoLoginInfo() {
         val autoLoginPref =
             requireContext().getSharedPreferences("autoLogin", Activity.MODE_PRIVATE)
@@ -253,19 +255,19 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
-        var cardColor = ContextCompat.getDrawable(requireContext(),R.drawable.ligt_blue_round_btn)
-        var textColor = ContextCompat.getColor(requireContext(),R.color.black)
+        var cardColor = ContextCompat.getDrawable(requireContext(), R.drawable.ligt_blue_round_btn)
+        var textColor = ContextCompat.getColor(requireContext(), R.color.black)
 
         //Coroutine
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
 
             try {
-                Log.d("try","try get nodes res bool")
+                Log.d("try", "try get nodes res bool")
                 getNodesResBool =
                     getNodes(tempAct.applicationContext)
             } catch (e: Exception) {
-                Log.d("try","try exception")
+                Log.d("try", "try exception")
                 e.printStackTrace()
             }
 
@@ -347,6 +349,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
     }
+
     //현재 모바일이랑 연동된 워치의 node를 가져와서 확인
     private fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
@@ -375,7 +378,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                     val sendMessageTask =
                         Wearable.getMessageClient(context)
                             .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
-                    Log.d("sendMessageToWearable","send message")
+                    Log.d("sendMessageToWearable", "send message")
                     //워치로 메시지를 보내고 5번동안 받으면 앱이 열려있고 안받으면 앱이 없다
                     try {
                         // Block on a task and get the result synchronously (because this is on a background thread).
@@ -451,10 +454,10 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         try {
-            val rateAndBattery =String(p0.data, StandardCharsets.UTF_8).split("/")
-            val s =rateAndBattery[0]
+            val rateAndBattery = String(p0.data, StandardCharsets.UTF_8).split("/")
+            val s = rateAndBattery[0]
             val battery = rateAndBattery[1]
-            Log.d("battery",battery)
+            Log.d("battery", battery)
             binding.watchBattery.setText(battery)
 
         } catch (e: Exception) {
@@ -476,6 +479,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onCapabilityChanged(p0: CapabilityInfo) {
         TODO("Not yet implemented")
     }
+
     override fun onPause() {
         super.onPause()
         try {

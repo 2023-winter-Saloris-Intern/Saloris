@@ -167,8 +167,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             } else {
                 if (!auth.currentUser?.isEmailVerified!!) {
                     context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
-                    checkData()
                 }
+                checkData()
                 binding.userName.text = auth.currentUser!!.displayName
                 binding.userName2.text = auth.currentUser!!.displayName
             }

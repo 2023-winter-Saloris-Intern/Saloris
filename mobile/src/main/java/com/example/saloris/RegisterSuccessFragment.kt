@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -61,9 +62,27 @@ class RegisterSuccessFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
         auth = Firebase.auth
-//        binding.btnRequiredInfo.isEnabled = true
-//        binding.checkEmailVerified.setOnClickListener {
-//            Log.d("checkEmailVerified", "${auth.currentUser?.isEmailVerified!!}!!!!!!!!")
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        binding.btnRequiredInfo.isEnabled = false
+        binding.checkEmailVerified.setOnClickListener {
+            currentUser?.reload()?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val isEmailVerified = currentUser.isEmailVerified
+                    Log.d("checkEmailVerified", "${isEmailVerified}!!!!!!!!")
+
+                    if (isEmailVerified) {
+                        binding.btnRequiredInfo.isEnabled = true
+                        toast.makeToast(requireContext(), "이메일 인증이 확인되었습니다.")
+                    }
+                } else {
+                    Log.d("checkEmailVerified", "${auth.currentUser?.isEmailVerified!!}!!!!!!!!")
+                    toast.makeToast(requireContext(), "메일함을 확인해주세요.")
+                }
+                // 작업 실패 처리
+            }
+        }
+        Log.d("checkEmailVerified", "${auth.currentUser?.isEmailVerified!!}!!!!!!!!")
 //            if (auth.currentUser?.isEmailVerified!!) {
 //                binding.btnRequiredInfo.isEnabled = true
 //            } else {

@@ -37,7 +37,13 @@ class SplashActivity : AppCompatActivity() {
         handler?.postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-        }, 5000)
+        }, 3000)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Handler가 메모리 누수를 일으키지 않도록 합니다.
+        handler?.removeCallbacksAndMessages(null)
     }
 
     private fun isOnBoardingFinished(): Boolean {
