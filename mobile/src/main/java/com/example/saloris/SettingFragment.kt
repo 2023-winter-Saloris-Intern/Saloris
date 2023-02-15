@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,14 +35,16 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.CapabilityApi.FILTER_REACHABLE
+import com.google.android.gms.wearable.CapabilityClient.FILTER_REACHABLE
 import com.google.android.gms.wearable.MessageClient.OnMessageReceivedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
-
 
 class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -276,7 +280,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 getNodesResBool?.get(1)?.let { Log.d("getnodesresbool : ", it.toString()) }
 
 //                val ifilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-//                val batteryStatus = requireContext()!!.registerReceiver(null, ifilter)
+//                val batteryStatus = requireActivity().registerReceiver(null, ifilter)
 //
 //                val level = batteryStatus!!.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
 
@@ -295,14 +299,26 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    val scale = batteryInfo.chargeStatus
 //                }
 
-                fun updateBatteryLevel(context: Context): Int {
-                    val batteryManager =
-                        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-                    val batteryLevel =
-                        batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
-                    return batteryLevel
-                }
+//                fun updateBatteryLevel(context: Context): Int {
+//                    val node = getConnectedNode(context)
+//
+//                    if (node != null) {
+//                        val result = withContext(Dispatchers.IO) {
+//                            Wearable.getMessageClient(context)
+//                                .sendMessage(node.id, "/battery", null)
+//                                .await()
+//                        }
+//                        if (result.isSuccessful) {
+//                            val byteArray = result.getByteArray("battery")
+//                            if (byteArray != null) {
+//                                val buffer = ByteBuffer.wrap(byteArray)
+//                                val batteryLevel = buffer.getInt()
+//                                return batteryLevel
+//                            }
+//                        }
+//                    }
+//                    return -1
+//                }
 
 //                val dataClient = context?.let { Wearable.getDataClient(it) }
 //                val batteryUri = Uri.Builder()
@@ -316,6 +332,14 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //                    val scale = batteryDataMap.getInt("scale")
 //                }
 
+                fun updateBatteryLevel(context: Context): Int {
+                    val batteryManager =
+                        context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                    val batteryLevel =
+                        batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
+                    return batteryLevel
+                }
 
                 if (getNodesResBool!![0]) {
                     //if message Acknowlegement Received
@@ -328,6 +352,8 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         //messageReceiver.onMessageReceived(p0)
                         binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
                         //updateBatteryLevel(batteryLevel = null)
+                        MyMobileService()
+
 
                     } else {
                         //워치와 연결, 앱이 닫혀있음
@@ -339,6 +365,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         //messageReceiver.onMessageReceived(p0)
                         binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
                         //updateBatteryLevel(batteryLevel = null)
+                        MyMobileService()
 
                     }
                 } else {
@@ -507,4 +534,19 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 //        private const val BATTERY_LEVEL_PATH = "/battery_level"
 //    }
 
+}
+
+class MyMobileService : WearableListenerService() {
+    private lateinit var binding: FragmentSettingBinding
+
+    override fun onDataChanged(dataEvents: DataEventBuffer) {
+        for (event in dataEvents) {
+            if (event.type == DataEvent.TYPE_CHANGED && event.dataItem.uri.path == "/battery") {
+                val batteryLevel = DataMapItem.fromDataItem(event.dataItem).dataMap.getInt("batteryLevel")
+                Log.d(TAG, "Battery level: $batteryLevel")
+                binding.watchBattery.setText(batteryLevel)
+            }
+        }
+        dataEvents.release()
+    }
 }

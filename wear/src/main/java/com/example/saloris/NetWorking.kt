@@ -21,6 +21,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
@@ -36,6 +37,7 @@ import com.google.android.gms.wearable.*
 import com.example.saloris.databinding.FragmentExerciseBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 class NetWorking : WearableListenerService(),
@@ -119,6 +121,12 @@ class NetWorking : WearableListenerService(),
 
     }
 
+    fun broadcastBatteryLevel(context: Context, batteryLevel: Int) {
+        val putDataReq: PutDataMapRequest = PutDataMapRequest.create("/battery")
+        putDataReq.dataMap.putInt("batteryLevel", batteryLevel)
+        val putDataReqMessage = putDataReq.asPutDataRequest()
+        Wearable.getDataClient(context).putDataItem(putDataReqMessage)
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
@@ -219,3 +227,22 @@ class NetWorking : WearableListenerService(),
 
 
 }
+
+class MyWearableService : WearableListenerService() {
+    override fun onMessageReceived(messageEvent: MessageEvent) {
+        if (messageEvent.path == "/battery") {
+            val batteryLevel = getBatteryLevel()
+            val buffer = ByteBuffer.allocate(4)
+            buffer.putInt(batteryLevel)
+            val byteArray = buffer.array()
+            Wearable.getMessageClient(this).sendMessage(
+                messageEvent.sourceNodeId, "/battery", byteArray)
+        }
+    }
+
+    private fun getBatteryLevel(): Int {
+        val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    }
+}
+
