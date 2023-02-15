@@ -53,7 +53,9 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
     private var messageEvent: MessageEvent? = null
     private var wearableNodeUri: String? = null
 
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var navController: NavController
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     var btnBackPressedTime: Long = 0
@@ -121,7 +123,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         //Initialize Firebase Storage
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -144,7 +146,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         activityContext = this.context
 
         //최초 실행 여부 판단하는 구문
-        val pref: SharedPreferences = requireContext().getSharedPreferences("isFirst", Activity.MODE_PRIVATE)
+        val pref: SharedPreferences =
+            requireContext().getSharedPreferences("isFirst", Activity.MODE_PRIVATE)
         val first = pref.getBoolean("isFirst", false)
         if (first == false) {
             Log.d("Is first Time?", "first")
@@ -161,14 +164,14 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                 if (isAutoLogined()) {
                     context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
-                }else {
+                } else {
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
             } else {
                 if (!auth.currentUser?.isEmailVerified!!) {
+                    (activity as MainActivity).checkData()
                     context?.let { toast.makeToast(it, "메일함에서 인증해주세요") }
                 }
-                checkData()
                 binding.userName.text = auth.currentUser!!.displayName
                 binding.userName2.text = auth.currentUser!!.displayName
             }
@@ -193,41 +196,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         //wearable device가 연결되었는지 확인
     }
 
-    private fun checkData() {
-        //Initialize Firebase Storage
-        storage = FirebaseStorage.getInstance()
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-        val currentUser = auth.currentUser
-        val userRef = firestore.collection("users").document(currentUser!!.uid)
-        Log.d("userRef", "$userRef!!!!!!!!!!@@@@@@")
 
-        userRef.get()
-            .addOnSuccessListener { document ->
-                Log.d("document", "$document!!!!!!!!!!!")
-                if (document != null) {
-                    val userSex = document.getBoolean("userSex")
-                    val userBirth = document.getString("userBirth")
-                    val userWeight = document.getString("userWeight")
-                    val userHeight = document.getString("userHeight")
-                    val userSmoke = document.getString("userSmoke")
-                    val userDrink = document.getString("userDrink")
-                    if (userSex == null || userSmoke == null || userDrink == null
-                        || userBirth == null || userHeight == null || userWeight == null
-                    ) {
-                        navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
-                    } else {
-                        Log.d("이거 아님?", "action_homeFragment_to_loginStartFragment")
-                        //navController.navigate(R.id.action_homeFragment_to_driveFragment)
-                    }
-                } else {
-                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
-                }
-            }
-        //현재 유저에 대한 필드 값을 가지고 와서 데이터 검사를 해야함
-        //이 코드는 모든 유저들의 필드 값을 가지고 오기 때문에 조건문을 통해 해결해야함
-
-    }
 
     private fun sendMessage(message: String) {
         toast.makeToast(requireContext(), "send message")
@@ -458,6 +427,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
     }
 
     override fun onDetach() {

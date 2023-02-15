@@ -72,9 +72,10 @@ class MainActivity : AppCompatActivity() {
 
     /* User Authentication */
     //private lateinit var auth: FirebaseAuth
-    var auth : FirebaseAuth? = null
-    var firestore : FirebaseFirestore? = null
-    var storage : FirebaseStorage? = null
+    /* User Authentication */
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
     /* View */
     private lateinit var navController: NavController
     lateinit var binding: ActivityMainBinding
@@ -170,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         navController.addOnDestinationChangedListener(onDestinationChangedListener)
-
+        checkData()
         /* Bottom Menu */
         binding.bottomNav.apply {
             setupWithNavController(navController)
@@ -179,5 +180,37 @@ class MainActivity : AppCompatActivity() {
                 true
             }
         }
+    }
+    fun checkData() {
+        //Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        val currentUser = auth.currentUser
+        val userRef = firestore.collection("users").document(currentUser!!.uid)
+        Log.d("userRef", "$userRef!!!!!!!!!!@@@@@@")
+
+        userRef.get()
+            .addOnSuccessListener { document ->
+                Log.d("document", "$document!!!!!!!!!!!")
+                if (document != null) {
+                    val userSex = document.getBoolean("userSex")
+                    val userBirth = document.getString("userBirth")
+                    val userWeight = document.getString("userWeight")
+                    val userHeight = document.getString("userHeight")
+                    val userSmoke = document.getString("userSmoke")
+                    val userDrink = document.getString("userDrink")
+                    if (userSex == null || userSmoke == null || userDrink == null
+                        || userBirth == null || userHeight == null || userWeight == null
+                    ) {
+                        navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
+                    } else {
+                        Log.d("이거 아님?", "action_homeFragment_to_loginStartFragment")
+                        navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                    }
+                } else {
+                    navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
+                }
+            }
     }
 }

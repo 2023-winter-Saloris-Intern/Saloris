@@ -816,7 +816,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 Log.d("try", "try exception")
                 e.printStackTrace()
             }
-
             //UI Thread
             withContext(Dispatchers.Main) {
                 getNodesResBool?.get(1)?.let { Log.d("getnodesresbool : ", it.toString()) }
@@ -943,7 +942,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //            val s =
 //                String(p0.data, StandardCharsets.UTF_8)
             val rateAndBattery =String(p0.data, StandardCharsets.UTF_8).split("/")
-            val s =rateAndBattery[0]
+            val s = rateAndBattery[0]
             val messageEventPath: String = p0.path
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 //getNodes()에서 워치앱이 열려있는지 확인하기 위해 보낸 메시지의 답을 받는다
