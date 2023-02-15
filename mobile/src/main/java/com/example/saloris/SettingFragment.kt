@@ -31,6 +31,7 @@ import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentSettingBinding
 import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
+import com.example.salorisv.DevicePairing
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -346,6 +347,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                     if (getNodesResBool[1]) {
                         //워치와 연결, 앱이 열려있음
                         wearableDeviceConnected = true
+                        DevicePairing.wearableDeviceConnected = true
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
@@ -358,12 +360,14 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                     } else {
                         //워치와 연결, 앱이 닫혀있음
                         wearableDeviceConnected = false
+                        DevicePairing.wearableDeviceConnected = false
                         //binding.sendmessageButton.visibility = View.GONE
                         binding.disconnectBtn.setBackgroundDrawable(cardColor)
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         //messageReceiver.onMessageReceived(p0)
-                        binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
+                        //binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
+                        //binding.watchBattery.setText()
                         //updateBatteryLevel(batteryLevel = null)
                         MyMobileService()
 
@@ -371,6 +375,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 } else {
                     //워치와 연결되지 않음
                     wearableDeviceConnected = false
+                    DevicePairing.wearableDeviceConnected = false
                     binding.disconnectBtn.setText("워치 연결 정보 없음")
                 }
             }
@@ -378,7 +383,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     //현재 모바일이랑 연동된 워치의 node를 가져와서 확인
-    private fun getNodes(context: Context): BooleanArray {
+    private suspend fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
         val resBool = BooleanArray(2)
         resBool[0] = false //nodePresent : true이면 연결되어있다
@@ -397,6 +402,19 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 nodeResults.add(node.id)
                 try {
                     val nodeId = node.id
+
+//                    val dataClient = context?.let { Wearable.getDataClient(it) }
+//                    val batteryUri = Uri.Builder()
+//                        .scheme(PutDataRequest.WEAR_URI_SCHEME)
+//                        .path("/battery")
+//                        .build()
+//                    val dataItem = dataClient?.getDataItem(batteryUri)?.await()
+//                    val batteryDataMap = dataItem?.dataMap
+//                    if (batteryDataMap != null) {
+//                        val level = batteryDataMap.getInt("level")
+//                        val scale = batteryDataMap.getInt("scale")
+//                    }
+
                     // Set the data of the message to be the bytes of the Uri.
                     val payload: ByteArray = wearableAppCheckPayload.toByteArray()
                     // Send the rpc
