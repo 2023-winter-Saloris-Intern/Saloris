@@ -163,13 +163,20 @@ class RecordFragment : Fragment() {
                 val Uid = auth.currentUser?.uid
                 val a = async {
                     if (Uid != null) {
-                        datefromDB(Uid)
-                        Log.d("date from db",DayArr.toString())
+                        //datefromDB(Uid)
+                        var db =
+                            Room.databaseBuilder(
+                                requireContext().applicationContext,
+                                AppDatabase::class.java,
+                                "heartRateDB"
+                            ).build()
+                        var DateArr =  db.heartRateDao().getInsertDate(Uid)
+                        Log.d("date from db",DateArr.toString())
                     }
                 }
                 if (a.await() != null) {
                     mainActivity.runOnUiThread(Runnable {
-                        //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
+                        //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)S
                         //잘 돌아갈지는 모르겠다..
 //                        val format = org.threeten.bp.format.DateTimeFormatter.ofPattern("dd")
 //                        val dayArr = arrayListOf("dd")
@@ -234,15 +241,15 @@ class RecordFragment : Fragment() {
                                         "heartRateDB"
                                     ).build()
                                 Log.d("date",date.toString())
-                                Log.d("fromDB!!!!!!!!!!",db!!.heartRateDao().getHeartRate(date.toString()+"%").toString())
-                                var heartRateList = db!!.heartRateDao().getHeartRate(date.toString()+"%")
+                                Log.d("fromDB!!!!!!!!!!",db!!.heartRateDao().getHeartRate(date.toString(),Uid).toString())
+                                var heartRateList = db!!.heartRateDao().getHeartRate(date.toString(),Uid)
                                 //todo chart!!!
                                 for(dao in heartRateList){
-                                    Log.d("time",dao.InsertTime)
+                                    Log.d("time",dao.InsertDate+"T"+dao.InsertTime)
                                     Log.d("heartrate",dao.HeartRate.toString())
                                     Log.d("sleep",dao.Sleep.toString())
                                     sleepArr.add(dao.Sleep!!)
-                                    addEntry(dao.InsertTime,dao.HeartRate.toString())
+                                    addEntry(dao.InsertDate+"T"+dao.InsertTime,dao.HeartRate.toString())
 
                                 }
                                 var nonSleeplineColor = ContextCompat.getColor(requireContext(),R.color.chart_line_nonsleep)

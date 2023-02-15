@@ -101,7 +101,7 @@ class AccountFragment : Fragment() {
                             AppDatabase::class.java,
                             "heartRateDB"
                         ).build()
-                    db!!.heartRateDao().deleteAll()
+                    db!!.heartRateDao().deleteAll(uid)
                     if (true) {
                         user?.delete()
                             ?.addOnCompleteListener { deleteTask ->

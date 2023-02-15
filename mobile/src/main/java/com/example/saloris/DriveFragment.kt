@@ -1000,8 +1000,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     if (last_time != dateAndTime.toString().substring(14, 16)) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             //val isInserted = async { insertDB(newRate.toInt()) }
-                            var newData= HeartRate(dateAndTime.toString(),newRate.toInt(),false)
+                            val Uid = auth.currentUser?.uid
+                            var Sleep = false
+                            if(newRate.toInt()<75){
+                                Sleep = true
+                            }
+                            var newData= HeartRate(dateAndTime.toString().substring(11,19),dateAndTime.toString().substring(0,10),newRate.toInt(),Sleep,Uid)
                             Log.d("NewData ",newData.toString())
+                            Log.d("Time",dateAndTime.toString().substring(11,19)+dateAndTime.toString().substring(0,10))
                             var db =
                                 Room.databaseBuilder(
                                     requireContext().applicationContext,
@@ -1011,6 +1017,10 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
                             db!!.heartRateDao().insertHeartRate(newData)
                             Log.d("fromDB",db!!.heartRateDao().getAll().toString())
+                            var heartRateAll = db!!.heartRateDao().getAll()
+                            for(data in heartRateAll){
+                                Log.d(data.Uid.toString() , data.HeartRate.toString())
+                            }
                             Log.d("isInserted", newRate)
                             Log.d("time", dateAndTime.toString().substring(14, 16))
                             last_time = dateAndTime.toString().substring(14, 16)

@@ -5,11 +5,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity
+@Entity(primaryKeys = ["InsertDate", "InsertTime"])
 data class HeartRate(
-    @PrimaryKey val InsertTime : String,
+    val InsertTime : String,
+    val InsertDate : String,
+
     @ColumnInfo
     val HeartRate : Int?,
     @ColumnInfo
-    val Sleep : Boolean?
+    val Sleep : Boolean?,
+    @ColumnInfo
+    val Uid : String?
     )

@@ -12,9 +12,12 @@ interface HeartRateDao {
     @Insert
     fun insertHeartRate(heartRate: HeartRate)
 
-    @Query("DELETE FROM heartrate")
-    fun deleteAll()
+    @Query("DELETE FROM heartrate WHERE Uid = :Uid")
+    fun deleteAll(Uid:String)
 
-    @Query("SELECT * FROM heartrate WHERE InsertTime LIKE :Date")
-    fun getHeartRate(Date : String):List<HeartRate>
+    @Query("SELECT * FROM heartrate WHERE InsertDate = :Date AND Uid = :Uid")
+    fun getHeartRate(Date : String,Uid:String):List<HeartRate>
+
+    @Query("SELECT DISTINCT InsertDate FROM heartrate WHERE Uid = :Uid")
+    fun getInsertDate(Uid:String):List<String>
 }
