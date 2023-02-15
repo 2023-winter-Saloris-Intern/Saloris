@@ -179,6 +179,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private var fittingLevel = 0
     private var timerCheck = true
 
+    private var sum1minHeartRate = 0
+    private var count1minHeartRate = 0
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initGlSurfaceView() {
@@ -997,15 +999,23 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     Log.d ("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //DB로 데이터 전송
+                    sum1minHeartRate+=newRate.toInt()
+                    count1minHeartRate+=1
                     if (last_time != dateAndTime.toString().substring(14, 16)) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             //val isInserted = async { insertDB(newRate.toInt()) }
                             val Uid = auth.currentUser?.uid
+                            val Rate = sum1minHeartRate/count1minHeartRate
+                            Log.d("sum",sum1minHeartRate.toString())
+                            Log.d("count",count1minHeartRate.toString())
+                            Log.d("average ",Rate.toString())
+                            Log.d("now",newRate.toString())
                             var Sleep = false
-                            if(newRate.toInt()<75){
+                            if(Rate.toInt()<75){
                                 Sleep = true
                             }
-                            var newData= HeartRate(dateAndTime.toString().substring(11,19),dateAndTime.toString().substring(0,10),newRate.toInt(),Sleep,Uid)
+
+                            var newData= HeartRate(dateAndTime.toString().substring(11,19),dateAndTime.toString().substring(0,10),Rate.toInt(),Sleep,Uid)
                             Log.d("NewData ",newData.toString())
                             Log.d("Time",dateAndTime.toString().substring(11,19)+dateAndTime.toString().substring(0,10))
                             var db =
@@ -1021,9 +1031,11 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                             for(data in heartRateAll){
                                 Log.d(data.Uid.toString() , data.HeartRate.toString())
                             }
-                            Log.d("isInserted", newRate)
+                            Log.d("isInserted", Rate.toString())
                             Log.d("time", dateAndTime.toString().substring(14, 16))
                             last_time = dateAndTime.toString().substring(14, 16)
+                            sum1minHeartRate=0
+                            count1minHeartRate=0
                         }
                     }
                 } catch (e: Exception) {
