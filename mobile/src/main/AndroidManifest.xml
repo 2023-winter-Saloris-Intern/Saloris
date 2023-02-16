@@ -29,6 +29,8 @@
         android:name="android.permission.BATTERY_LEVEL_PATH"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.INTERNET" />
+<!--    <uses-feature android:name="android.hardware.type.watch" />-->
+
 
     <application
         android:allowBackup="true"

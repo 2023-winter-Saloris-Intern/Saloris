@@ -31,6 +31,7 @@ import androidx.navigation.Navigation
 import com.example.saloris.databinding.FragmentSettingBinding
 import com.example.saloris.util.MakeToast
 import com.example.saloris.util.OpenDialog
+import com.google.android.gms.wearable.MessageClient
 import com.example.salorisv.DevicePairing
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -366,7 +367,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setTextColor(textColor)
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         //messageReceiver.onMessageReceived(p0)
-                        //binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
+                        binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
                         //binding.watchBattery.setText()
                         //updateBatteryLevel(batteryLevel = null)
                         MyMobileService()
@@ -402,6 +403,21 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 nodeResults.add(node.id)
                 try {
                     val nodeId = node.id
+
+//                    if (node != null) {
+//                        val result: MessageClient.SendMessageResult = withContext(Dispatchers.IO) {
+//                            Wearable.getMessageClient(context).sendMessage(node.id, "/battery", null).await()
+//                        }
+//                        if (result.isSuccessful) {
+//                            val byteArray = result.getByteArray("battery")
+//                            if (byteArray != null) {
+//                                val buffer = ByteBuffer.wrap(byteArray)
+//                                val batteryLevel = buffer.getInt()
+//                                // 배터리 레벨 정보를 얻어온 후 반환
+//                                return booleanArrayOf(true, true, true)
+//                            }
+//                        }
+//                    }
 
 //                    val client = Wearable.getNodeClient(requireContext())
 //                    val result = client.getBatteryInfo(nodeId).await()
