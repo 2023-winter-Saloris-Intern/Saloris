@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -115,6 +116,8 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 //        }
         /* User Authentication */
         auth = Firebase.auth
+        hideLoading()
+
     }
 
     override fun onCreateView(
@@ -160,14 +163,16 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         } else {
             Log.d("Is first Time?", "not first")
             /* User Authentication */
-            //유저가 없을때
             if (auth.currentUser == null) {
+                //유저가 없을때
+                Log.d("homeFragment", "유저가 없을때")
                 if (isAutoLogined()) {
                     context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
             } else {
                 //유저가 있을때
+                Log.d("homeFragment", "유저가 있을때")
                 checkData()
                 if (!auth.currentUser?.isEmailVerified!!) {
                     //유저가 이메일 인증을 안했을때
@@ -198,18 +203,18 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
     }
 
     fun checkData() {
+        Log.d("checkData", "checkData 실행")
         //Initialize Firebase Storage
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         val currentUser = auth.currentUser
         val userRef = firestore.collection("users").document(currentUser!!.uid)
-        Log.d("userRef", "$userRef!!!!!!!!!!@@@@@@")
-
         userRef.get()
             .addOnSuccessListener { document ->
                 Log.d("document", "$document!!!!!!!!!!!")
                 if (document != null) {
+                    showLoading()
                     val userSex = document.getBoolean("userSex")
                     val userBirth = document.getString("userBirth")
                     val userWeight = document.getString("userWeight")
@@ -217,12 +222,13 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     val userSmoke = document.getString("userSmoke")
                     val userDrink = document.getString("userDrink")
                     if (userSex == null || userSmoke == null || userDrink == null
-                        || userBirth == null || userHeight == null || userWeight == null
-                    ) {
+                        || userBirth == null || userHeight == null || userWeight == null) {
+                        Log.d("checkData", "필수 정보 입력이 끝나지 않았을때")
                         navController.navigate(R.id.action_homeFragment_to_registerSuccessFragment)
                     } else {
                         Log.d("checkData", "document가 null이 아니고 필수 정보 입력이 끝났을때")
                         if (!isAutoLogined()) {
+                            Log.d("checkData", "isAutoLogined false 이면")
                             navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                         }
                     }
@@ -230,7 +236,21 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
                     Log.d("checkData", "document가 null이면")
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
+                hideLoading()
             }
+        Log.d("checkData", "checkData 탈출")
+    }
+
+    fun showLoading() {
+        // 로딩 화면을 보여줌
+        Log.d("showLoading", "로딩 화면 보여줌")
+        _binding?.loadingId?.loadingScreen?.visibility = View.VISIBLE
+    }
+
+    fun hideLoading() {
+        // 로딩 화면을 숨김
+        Log.d("hideLoading", "로딩 화면 숨김")
+        _binding?.loadingId?.loadingScreen?.visibility = View.GONE
     }
 
     private fun sendMessage(message: String) {

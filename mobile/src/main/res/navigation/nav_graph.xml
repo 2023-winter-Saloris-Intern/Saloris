@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_homeFragment_to_registerSuccessFragment"
             app:destination="@id/registerSuccessFragment" />
+        <action
+            android:id="@+id/action_homeFragment_self"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"

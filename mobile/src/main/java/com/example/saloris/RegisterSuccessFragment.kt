@@ -114,4 +114,8 @@ class RegisterSuccessFragment : Fragment() {
                 arguments)
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
 }
