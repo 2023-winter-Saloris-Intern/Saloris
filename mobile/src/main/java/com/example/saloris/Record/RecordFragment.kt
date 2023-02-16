@@ -15,9 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.example.saloris.LocalDB.AppDatabase
 import com.example.saloris.MainActivity
 import com.example.saloris.MyMarkerView
 import com.example.saloris.R
@@ -159,13 +163,20 @@ class RecordFragment : Fragment() {
                 val Uid = auth.currentUser?.uid
                 val a = async {
                     if (Uid != null) {
-                        datefromDB(Uid)
-                        Log.d("date from db",DayArr.toString())
+                        //datefromDB(Uid)
+                        var db =
+                            Room.databaseBuilder(
+                                requireContext().applicationContext,
+                                AppDatabase::class.java,
+                                "heartRateDB"
+                            ).build()
+                        var DateArr =  db.heartRateDao().getInsertDate(Uid)
+                        Log.d("date from db",DateArr.toString())
                     }
                 }
                 if (a.await() != null) {
                     mainActivity.runOnUiThread(Runnable {
-                        //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)
+                        //todo : 데이터가 있는 날짜를 이용해 ui변경(색 or 선택제한)S
                         //잘 돌아갈지는 모르겠다..
 
                         //val dayArr = DayArr //arrayListOf("yyyy-MM-dd") // 이 부분에 데이터 포멧이 아니고 실제 데이터가 들어가야함..
@@ -226,7 +237,28 @@ class RecordFragment : Fragment() {
                         //show ( uid , 선택 시간) : 선택한 날짜의 데이터를 차트로 출력
                         val show_Data = async {
                             if (Uid != null) {
-                                show(Uid,date)
+                                //show(Uid,date)
+                                var db =
+                                    Room.databaseBuilder(
+                                        requireContext().applicationContext,
+                                        AppDatabase::class.java,
+                                        "heartRateDB"
+                                    ).build()
+                                Log.d("date",date.toString())
+                                Log.d("fromDB!!!!!!!!!!",db!!.heartRateDao().getHeartRate(date.toString(),Uid).toString())
+                                var heartRateList = db!!.heartRateDao().getHeartRate(date.toString(),Uid)
+                                //todo chart!!!
+                                for(dao in heartRateList){
+                                    Log.d("time",dao.InsertDate+"T"+dao.InsertTime)
+                                    Log.d("heartrate",dao.HeartRate.toString())
+                                    Log.d("sleep",dao.Sleep.toString())
+                                    sleepArr.add(dao.Sleep!!)
+                                    addEntry(dao.InsertDate+"T"+dao.InsertTime,dao.HeartRate.toString())
+
+                                }
+                                var nonSleeplineColor = ContextCompat.getColor(requireContext(),R.color.chart_line_nonsleep)
+                                colors.add(nonSleeplineColor)
+                                Log.d("colors",colors.toString())
                             }
                         }
                         if(show_Data.await()!=null){

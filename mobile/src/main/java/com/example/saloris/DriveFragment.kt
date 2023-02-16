@@ -27,8 +27,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.room.Room
+import com.example.saloris.LocalDB.AppDatabase
+import com.example.saloris.LocalDB.HeartRate
 import com.example.saloris.databinding.FragmentDriveBinding
 import com.example.saloris.facemesh.FaceMeshResultGlRenderer
 import com.example.saloris.util.*
@@ -51,6 +52,8 @@ import com.influxdb.client.write.Point
 import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -175,6 +178,9 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
     private var fittingLevel = 0
     private var timerCheck = true
+
+    private var sum1minHeartRate = 0
+    private var count1minHeartRate = 0
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initGlSurfaceView() {
@@ -657,6 +663,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 //                delay(1000)
 //            }
 //        }
+
     }
 
     override fun onCreateView(
@@ -988,15 +995,46 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     }
                     binding.heartRate.text = sbTemp.toString()
                     newRate = s
-                    Log.d("onMessageReceived_mainActivity", "feedMultiple()")
+                    Log.d ("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //DB로 데이터 전송
+                    sum1minHeartRate+=newRate.toInt()
+                    count1minHeartRate+=1
                     if (last_time != dateAndTime.toString().substring(14, 16)) {
                         lifecycleScope.launch(Dispatchers.IO) {
-                            val isInserted = async { insertDB(newRate.toInt()) }
-                            Log.d("isInserted", newRate)
+                            //val isInserted = async { insertDB(newRate.toInt()) }
+                            val Uid = auth.currentUser?.uid
+                            val Rate = sum1minHeartRate/count1minHeartRate
+                            Log.d("sum",sum1minHeartRate.toString())
+                            Log.d("count",count1minHeartRate.toString())
+                            Log.d("average ",Rate.toString())
+                            Log.d("now",newRate.toString())
+                            var Sleep = false
+                            if(Rate.toInt()<75){
+                                Sleep = true
+                            }
+
+                            var newData= HeartRate(dateAndTime.toString().substring(11,19),dateAndTime.toString().substring(0,10),Rate.toInt(),Sleep,Uid)
+                            Log.d("NewData ",newData.toString())
+                            Log.d("Time",dateAndTime.toString().substring(11,19)+dateAndTime.toString().substring(0,10))
+                            var db =
+                                Room.databaseBuilder(
+                                    requireContext().applicationContext,
+                                    AppDatabase::class.java,
+                                    "heartRateDB"
+                                ).build()
+
+                            db!!.heartRateDao().insertHeartRate(newData)
+                            Log.d("fromDB",db!!.heartRateDao().getAll().toString())
+                            var heartRateAll = db!!.heartRateDao().getAll()
+                            for(data in heartRateAll){
+                                Log.d(data.Uid.toString() , data.HeartRate.toString())
+                            }
+                            Log.d("isInserted", Rate.toString())
                             Log.d("time", dateAndTime.toString().substring(14, 16))
                             last_time = dateAndTime.toString().substring(14, 16)
+                            sum1minHeartRate=0
+                            count1minHeartRate=0
                         }
                     }
                 } catch (e: Exception) {
