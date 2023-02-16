@@ -166,7 +166,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
             if (auth.currentUser == null) {
                 //유저가 없을때
                 Log.d("homeFragment", "유저가 없을때")
-                if (isAutoLogined()) {
+                if (!isAutoLogined()) {
                     context?.let { toast.makeToast(it, "로그인에 실패했습니다.") }
                     navController.navigate(R.id.action_homeFragment_to_loginStartFragment)
                 }
