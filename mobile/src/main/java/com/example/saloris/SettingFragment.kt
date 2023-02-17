@@ -372,7 +372,6 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.disconnectBtn.setText("워치 연결 정보 있음")
                         //messageReceiver.onMessageReceived(p0)
                         binding.watchBattery.setText(getActivity()?.let { updateBatteryLevel(it).toString() })
-                        //binding.watchBattery.setText()
                         //updateBatteryLevel(batteryLevel = null)
                         MyMobileService()
 
@@ -434,6 +433,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
 
                     // Set the data of the message to be the bytes of the Uri.
                     val payload: ByteArray = wearableAppCheckPayload.toByteArray()
+
                     // Send the rpc
                     // Instantiates clients without member variables, as clients are inexpensive to
                     // create. (They are cached and shared between GoogleApi instances.)
