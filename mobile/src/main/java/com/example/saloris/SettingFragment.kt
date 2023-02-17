@@ -129,12 +129,13 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
         Log.d("getName", "getName!!!!!!!")
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         val pairedDevices = bluetoothAdapter.bondedDevices
-        var name: String = ""
         for (device in pairedDevices) {
-            Log.d("getName", "Name: ${device.name}")
-            name = device.name
+            if (device.name.startsWith("Galaxy Watch")) {
+                Log.d("getName", "Name: ${device.name}")
+                return device.name
+            }
         }
-        return name
+        return null
     }
 
 //    private fun retrieveDeviceNode() {

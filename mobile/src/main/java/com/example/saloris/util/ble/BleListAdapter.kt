@@ -3,15 +3,18 @@ package com.example.saloris.util.ble
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -61,20 +64,34 @@ class BleListAdapter : RecyclerView.Adapter<BleListAdapter.RecyclerViewHolder>()
         return RecyclerViewHolder(binding)
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
         bluetoothDevices?.let { holder.bind(it) }
         holder.itemView.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(it.context,
-                    Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ActivityCompat.checkSelfPermission(it.context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 return@setOnClickListener
             }
-            name = bluetoothDevices?.name.toString()
+            name = getName()!!
             val device = bluetoothDevices
-            //showDialog(it.context, device, it)
             device?.createBond()
         }
     }
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun getName(): String? {
+        Log.d("getName", "getName!!!!!!!")
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val pairedDevices = bluetoothAdapter.bondedDevices
+        for (device in pairedDevices) {
+            if (device.name.startsWith("Galaxy Watch")) {
+                Log.d("getName", "Name: ${device.name}")
+                return device.name
+            }
+        }
+        return null
+    }
+
 //    private fun showDialog(context: Context, device: BluetoothDevice, view: View) {
 //        val builder = AlertDialog.Builder(context)
 //        builder
