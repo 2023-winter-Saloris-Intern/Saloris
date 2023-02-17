@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.net.Socket
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
@@ -193,6 +197,7 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
 
         binding.checkConnect.setOnClickListener {
             //wearable device가 연결되었는지 확인하는 버튼
+            Log.d("연결 확인 버튼","클릭클릭클릭클릭클릭클릭클릭클릭클릭클릭")
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = requireActivity() as AppCompatActivity
                 //Couroutine

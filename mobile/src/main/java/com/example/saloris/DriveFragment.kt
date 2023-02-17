@@ -51,6 +51,10 @@ import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
 import com.influxdb.client.write.Point
 import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.OutputStream
+import java.net.Socket
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -697,6 +701,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
 
         binding.checkConnect.setOnClickListener {
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
+            SocketAsyncTask().execute()
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as AppCompatActivity
                 //Couroutine
@@ -712,7 +717,42 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         }
 
     }
+    inner class SocketAsyncTask : AsyncTask<Void, Void, String>() {
 
+        override fun doInBackground(vararg params: Void?): String {
+            try {
+                Log.d("SocketAsyncTask().execute()", "소켓소켓소켓소켓소켓소켓소켓소켓소켓소켓")
+                val socket = Socket("192.168.0.125", 9999)
+//                val outputStream: OutputStream = socket.getOutputStream() // 출력 스트림 생성
+//                outputStream.flush() // 버퍼 비우기
+//
+//                socket.close() // 소켓 닫기
+
+
+                //Socket을 통해 데이터를 얻어오기 위한 코드
+                val input = socket.getInputStream()
+                val dataInputStream = DataInputStream(input)
+                //데이터를 보내기 위한 코드
+                val output = socket.getOutputStream()// Socket의 출력 스트림을 가져옵니다.
+                val dataOutputStream = DataOutputStream(output)// 데이터를 출력하기 위한 DataOutputStream 객체를 생성합니다.
+
+                // DataOutputStream 객체를 이용하여 데이터를 서버로 전송합니다.
+                val newRateInt = newRate.toInt()
+                dataOutputStream.writeInt(newRateInt)
+
+                val response = dataInputStream.readInt()
+                Log.d("SocketAsyncTask().execute()", "$response : 리스폰리스폰!!!@!!@!@!@!@!@!@!")
+
+                Log.d("SocketAsyncTask().execute()", "${newRate.toInt()} : 뉴레이트!!!@!!@!@!@!@!@!@!")
+                //socket.close()
+
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+
+            return ""
+        }
+    }
     override fun onDataChanged(p0: DataEventBuffer) {
         TODO("Not yet implemented")
     }
@@ -968,7 +1008,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 //워치에서 보낸 심박수를 받는다
                 try {
                     val battery = rateAndBattery[1]
-                    Log.d("battery",battery)
+                    //Log.d("battery",battery)
                     if(battery.toInt()>BatteryLow){
                         last_battery=true
                     }
@@ -995,7 +1035,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     }
                     binding.heartRate.text = sbTemp.toString()
                     newRate = s
-                    Log.d ("onMessageReceived_mainActivity", "feedMultiple()")
+                    //Log.d ("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //DB로 데이터 전송
                     sum1minHeartRate+=newRate.toInt()

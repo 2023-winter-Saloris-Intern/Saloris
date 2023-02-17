@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -30,6 +31,11 @@ import com.example.saloris.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.OutputStream
+import java.lang.Exception
+import java.net.Socket
 
 
 class MainActivity : AppCompatActivity() {
@@ -146,6 +152,7 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightStatusBars = true
             isAppearanceLightNavigationBars = true
         }
+        //SocketAsyncTask().execute()
 
 //        addMenuProvider(menuProvider)
         /* Toolbar */
@@ -181,11 +188,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
         }
-    }
-    private fun isAutoLogined(): Boolean {
-        val autoLoginPref =
-            this.getSharedPreferences("autoLogin", Activity.MODE_PRIVATE)
-        return autoLoginPref.contains("username")
     }
 
 }
