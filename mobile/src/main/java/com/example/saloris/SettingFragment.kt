@@ -134,6 +134,9 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                 Log.d("getName", "Name: ${device.name}")
                 return device.name
             }
+            else {
+                binding.watchInfo.text = "워치 연결정보 없음"
+            }
         }
         return null
     }
@@ -379,6 +382,7 @@ class SettingFragment : Fragment(), CoroutineScope by MainScope(),
                     wearableDeviceConnected = false
                     DevicePairing.wearableDeviceConnected = false
                     binding.disconnectBtn.setText("워치 연결 정보 없음")
+                    binding.watchInfo.setText("워치 연결 정보 없음")
                 }
             }
         }
