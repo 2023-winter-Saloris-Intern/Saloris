@@ -104,7 +104,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
 
-    private val socketCoroutine = SocketCoroutine()
+    //private val socketCoroutine = SocketCoroutine()
+    private var socketAsyncTask: SocketAsyncTask? = null
 
     private val cameraPermissionList = arrayOf(
         Manifest.permission.CAMERA
@@ -677,7 +678,15 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
-
+//        lifecycleScope.launch {
+//            delay(2000) // 2초 대기
+//            socketCoroutine.connect("192.168.0.103", 9999)
+//            socketCoroutine.sendData(newRate)
+//        } driveFragment가 실행되면 바로 데이터를 받는다.
+        lifecycleScope.launch {
+            delay(2000) // 2초 대기
+            SocketAsyncTask().execute()
+        }
         initFaceMesh()
         initGlSurfaceView()
         postGlSurfaceView()
@@ -698,12 +707,15 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
         navController = Navigation.findNavController(view)
         activityContext = this.context
-        lifecycleScope.launch {
-            delay(2000) // 1초 대기
-            socketCoroutine.connect("192.168.0.103", 9999)
-            socketCoroutine.sendData(newRate)
-        }
+
         binding.checkConnect.setOnClickListener {
+//            lifecycleScope.launch {
+//                socketCoroutine.connect("192.168.0.103", 9999)
+//                socketCoroutine.sendData(newRate)
+//            }
+            //만약 같은 데이터를 반복해서 받는다면 위에 lifecycleScope 함수를 주석 처리 후 밑에 있는 코드로 실행
+//            SocketAsyncTask().execute()
+
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as AppCompatActivity
@@ -715,61 +727,106 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         }
         binding.finishDriveBtn.setOnClickListener {
             binding.driveState.setText("운행 종료")
+            SocketAsyncTask().cancel(true)
             navController.navigate(R.id.action_driveFragment_to_homeFragment)
         }
 
     }
 
-    class SocketCoroutine {
-        private var socket: Socket? = null
-        private var socketThread: Thread? = null
-        private var dataOutputStream: DataOutputStream? = null
-        private var dataInputStream: DataInputStream? = null
+//    class SocketCoroutine {
+//        private var socket: Socket? = null
+//        private var socketThread: Thread? = null
+//        private var dataOutputStream: DataOutputStream? = null
+//        private var dataInputStream: DataInputStream? = null
+//
+//        suspend fun connect(ip: String, port: Int) = withContext(Dispatchers.IO) {
+//            try {
+//                socket = Socket(ip, port)
+//                val output = socket?.getOutputStream()
+//                dataOutputStream = DataOutputStream(output)
+//                val input = socket?.getInputStream()
+//                dataInputStream = DataInputStream(input)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//
+//        suspend fun sendData(newRate: String) = withContext(Dispatchers.IO) {
+//            try {
+//                while (isActive) {
+//                    // DataOutputStream 객체를 이용하여 데이터를 서버로 전송합니다.
+//                    val newRateInt = ByteBuffer.allocate(4)
+//                        .putInt(newRate.toInt())
+//                        .order(ByteOrder.BIG_ENDIAN)
+//                        .array()
+//                    Log.d("SocketCoroutine", "$newRateInt : newRateInt!!!@!!@!@!@!@!@!@!")
+//
+//                    dataOutputStream?.write(newRateInt)
+//                    delay(1000) // 1초 대기
+//                }
+//
+//                val response = dataInputStream?.readInt()
+//                Log.d("SocketCoroutine", "$response : 리스폰리스폰!!!@!!@!@!@!@!@!@!")
+//                Log.d("SocketCoroutine", "${newRate.toInt()} : 뉴레이트!!!@!!@!@!@!@!@!@!")
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//
+//        fun disconnect() {
+//            try {
+//                dataOutputStream?.close()
+//                //socket?.close()
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
+    inner class SocketAsyncTask : AsyncTask<Void, Void, String>() {
 
-        suspend fun connect(ip: String, port: Int) = withContext(Dispatchers.IO) {
+        override fun doInBackground(vararg params: Void?): String {
             try {
-                socket = Socket(ip, port)
-                val output = socket?.getOutputStream()
-                dataOutputStream = DataOutputStream(output)
-                val input = socket?.getInputStream()
-                dataInputStream = DataInputStream(input)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+                Log.d("SocketAsyncTask().execute()", "소켓소켓소켓소켓소켓소켓소켓소켓소켓소켓")
+                val socket = Socket("192.168.0.103", 9999)
 
-        suspend fun sendData(newRate: String) = withContext(Dispatchers.IO) {
-            try {
-                while (isActive) {
+
+                //Socket을 통해 데이터를 얻어오기 위한 코드
+                val input = socket.getInputStream()
+                val dataInputStream = DataInputStream(input)
+                //데이터를 보내기 위한 코드
+                val output = socket.getOutputStream()// Socket의 출력 스트림을 가져옵니다.
+                val dataOutputStream = DataOutputStream(output)// 데이터를 출력하기 위한 DataOutputStream 객체를 생성합니다.
+
+                while (true) {
                     // DataOutputStream 객체를 이용하여 데이터를 서버로 전송합니다.
-                    val newRateInt = ByteBuffer.allocate(4)
-                        .putInt(newRate.toInt())
-                        .order(ByteOrder.BIG_ENDIAN)
-                        .array()
-                    Log.d("SocketCoroutine", "$newRateInt : newRateInt!!!@!!@!@!@!@!@!@!")
+                    val newRateInt = ByteBuffer.allocate(4).putInt(newRate.toInt()).order(ByteOrder.BIG_ENDIAN).array()
+                    Log.d("SocketAsyncTask", "$newRateInt : newRateInt!!!@!!@!@!@!@!@!@!")
 
-                    dataOutputStream?.write(newRateInt)
-                    delay(1000) // 1초 대기
+                    dataOutputStream.write(newRateInt)
+                    Thread.sleep(1000) // 1초 대기
                 }
 
-                val response = dataInputStream?.readInt()
-                Log.d("SocketCoroutine", "$response : 리스폰리스폰!!!@!!@!@!@!@!@!@!")
-                Log.d("SocketCoroutine", "${newRate.toInt()} : 뉴레이트!!!@!!@!@!@!@!@!@!")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
 
-        fun disconnect() {
-            try {
-                dataOutputStream?.close()
-                //socket?.close()
-            } catch (e: Exception) {
+                val response = dataInputStream.readInt()
+                Log.d("SocketAsyncTask", "$response : 리스폰리스폰!!!@!!@!@!@!@!@!@!")
+
+                Log.d("SocketAsyncTask", "${newRate.toInt()} : 뉴레이트!!!@!!@!@!@!@!@!@!")
+                // 출력 스트림 닫기
+                dataOutputStream.close()
+                // 소켓 닫기
+                socket.close()
+
+            } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
+
+            return ""
+        }
+        override fun onCancelled() {
+            super.onCancelled()
+            Log.d("SocketAsyncTask", "Task cancelled!")
         }
     }
-
     override fun onDataChanged(p0: DataEventBuffer) {
         TODO("Not yet implemented")
     }
@@ -1037,6 +1094,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                     val dateAndTime: LocalDateTime = LocalDateTime.now()
                     val sbTemp = StringBuilder()
                     sbTemp.append(s)//심박수
+                    newRate = s
                     var textColor = ContextCompat.getColor(requireContext(), R.color.black)
                     if (s.toInt() > 90) {
                         textColor = ContextCompat.getColor(requireContext(), R.color.line_warning)
@@ -1051,7 +1109,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                         binding.heartRate.setTextColor(textColor)
                     }
                     binding.heartRate.text = sbTemp.toString()
-                    newRate = s
                     //Log.d ("onMessageReceived_mainActivity", "feedMultiple()")
                     //chart에 표시
                     //DB로 데이터 전송
@@ -1159,8 +1216,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onDestroyView() {
         super.onDestroyView()
         // AsyncTask 취소
-//        socketAsyncTask?.cancel(true)
+        socketAsyncTask?.cancel(true)
 
-        socketCoroutine.disconnect()
+        //socketCoroutine.disconnect()
     }
 }
