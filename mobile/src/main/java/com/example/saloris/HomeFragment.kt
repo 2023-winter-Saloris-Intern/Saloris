@@ -246,13 +246,13 @@ class HomeFragment : Fragment(), CoroutineScope by MainScope(),
         Log.d("checkData", "checkData 탈출")
     }
 
-    fun showLoading() {
+    private fun showLoading() {
         // 로딩 화면을 보여줌
         Log.d("showLoading", "로딩 화면 보여줌")
         _binding?.loadingId?.loadingScreen?.visibility = View.VISIBLE
     }
 
-    fun hideLoading() {
+    private fun hideLoading() {
         // 로딩 화면을 숨김
         Log.d("hideLoading", "로딩 화면 숨김")
         _binding?.loadingId?.loadingScreen?.visibility = View.GONE

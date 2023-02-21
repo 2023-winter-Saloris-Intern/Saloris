@@ -53,13 +53,10 @@ import com.influxdb.exceptions.InfluxException
 import kotlinx.coroutines.*
 import java.io.DataInputStream
 import java.io.DataOutputStream
-import java.io.OutputStream
 import java.net.Socket
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -108,6 +105,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private lateinit var auth: FirebaseAuth
 
     private var socketAsyncTask: SocketAsyncTask? = null
+    private val socketCoroutine = SocketCoroutine()
 
     private val cameraPermissionList = arrayOf(
         Manifest.permission.CAMERA
@@ -115,7 +113,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     var btnBackPressedTime: Long = 0
 
-    var newRate = ""
+    var newRate = "0"
     var Rate = ""
     var last_time = ""
     var last_battery=true
@@ -624,6 +622,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         super.onCreate(savedInstanceState)
         activityContext = this.context
         wearableDeviceConnected = false
+
         if (!wearableDeviceConnected) {
             val tempAct: Activity = activityContext as AppCompatActivity
             //Couroutine
@@ -679,6 +678,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
+
         // AsyncTask 실행
 //        socketAsyncTask = SocketAsyncTask().apply {
 //            execute()
@@ -703,8 +703,14 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
         navController = Navigation.findNavController(view)
         activityContext = this.context
+        lifecycleScope.launch {
+            delay(2000) // 1초 대기
+            socketCoroutine.connect("192.168.0.103", 9999)
+            socketCoroutine.sendData(newRate)
+        }
         binding.checkConnect.setOnClickListener {
-            SocketAsyncTask().execute()
+
+            //SocketAsyncTask().execute()
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as AppCompatActivity
@@ -712,15 +718,64 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
                 initialiseDevicePairing(tempAct)
             }
             //toast.makeToast(requireContext(), "vibrate")
-            binding.heartRate.text = "-"
+            //binding.heartRate.text = "-"
             sendMessage("vibrator")
         }
         binding.finishDriveBtn.setOnClickListener {
             binding.driveState.setText("운행 종료")
-            cancel()
             navController.navigate(R.id.action_driveFragment_to_homeFragment)
         }
 
+    }
+
+    class SocketCoroutine {
+        private var socket: Socket? = null
+        private var socketThread: Thread? = null
+        private var dataOutputStream: DataOutputStream? = null
+        private var dataInputStream: DataInputStream? = null
+
+        suspend fun connect(ip: String, port: Int) = withContext(Dispatchers.IO) {
+            try {
+                socket = Socket(ip, port)
+                val output = socket?.getOutputStream()
+                dataOutputStream = DataOutputStream(output)
+                val input = socket?.getInputStream()
+                dataInputStream = DataInputStream(input)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        suspend fun sendData(newRate: String) = withContext(Dispatchers.IO) {
+            try {
+                while (isActive) {
+                    // DataOutputStream 객체를 이용하여 데이터를 서버로 전송합니다.
+                    val newRateInt = ByteBuffer.allocate(4)
+                        .putInt(newRate.toInt())
+                        .order(ByteOrder.BIG_ENDIAN)
+                        .array()
+                    Log.d("SocketCoroutine", "$newRateInt : newRateInt!!!@!!@!@!@!@!@!@!")
+
+                    dataOutputStream?.write(newRateInt)
+                    delay(1000) // 1초 대기
+                }
+
+                val response = dataInputStream?.readInt()
+                Log.d("SocketCoroutine", "$response : 리스폰리스폰!!!@!!@!@!@!@!@!@!")
+                Log.d("SocketCoroutine", "${newRate.toInt()} : 뉴레이트!!!@!!@!@!@!@!@!@!")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        fun disconnect() {
+            try {
+                dataOutputStream?.close()
+                //socket?.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
     inner class SocketAsyncTask : AsyncTask<Void, Void, String>() {
 
@@ -901,7 +956,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
         val nodeResults = HashSet<String>()
         val resBool = BooleanArray(2)
         resBool[0] = false //nodePresent : true이면 연결되어있다
-        resBool[1] = false //wearableReturnAckR eceived : true이면 워치에 앱이 열려있다
+        resBool[1] = false //wearableReturnAck Received : true이면 워치에 앱이 열려있다
         val nodeListTask =
             Wearable.getNodeClient(context).connectedNodes
         try {
@@ -1156,6 +1211,8 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     override fun onDestroyView() {
         super.onDestroyView()
         // AsyncTask 취소
-        socketAsyncTask?.cancel(true)
+//        socketAsyncTask?.cancel(true)
+
+        socketCoroutine.disconnect()
     }
 }
