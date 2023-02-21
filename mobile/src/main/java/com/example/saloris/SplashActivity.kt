@@ -23,7 +23,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
+        //화면 클릭시 MainActivity로
         findViewById<ConstraintLayout>(com.example.saloris.R.id.splash_activity).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             finish()

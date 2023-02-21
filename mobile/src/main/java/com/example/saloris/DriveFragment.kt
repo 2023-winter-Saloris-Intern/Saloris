@@ -104,7 +104,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     /* User Authentication */
     private lateinit var auth: FirebaseAuth
 
-    private var socketAsyncTask: SocketAsyncTask? = null
     private val socketCoroutine = SocketCoroutine()
 
     private val cameraPermissionList = arrayOf(
@@ -679,10 +678,6 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
     ): View {
         binding = FragmentDriveBinding.inflate(layoutInflater, container, false)
 
-        // AsyncTask 실행
-//        socketAsyncTask = SocketAsyncTask().apply {
-//            execute()
-//        }
         initFaceMesh()
         initGlSurfaceView()
         postGlSurfaceView()
@@ -709,15 +704,12 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             socketCoroutine.sendData(newRate)
         }
         binding.checkConnect.setOnClickListener {
-
-            //SocketAsyncTask().execute()
             //워치 진동 버튼 => 누르면 워치에서 진동 발생
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as AppCompatActivity
                 //Couroutine
                 initialiseDevicePairing(tempAct)
             }
-            //toast.makeToast(requireContext(), "vibrate")
             //binding.heartRate.text = "-"
             sendMessage("vibrator")
         }
@@ -777,51 +769,7 @@ class DriveFragment : Fragment(), CoroutineScope by MainScope(),
             }
         }
     }
-    inner class SocketAsyncTask : AsyncTask<Void, Void, String>() {
 
-        override fun doInBackground(vararg params: Void?): String {
-            try {
-                Log.d("SocketAsyncTask().execute()", "소켓소켓소켓소켓소켓소켓소켓소켓소켓소켓")
-                val socket = Socket("192.168.0.110", 9999)
-
-
-                //Socket을 통해 데이터를 얻어오기 위한 코드
-                val input = socket.getInputStream()
-                val dataInputStream = DataInputStream(input)
-                //데이터를 보내기 위한 코드
-                val output = socket.getOutputStream()// Socket의 출력 스트림을 가져옵니다.
-                val dataOutputStream = DataOutputStream(output)// 데이터를 출력하기 위한 DataOutputStream 객체를 생성합니다.
-
-                while (true) {
-                    // DataOutputStream 객체를 이용하여 데이터를 서버로 전송합니다.
-                    val newRateInt = ByteBuffer.allocate(4).putInt(newRate.toInt()).order(ByteOrder.BIG_ENDIAN).array()
-                    Log.d("SocketAsyncTask", "$newRateInt : newRateInt!!!@!!@!@!@!@!@!@!")
-
-                    dataOutputStream.write(newRateInt)
-                    Thread.sleep(1000) // 1초 대기
-                }
-
-
-                val response = dataInputStream.readInt()
-                Log.d("SocketAsyncTask", "$response : 리스폰리스폰!!!@!!@!@!@!@!@!@!")
-
-                Log.d("SocketAsyncTask", "${newRate.toInt()} : 뉴레이트!!!@!!@!@!@!@!@!@!")
-                // 출력 스트림 닫기
-                dataOutputStream.close()
-                // 소켓 닫기
-                socket.close()
-
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-
-            return ""
-        }
-        override fun onCancelled() {
-            super.onCancelled()
-            Log.d("SocketAsyncTask", "Task cancelled!")
-        }
-    }
     override fun onDataChanged(p0: DataEventBuffer) {
         TODO("Not yet implemented")
     }

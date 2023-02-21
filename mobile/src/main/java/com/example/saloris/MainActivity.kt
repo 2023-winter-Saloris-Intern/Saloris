@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
         NavController.OnDestinationChangedListener { _, destination, _ ->
             currFragment = destination.id
             when (currFragment) {
+                //이 프래그먼트들은 바텀바가 안보임
                 R.id.driveFragment,
                 R.id.settingsFragment,
                 R.id.IntroSlideFragment,
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                     binding.layoutToolbar.toolbar.visibility = View.GONE
                 }
                 else -> {
+                    //나머지 프래그먼트들은 바텀바가 보임
                     binding.bottomNav.visibility = View.VISIBLE
                 }
             }
@@ -152,34 +154,16 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightStatusBars = true
             isAppearanceLightNavigationBars = true
         }
-        //SocketAsyncTask().execute()
-
-//        addMenuProvider(menuProvider)
-        /* Toolbar */
-//        with(binding.layoutToolbar.toolbarTitle) {
-//            text = "심박수 그래프"
-//        }그래프
-//        addMenuProvider(menuProvider)
-//        setSupportActionBar(binding.layoutToolbar.toolbar)
-//        supportActionBar?.let {
-//            it.setDisplayShowTitleEnabled(false)
-//            it.setDisplayHomeAsUpEnabled(true)
-//            it.setHomeAsUpIndicator(R.drawable.ic_back)
-//        }
         /* User Authentication */
         //Initialize Firebase Storage
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-//        var userInfo = RequiredInfo()
-//        userInfo?.userName = auth?.currentUser!!.displayName
-//        firestore?.collection("users")?.document(auth?.uid!!)?.update("userName", userInfo.userName)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         navController.addOnDestinationChangedListener(onDestinationChangedListener)
-        //checkData()
         /* Bottom Menu */
         binding.bottomNav.apply {
             setupWithNavController(navController)
